@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRD Fondos Colectivos v3 — SCP</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --red: #c0392b; --dark: #1a1a2e; --mid: #2c3e50;
+    --light: #ecf0f1; --accent: #e74c3c; --border: #bdc3c7;
+    --blue: #2980b9; --green: #27ae60; --orange: #e67e22;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11pt; color: #222; background: #fff; }
+
+  /* ── COVER ── */
+  .cover {
+    page-break-after: always; height: 100vh; min-height: 900px;
+    background: linear-gradient(145deg, #1a1a2e 0%, #c0392b 100%);
+    color: #fff; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center; padding: 60px;
+  }
+  .cover .logo { font-size: 13pt; letter-spacing: 4px; text-transform: uppercase; opacity: .7; margin-bottom: 40px; }
+  .cover h1 { font-size: 30pt; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+  .cover h2 { font-size: 15pt; font-weight: 300; margin-bottom: 48px; opacity: .9; }
+  .cover-meta { background: rgba(255,255,255,.12); border-radius: 10px; padding: 28px 48px; display: inline-block; }
+  .cover-meta table { border-collapse: collapse; }
+  .cover-meta td { padding: 5px 18px; font-size: 10.5pt; text-align: left; }
+  .cover-meta td:first-child { font-weight: 600; opacity: .7; text-align: right; }
+  .cover-badge {
+    margin-top: 36px; display: inline-block;
+    border: 2px solid rgba(255,255,255,.5); border-radius: 20px;
+    padding: 6px 22px; font-size: 9pt; letter-spacing: 2px; text-transform: uppercase;
+  }
+
+  /* ── LAYOUT ── */
+  .page { padding: 48px 56px; max-width: 1100px; margin: 0 auto; }
+  .page-break { page-break-before: always; }
+
+  /* ── HEADERS ── */
+  h1.section {
+    font-size: 18pt; color: var(--dark); border-left: 6px solid var(--red);
+    padding-left: 16px; margin: 36px 0 20px; page-break-after: avoid;
+  }
+  h2.sub { font-size: 13pt; color: var(--mid); margin: 28px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  h3.sub2 { font-size: 11pt; color: var(--blue); margin: 20px 0 8px; }
+
+  /* ── TOC ── */
+  .toc { background: #f8f9fa; border-radius: 8px; padding: 28px 36px; margin: 24px 0; }
+  .toc h2 { font-size: 12pt; color: var(--dark); margin-bottom: 16px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { padding: 4px 0; font-size: 10.5pt; }
+  .toc a { color: var(--mid); text-decoration: none; }
+
+  /* ── TABLES ── */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 24px; font-size: 10pt; }
+  th { background: var(--mid); color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; }
+  td { padding: 7px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: #f9f9f9; }
+  tr:hover td { background: #eef3fb; }
+  .table-red th { background: var(--red); }
+  .table-blue th { background: var(--blue); }
+  .table-green th { background: var(--green); }
+  .table-orange th { background: var(--orange); }
+
+  /* ── BADGES ── */
+  .badge { display: inline-block; border-radius: 4px; padding: 2px 8px; font-size: 9pt; font-weight: 600; }
+  .badge-red { background: #fde8e8; color: var(--red); }
+  .badge-green { background: #e8f8ee; color: var(--green); }
+  .badge-blue { background: #e8f0fd; color: var(--blue); }
+  .badge-orange { background: #fef3e2; color: var(--orange); }
+  .badge-gray { background: #eee; color: #555; }
+  .badge-yellow { background: #fffbdd; color: #7d6000; }
+
+  /* ── CALLOUT BOXES ── */
+  .callout { border-radius: 8px; padding: 16px 20px; margin: 16px 0; }
+  .callout-red { background: #fde8e8; border-left: 4px solid var(--red); }
+  .callout-blue { background: #e8f0fd; border-left: 4px solid var(--blue); }
+  .callout-green { background: #e8f8ee; border-left: 4px solid var(--green); }
+  .callout-orange { background: #fef3e2; border-left: 4px solid var(--orange); }
+  .callout-title { font-weight: 700; font-size: 10pt; margin-bottom: 6px; }
+
+  /* ── KPI CARDS ── */
+  .kpi-grid { display: flex; flex-wrap: wrap; gap: 16px; margin: 20px 0; }
+  .kpi-card {
+    flex: 1; min-width: 140px; border-radius: 10px; padding: 20px 18px;
+    background: #f8f9fa; border-top: 4px solid var(--red); text-align: center;
+  }
+  .kpi-card.blue { border-top-color: var(--blue); }
+  .kpi-card.green { border-top-color: var(--green); }
+  .kpi-card.orange { border-top-color: var(--orange); }
+  .kpi-number { font-size: 22pt; font-weight: 700; color: var(--dark); }
+  .kpi-label { font-size: 9pt; color: #666; margin-top: 4px; }
+
+  /* ── DIAGRAMS ── */
+  .diagram-box {
+    background: #fafbfc; border: 1px solid var(--border); border-radius: 10px;
+    padding: 24px; margin: 20px 0; text-align: center; page-break-inside: avoid;
+  }
+  .diagram-title { font-size: 10pt; font-weight: 700; color: var(--mid); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+  .mermaid { text-align: center; }
+
+  /* ── COMPARISON COLUMNS ── */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+  .compare-col { border-radius: 8px; overflow: hidden; }
+  .compare-header { padding: 10px 16px; font-weight: 700; font-size: 10.5pt; color: #fff; }
+  .compare-header.digital { background: var(--blue); }
+  .compare-header.cluster { background: var(--orange); }
+  .compare-body { padding: 12px 16px; background: #f8f9fa; font-size: 10pt; }
+  .compare-body li { padding: 3px 0; }
+
+  /* ── GAP TABLE ── */
+  .gap-new { background: #e8f8ee !important; }
+  .gap-diff { background: #fef3e2 !important; }
+  .gap-same { background: #fff !important; }
+
+  /* ── FOOTER ── */
+  .footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 9pt; color: #999; text-align: center; }
+
+  /* ── PRINT ── */
+  @media print {
+    @page { margin: 18mm 20mm; size: A4; }
+    body { font-size: 9.5pt; }
+    .cover { height: auto; min-height: unset; padding: 40px; page-break-after: always; }
+    .cover h1 { font-size: 22pt; }
+    .cover h2 { font-size: 12pt; }
+    h1.section { font-size: 14pt; }
+    h2.sub { font-size: 11pt; }
+    .kpi-number { font-size: 16pt; }
+    .no-print { display: none; }
+    .page-break { page-break-before: always; }
+    table { page-break-inside: auto; }
+    tr { page-break-inside: avoid; }
+    .diagram-box { page-break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     PORTADA
+══════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="logo">Banco Santander Consumer Perú</div>
+  <h1>Business Requirements Document</h1>
+  <h2>Migración y Modelado de Datos · Fondos Colectivos</h2>
+  <div class="cover-meta">
+    <table>
+      <tr><td>Versión</td><td>3.0 — Auditoría y Trazabilidad de Fuentes</td></tr>
+      <tr><td>Fecha</td><td>Abril 2026</td></tr>
+      <tr><td>Área</td><td>Fondos Colectivos — SCP</td></tr>
+      <tr><td>Fuentes revisadas</td><td>SANTO · Agenda Digital · Agenda Cluster</td></tr>
+      <tr><td>Estado</td><td>BORRADOR ACTUALIZADO</td></tr>
+    </table>
+  </div>
+  <div class="cover-badge">Confidencial</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     ÍNDICE
+══════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="toc">
+    <h2>Tabla de Contenidos</h2>
+    <ol>
+      <li><a href="#s1">Resumen Ejecutivo</a></li>
+      <li><a href="#s2">Descripción del Proyecto</a></li>
+      <li><a href="#s3">Diagnóstico de Fuentes de Datos</a></li>
+      <li><a href="#s4">Inventario de Campos: Agenda Digital vs. Cluster</a></li>
+      <li><a href="#s5">Métricas y Estado Actual</a></li>
+      <li><a href="#s6">Diagramas de Flujo y Arquitectura</a></li>
+      <li><a href="#s7">Reglas de Negocio</a></li>
+      <li><a href="#s8">Proceso de Integración BD_REFERIDOS2</a></li>
+      <li><a href="#s9">Requerimientos Funcionales Actualizados</a></li>
+      <li><a href="#s10">Auditoría y Trazabilidad</a></li>
+      <li><a href="#s11">Gaps y Riesgos Identificados</a></li>
+      <li><a href="#s12">Pendientes Críticos</a></li>
+      <li><a href="#s13">Glosario</a></li>
+    </ol>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────
+       1. RESUMEN EJECUTIVO
+  ────────────────────────────────────────────────── -->
+  <h1 class="section" id="s1">1. Resumen Ejecutivo</h1>
+  <p>Este documento consolida el levantamiento completo de las fuentes de datos del área de <strong>Fondos Colectivos de Banco Santander Consumer Perú (SCP)</strong>. La versión 3.0 incorpora la revisión directa de los archivos exportados desde Microsoft Lists (Agenda Comercial Digital y Agenda Comercial Cluster al 20/04/2026), agregando análisis comparativo de campos, métricas actualizadas y el diseño del proceso de auditoría y trazabilidad para la plataforma destino en Databricks.</p>
+
+  <div class="kpi-grid" style="margin-top:24px;">
+    <div class="kpi-card"><div class="kpi-number">5,030</div><div class="kpi-label">Registros<br>Agenda Digital</div></div>
+    <div class="kpi-card blue"><div class="kpi-number">1,937</div><div class="kpi-label">Registros<br>Agenda Cluster</div></div>
+    <div class="kpi-card green"><div class="kpi-number">6,967</div><div class="kpi-label">Total Referidos<br>Combinado (abr/26)</div></div>
+    <div class="kpi-card orange"><div class="kpi-number">73</div><div class="kpi-label">ASOCIADOS<br>Confirmados</div></div>
+    <div class="kpi-card"><div class="kpi-number">7</div><div class="kpi-label">Reglas de Negocio<br>Documentadas</div></div>
+    <div class="kpi-card blue"><div class="kpi-number">11</div><div class="kpi-label">Campos divergentes<br>Digital vs. Cluster</div></div>
+  </div>
+
+  <div class="callout callout-red">
+    <div class="callout-title">⚠ Hallazgo crítico v3.0</div>
+    El campo <strong>FRENTE</strong> tiene semánticas distintas entre las dos agendas: en Digital registra el canal de captación digital (SCP SND, NEOAUTO WEB, REDES - FACEBOOK…), mientras que en Cluster registra el origen del referido (REFERIDO SCP, PILOTO AUTOLAND…). Esta divergencia requiere una capa de normalización antes de unificar en BD_REFERIDOS2.
+  </div>
+
+  <!-- ──────────────────────────────────────────────────
+       2. DESCRIPCIÓN DEL PROYECTO
+  ────────────────────────────────────────────────── -->
+  <h1 class="section" id="s2">2. Descripción del Proyecto</h1>
+
+  <h2 class="sub">2.1 Contexto de negocio</h2>
+  <p>Fondos Colectivos es una unidad de Banco Santander Consumer Perú que comercializa planes de ahorro colectivo vehicular (<strong>Fondo Tradicional, programa SAN001</strong>). Un grupo de asociados realiza aportes mensuales; mediante sorteo o remate uno de ellos recibe el vehículo. Los canales de venta son: ejecutivos SCP directos, clusters de agentes externos, canal digital (web / redes sociales) y concesionarios aliados (Autoland, Astara, Derco, Interamericana, Revo Motors).</p>
+
+  <h2 class="sub">2.2 Problema identificado</h2>
+  <table>
+    <thead><tr><th>#</th><th>Problema</th><th>Impacto</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Descarga manual de CSV desde SANTO sin periodicidad definida</td><td>Datos desactualizados, riesgo de error humano</td></tr>
+      <tr><td>2</td><td>Lógica de negocio en columnas calculadas de Excel sin documentar</td><td>Pérdida de conocimiento, inconsistencias entre reportes</td></tr>
+      <tr><td>3</td><td>Dos agendas separadas (Digital / Cluster) con campos divergentes</td><td>Unificación manual, riesgo de duplicados</td></tr>
+      <tr><td>4</td><td>Campo FRENTE con semánticas distintas por agenda</td><td>Imposible comparar directamente sin normalización</td></tr>
+      <tr><td>5</td><td>Sin capa de datos centralizada ni gobernanza</td><td>Sin trazabilidad, linaje ni control de acceso</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub">2.3 Objetivo del proyecto</h2>
+  <p>Diseñar e implementar una plataforma de datos en la nube (Databricks, arquitectura Medallion) que automatice la ingesta, aplique las reglas de negocio en pipelines versionados y exponga capas limpias (Silver) y agregadas (Gold) para reportes y análisis, con gobernanza en Unity Catalog.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     3. DIAGNÓSTICO DE FUENTES
+══════════════════════════════════════════════════════ -->
+<div class="page page-break" id="s3">
+  <h1 class="section">3. Diagnóstico de Fuentes de Datos</h1>
+
+  <h2 class="sub">3.1 Inventario de archivos fuente</h2>
+  <table class="table-red">
+    <thead><tr><th>Archivo</th><th>Fuente SharePoint</th><th>Registros</th><th>Fecha export</th><th>Columnas</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>DIGITAL_NUEVA_AGENDA_ONLINE_20260420_05411.xlsx</strong></td>
+        <td>Lists/Canal Digital SFC Nueva Agenda V2</td>
+        <td><span class="badge badge-blue">5,030</span></td>
+        <td>20/04/2026 05:41</td>
+        <td>52</td>
+      </tr>
+      <tr>
+        <td><strong>CLUSTER_AGENDA_ONLINE_V2_20260420_0533.xlsx</strong></td>
+        <td>Lists/Cluster Agenda Online V2</td>
+        <td><span class="badge badge-orange">1,937</span></td>
+        <td>20/04/2026 05:33</td>
+        <td>46</td>
+      </tr>
+      <tr>
+        <td><strong>20260228_SFC_Dashboard.xlsx</strong></td>
+        <td>Exportación manual SANTO + Agenda</td>
+        <td><span class="badge badge-gray">Múltiple</span></td>
+        <td>28/02/2026</td>
+        <td>24 hojas</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub">3.2 Distribución por FRENTE</h2>
+
+  <div class="compare-grid">
+    <div class="compare-col">
+      <div class="compare-header digital">📱 Agenda Digital — FRENTE (5,030 registros)</div>
+      <div class="compare-body">
+        <table style="margin:0; font-size:9.5pt;">
+          <thead><tr><th style="background:#2980b9">FRENTE</th><th style="background:#2980b9;text-align:right">N</th><th style="background:#2980b9;text-align:right">%</th></tr></thead>
+          <tbody>
+            <tr><td>SCP SND</td><td style="text-align:right">2,747</td><td style="text-align:right">54.6%</td></tr>
+            <tr><td>SCP AND</td><td style="text-align:right">769</td><td style="text-align:right">15.3%</td></tr>
+            <tr><td>NEOAUTO WEB</td><td style="text-align:right">701</td><td style="text-align:right">13.9%</td></tr>
+            <tr><td>NEOAUTO GMAIL</td><td style="text-align:right">389</td><td style="text-align:right">7.7%</td></tr>
+            <tr><td>REDES - FACEBOOK</td><td style="text-align:right">238</td><td style="text-align:right">4.7%</td></tr>
+            <tr><td>TIKTOK KIA</td><td style="text-align:right">129</td><td style="text-align:right">2.6%</td></tr>
+            <tr><td>CANAL WEB + Otros</td><td style="text-align:right">57</td><td style="text-align:right">1.1%</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px; font-size:9pt; color:#555;">
+          ⚠ En Digital, FRENTE = <em>canal digital de captación</em>, no origen del referido.
+        </div>
+      </div>
+    </div>
+    <div class="compare-col">
+      <div class="compare-header cluster">🤝 Agenda Cluster — FRENTE (1,937 registros)</div>
+      <div class="compare-body">
+        <table style="margin:0; font-size:9.5pt;">
+          <thead><tr><th style="background:#e67e22">FRENTE</th><th style="background:#e67e22;text-align:right">N</th><th style="background:#e67e22;text-align:right">%</th></tr></thead>
+          <tbody>
+            <tr><td>REFERIDO SCP</td><td style="text-align:right">1,664</td><td style="text-align:right">85.9%</td></tr>
+            <tr><td>PILOTO AUTOLAND</td><td style="text-align:right">194</td><td style="text-align:right">10.0%</td></tr>
+            <tr><td>CARTERA PROPIA</td><td style="text-align:right">64</td><td style="text-align:right">3.3%</td></tr>
+            <tr><td>BD AUTOLAND</td><td style="text-align:right">12</td><td style="text-align:right">0.6%</td></tr>
+            <tr><td>BD ASTARA SURCO + Header</td><td style="text-align:right">3</td><td style="text-align:right">0.2%</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px; font-size:9pt; color:#555;">
+          ✓ En Cluster, FRENTE = <em>origen del referido/prospecto</em> (semántica clásica del BRD).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sub">3.3 Distribución por STATUS</h2>
+  <table>
+    <thead><tr><th>STATUS</th><th style="text-align:right">Digital</th><th style="text-align:right">%</th><th style="text-align:right">Cluster</th><th style="text-align:right">%</th><th style="text-align:right">Total</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-green">SI CONTACTO en Gestión</span></td><td style="text-align:right">689</td><td style="text-align:right">13.7%</td><td style="text-align:right">646</td><td style="text-align:right">33.4%</td><td style="text-align:right"><strong>1,335</strong></td></tr>
+      <tr><td><span class="badge badge-red">SI CONTACTO No Desea</span></td><td style="text-align:right">1,438</td><td style="text-align:right">28.6%</td><td style="text-align:right">369</td><td style="text-align:right">19.1%</td><td style="text-align:right"><strong>1,807</strong></td></tr>
+      <tr><td><span class="badge badge-yellow">SI CONTACTO Volver a llamar</span></td><td style="text-align:right">656</td><td style="text-align:right">13.0%</td><td style="text-align:right">267</td><td style="text-align:right">13.8%</td><td style="text-align:right"><strong>923</strong></td></tr>
+      <tr><td><span class="badge badge-gray">NO CONTACTO Telf No Contesta</span></td><td style="text-align:right">1,066</td><td style="text-align:right">21.2%</td><td style="text-align:right">388</td><td style="text-align:right">20.0%</td><td style="text-align:right"><strong>1,454</strong></td></tr>
+      <tr><td><span class="badge badge-gray">NO CONTACTO No corresponde</span></td><td style="text-align:right">1,158</td><td style="text-align:right">23.0%</td><td style="text-align:right">95</td><td style="text-align:right">4.9%</td><td style="text-align:right"><strong>1,253</strong></td></tr>
+      <tr><td><span class="badge badge-gray">SIN GESTIÓN</span></td><td style="text-align:right">2</td><td style="text-align:right">0.0%</td><td style="text-align:right">120</td><td style="text-align:right">6.2%</td><td style="text-align:right"><strong>122</strong></td></tr>
+      <tr><td><span class="badge badge-blue">ASOCIADO</span></td><td style="text-align:right">21</td><td style="text-align:right">0.4%</td><td style="text-align:right">52</td><td style="text-align:right">2.7%</td><td style="text-align:right"><strong>73</strong></td></tr>
+      <tr style="font-weight:700; background:#f0f0f0 !important;"><td>TOTAL</td><td style="text-align:right">5,030</td><td style="text-align:right">100%</td><td style="text-align:right">1,937</td><td style="text-align:right">100%</td><td style="text-align:right">6,967</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:9pt; color:#666; margin-top:-12px;">* Nota: 1 fila de header incluida en la extracción y excluida de los cálculos porcentuales.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     4. INVENTARIO DE CAMPOS
+══════════════════════════════════════════════════════ -->
+<div class="page page-break" id="s4">
+  <h1 class="section">4. Inventario de Campos: Digital vs. Cluster</h1>
+
+  <div class="callout callout-blue">
+    <div class="callout-title">Leyenda de columna "Estado"</div>
+    <span class="badge badge-green">✓ Ambas</span> presente en Digital y Cluster &nbsp;
+    <span class="badge badge-blue">Digital</span> exclusivo de Agenda Digital &nbsp;
+    <span class="badge badge-orange">Cluster</span> exclusivo de Agenda Cluster &nbsp;
+    <span class="badge badge-yellow">⚠ Difiere</span> presente en ambas pero con nombre o semántica distinta
+  </div>
+
+  <table>
+    <thead><tr><th>#</th><th>Campo BD_REFERIDOS2</th><th>Nombre Digital</th><th>Nombre Cluster</th><th>Estado</th><th>Nota</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Fecha de Registro</td><td>Fecha Registro</td><td>Fecha Registro</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr class="gap-diff"><td>2</td><td>FRENTE</td><td>FRENTE</td><td>FRENTE</td><td><span class="badge badge-yellow">⚠ Difiere</span></td><td>Semántica distinta: Digital=canal digital; Cluster=origen referido</td></tr>
+      <tr><td>3</td><td>Tipo Doc Identidad</td><td>Tipo Doc Identidad</td><td>Tipo Doc Identidad</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>4</td><td>N° Doc Identidad</td><td>N° Doc Identidad</td><td>N° Doc Identidad</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>5</td><td>Nombre Prospecto</td><td>Nombre Prospecto</td><td>Nombre Prospecto</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>6</td><td>Celular Prospecto</td><td>Celular Prospecto</td><td>Celular Prospecto</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>7</td><td>Mail de Prospecto</td><td>Mail de Prospecto</td><td>Mail de Prospecto</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>8</td><td>Estado Civil</td><td>Estado Civil</td><td>Estado Civil</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>9</td><td>Tipo Doc Ident Cónyuge</td><td>Tipo Doc Ident Cónyuge / Conviviente</td><td>Tipo Doc Ident Cónyuge / Conviviente</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>10</td><td>N° Doc Cónyuge</td><td>N° Doc Cónyuge / Conviviente</td><td>DNI Cónyuge / Conviviente</td><td><span class="badge badge-yellow">⚠ Difiere</span></td><td>Nombre distinto; mismo concepto</td></tr>
+      <tr><td>11</td><td>Nombre Cónyuge</td><td>Nombre Cónyuge / Conviviente</td><td>Nombre Cónyuge / Conviviente</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>12</td><td>Ingreso Mensual</td><td>Ingreso Mensual</td><td>Ingreso Mensual</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>13</td><td>Categoría Renta</td><td>Categoría Renta del Prospecto</td><td>Categoría Renta del Prospecto</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr class="gap-diff"><td>14</td><td>VISOR Decisión Riesgos</td><td>VISOR - Resultado</td><td>Decisión Riesgos</td><td><span class="badge badge-yellow">⚠ Difiere</span></td><td>Mismo campo, nombres distintos</td></tr>
+      <tr class="gap-diff"><td>15</td><td>Status Operación</td><td>Status</td><td>Status</td><td><span class="badge badge-yellow">⚠ Difiere</span></td><td>Mismo nombre, valores distintos (ver sección 3.3)</td></tr>
+      <tr><td>16</td><td>Fecha de Gestión</td><td>Fecha de Gestión</td><td>Fecha de Gestión</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr class="gap-diff"><td>17</td><td>Intentos Contacto</td><td>Intentos de Contacto</td><td>Intentos Contacto</td><td><span class="badge badge-yellow">⚠ Difiere</span></td><td>Nombre ligeramente distinto</td></tr>
+      <tr><td>18</td><td>Fecha Proximo contacto</td><td>Fecha Proximo contacto</td><td>Fecha Proximo contacto</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>19</td><td>INTERES COMPRA</td><td>INTERES COMPRA</td><td>INTERES COMPRA</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr class="gap-diff"><td>20</td><td>Comentario / Seguimiento</td><td>Comentarios</td><td>Comentario / Seguimiento</td><td><span class="badge badge-yellow">⚠ Difiere</span></td><td>Nombre distinto</td></tr>
+      <tr><td>21</td><td>Certificado</td><td>Certificado</td><td>Certificado</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>22</td><td>Ejecutivo SFC Gestión</td><td>Ejecutivo SFC</td><td>Ejecutivo SFC</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr class="gap-diff"><td>23</td><td>Coach SFC / Jefatura</td><td>Jefatura</td><td>Coach SFC</td><td><span class="badge badge-yellow">⚠ Difiere</span></td><td>Digital tiene Jefatura; Cluster tiene Coach SFC separado</td></tr>
+      <tr><td>24</td><td>Ejecutivo SCP q refiere</td><td>Ejecutivo SCP q refiere</td><td>Ejecutivo SCP q refiere</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr class="gap-diff"><td>25</td><td>Jefe Ventas</td><td>Jefe Ventas SCP</td><td>Jefe Ventas</td><td><span class="badge badge-yellow">⚠ Difiere</span></td><td>Nombre ligeramente distinto</td></tr>
+      <tr class="gap-new"><td>26</td><td>Supervisor SCP</td><td>—</td><td>Supervisor SCP</td><td><span class="badge badge-orange">Cluster</span></td><td>Nivel jerárquico exclusivo de Cluster</td></tr>
+      <tr class="gap-diff"><td>27</td><td>Concesionario</td><td>Concesionario / Punto de Venta</td><td>Concesionario</td><td><span class="badge badge-yellow">⚠ Difiere</span></td><td>Digital incluye Punto de Venta en mismo campo</td></tr>
+      <tr><td>28</td><td>Sucursal - Concesionario</td><td>Sucursal - Concesionario</td><td>Sucursal - Concesionario</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr class="gap-diff"><td>29</td><td>MARCA</td><td>Marca</td><td>Marca de Vehículo</td><td><span class="badge badge-yellow">⚠ Difiere</span></td><td>Nombre distinto</td></tr>
+      <tr><td>30</td><td>Tipo Doc Ident Vendedor</td><td>Tipo Doc Ident Vendedor</td><td>Tipo Doc Ident Vendedor</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>31</td><td>N° Doc Vendedor / Cod_Vendedor</td><td>N° Doc Vendedor / Cod_Vendedor</td><td>Cod_Vendedor</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>32</td><td>Vendedor</td><td>Vendedor</td><td>Vendedor</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr class="gap-diff"><td>33</td><td>LIDER CANAL / AGENCIA</td><td>AGENCIA</td><td>LIDER CANAL</td><td><span class="badge badge-yellow">⚠ Difiere</span></td><td>Concepto similar, nombres distintos</td></tr>
+      <tr><td>34</td><td>ID</td><td>ID</td><td>ID</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>35</td><td>ID_VISOR</td><td>ID_Visor</td><td>ID_VISOR</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>36</td><td>Creado / Created</td><td>Created</td><td>Created</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>37</td><td>Creado por / Created By</td><td>Created By</td><td>Created By</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>38</td><td>Modificado / Modified</td><td>Modified</td><td>Modified</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>39</td><td>Modificado por</td><td>Modified By</td><td>Modified By</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>40</td><td>Tipo Soporte TI</td><td>Tipo Soporte TI</td><td>Tipo Soporte TI</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>41</td><td>Soporte TI - Comentario</td><td>Soporte TI - Comentario</td><td>Soporte TI - Comentario</td><td><span class="badge badge-green">✓ Ambas</span></td><td></td></tr>
+      <tr><td>42</td><td>Item Type / Path</td><td>Item Type / Path</td><td>Item Type / Path</td><td><span class="badge badge-green">✓ Ambas</span></td><td>Metadatos SharePoint</td></tr>
+      <!-- Digital exclusivos -->
+      <tr class="gap-new"><td>43</td><td>Alianza</td><td>Alianza</td><td>—</td><td><span class="badge badge-blue">Digital</span></td><td>Alianza de concesionario</td></tr>
+      <tr class="gap-new"><td>44</td><td>Plaza</td><td>Plaza</td><td>—</td><td><span class="badge badge-blue">Digital</span></td><td>Plaza geográfica</td></tr>
+      <tr class="gap-new"><td>45</td><td>N° SOLICITUD SANTI</td><td>N° SOLICITUD SANTI</td><td>—</td><td><span class="badge badge-blue">Digital</span></td><td>Nro. de solicitud en SANTO</td></tr>
+      <tr class="gap-new"><td>46</td><td>CUOTA INICIAL</td><td>CUOTA INICIAL</td><td>—</td><td><span class="badge badge-blue">Digital</span></td><td>Monto de cuota inicial registrado</td></tr>
+      <tr class="gap-new"><td>47</td><td>ID AGENDA ANTERIOR</td><td>ID AGENDA ANTERIOR</td><td>—</td><td><span class="badge badge-blue">Digital</span></td><td>Referencia a versión anterior de la agenda</td></tr>
+      <tr class="gap-new"><td>48</td><td>Consentimiento Confirmado</td><td>Consentimiento Confirmado</td><td>—</td><td><span class="badge badge-blue">Digital</span></td><td>Confirmación RGPD/privacidad</td></tr>
+      <tr class="gap-new"><td>49</td><td>Fecha/Hora Inicio Soporte</td><td>Fecha / hora Inicio Soporte</td><td>—</td><td><span class="badge badge-blue">Digital</span></td><td>Digital registra inicio Y fin; Cluster solo fin</td></tr>
+      <!-- Cluster exclusivos -->
+      <tr class="gap-new"><td>50</td><td>N° Solicitud BD</td><td>—</td><td>N° Solicitud BD</td><td><span class="badge badge-orange">Cluster</span></td><td>Número de solicitud en BD Cluster</td></tr>
+      <tr><td>51</td><td>AGENDA (calculado)</td><td>"Digital"</td><td>"Cluster"</td><td><span class="badge badge-green">✓ Calculado</span></td><td>Campo derivado al unificar en BD_REFERIDOS2</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     5. MÉTRICAS Y ESTADO ACTUAL
+══════════════════════════════════════════════════════ -->
+<div class="page page-break" id="s5">
+  <h1 class="section">5. Métricas y Estado Actual</h1>
+
+  <h2 class="sub">5.1 Resumen consolidado al 20/04/2026</h2>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-number">6,967</div><div class="kpi-label">Total Referidos<br>Digital + Cluster</div></div>
+    <div class="kpi-card green"><div class="kpi-number">4,065</div><div class="kpi-label">SI CONTACTO<br>58.4%</div></div>
+    <div class="kpi-card"><div class="kpi-number">2,707</div><div class="kpi-label">NO CONTACTO<br>38.8%</div></div>
+    <div class="kpi-card orange"><div class="kpi-number">122</div><div class="kpi-label">SIN GESTIÓN<br>1.8%</div></div>
+    <div class="kpi-card blue"><div class="kpi-number">73</div><div class="kpi-label">ASOCIADOS<br>1.0%</div></div>
+  </div>
+
+  <h2 class="sub">5.2 Métricas SANTO (Dashboard feb/2026)</h2>
+  <table class="table-blue">
+    <thead><tr><th>Indicador</th><th>Valor</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td>Total Ventas Acumuladas</td><td>458</td><td>Certificados contratados Mar/2024–Feb/2026</td></tr>
+      <tr><td>Certificados Activos</td><td>402</td><td>Estado Actual = Activo</td></tr>
+      <tr><td>Retiro a Solicitud Asociado</td><td>39</td><td>Modalidad Resolución = "Retiro a solicitud"</td></tr>
+      <tr><td>Resolución por Deuda</td><td>17</td><td>Modalidad Resolución = "Resuelto con Devolución"</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub">5.3 Tasa de conversión funnel (estimado)</h2>
+  <div class="diagram-box">
+    <div class="diagram-title">Funnel Comercial — Fondos Colectivos SCP</div>
+    <div class="mermaid">
+flowchart LR
+    A["🌐 Referidos\n6,967"] -->|"Gestión\ncomercial"| B["📞 SI CONTACTO\n4,065 (58.4%)"]
+    A --> C["📵 NO CONTACTO\n2,707 (38.8%)"]
+    A --> D["⏸ SIN GESTIÓN\n122 (1.8%)"]
+    B -->|"Evalúa VISOR\n+ Interés"| E["📋 Cotización\nSANTO"]
+    E -->|"Solicitud\ncrédito"| F["📄 Solicitud\nSANTO"]
+    F -->|"Aprobación\n+ Firma"| G["✅ Certificado\n458 acum."]
+    G -->|"Estado Activo"| H["🏠 ACTIVOS\n402"]
+    style A fill:#2980b9,color:#fff
+    style B fill:#27ae60,color:#fff
+    style C fill:#e74c3c,color:#fff
+    style D fill:#95a5a6,color:#fff
+    style E fill:#3498db,color:#fff
+    style F fill:#8e44ad,color:#fff
+    style G fill:#27ae60,color:#fff
+    style H fill:#1abc9c,color:#fff
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     6. DIAGRAMAS
+══════════════════════════════════════════════════════ -->
+<div class="page page-break" id="s6">
+  <h1 class="section">6. Diagramas de Flujo y Arquitectura</h1>
+
+  <h2 class="sub">6.1 Flujo As-Is — Proceso actual de datos</h2>
+  <div class="diagram-box">
+    <div class="diagram-title">Estado actual: extracción manual y procesamiento en Excel</div>
+    <div class="mermaid">
+flowchart TD
+    subgraph FUENTES["🗄 FUENTES ORIGEN"]
+        S1["SANTO\n(Softek on-premise)\nCotizaciones\nSolicitudes\nCertificados"]
+        S2["Microsoft Lists\nAgenda Digital\n(SharePoint)"]
+        S3["Microsoft Lists\nAgenda Cluster\n(SharePoint)"]
+    end
+
+    subgraph EXTRACCION["👤 EXTRACCIÓN MANUAL"]
+        E1["Usuario descarga\nCSV desde SANTO\n(sin periodicidad)"]
+        E2["Usuario exporta\nDigital → Excel"]
+        E3["Usuario exporta\nCluster → Excel"]
+    end
+
+    subgraph EXCEL["📊 PROCESAMIENTO EXCEL"]
+        X1["20260228_SFC_Dashboard.xlsx\n24 hojas\nFórmulas calculadas\nReglas de negocio\nno documentadas"]
+    end
+
+    subgraph REPORTES["📈 REPORTES"]
+        R1["Dashboard\nResumen Certificados"]
+        R2["Dashboard\nTotal Referidos SCP"]
+        R3["Dashboards G10/G11/G12"]
+    end
+
+    S1 -->|"Descarga manual\nCSV"| E1
+    S2 -->|"Exportación\nmanual"| E2
+    S3 -->|"Exportación\nmanual"| E3
+    E1 --> X1
+    E2 --> X1
+    E3 --> X1
+    X1 --> R1
+    X1 --> R2
+    X1 --> R3
+
+    style FUENTES fill:#fde8e8,stroke:#c0392b
+    style EXTRACCION fill:#fef3e2,stroke:#e67e22
+    style EXCEL fill:#e8f0fd,stroke:#2980b9
+    style REPORTES fill:#e8f8ee,stroke:#27ae60
+    </div>
+  </div>
+
+  <h2 class="sub">6.2 Arquitectura To-Be — Plataforma Medallion en Databricks</h2>
+  <div class="diagram-box">
+    <div class="diagram-title">Arquitectura destino: ingesta automatizada → Bronze → Silver → Gold</div>
+    <div class="mermaid">
+flowchart LR
+    subgraph ORIG["ORIGEN"]
+        O1["SANTO\nSoftek"]
+        O2["Agenda\nDigital"]
+        O3["Agenda\nCluster"]
+    end
+
+    subgraph BRONZE["🟤 BRONZE\nDelta Lake — Raw"]
+        B1["cotizaciones_raw"]
+        B2["solicitudes_raw"]
+        B3["certificados_raw"]
+        B4["agenda_digital_raw"]
+        B5["agenda_cluster_raw"]
+        B6["ejecutivos_raw"]
+        B7["ref_alianzas | status\nestados | dias_utiles"]
+    end
+
+    subgraph SILVER["⚪ SILVER\nDatos limpios"]
+        SV1["cotizaciones"]
+        SV2["solicitudes"]
+        SV3["certificados"]
+        SV4["bd_referidos2\n(Digital+Cluster unificado)"]
+        SV5["dim_ejecutivos"]
+    end
+
+    subgraph GOLD["🟡 GOLD\nConsumo BI"]
+        G1["resumen_certificados"]
+        G2["total_referidos_scp"]
+        G3["dashboard_grupos"]
+        G4["funnel_conversion"]
+    end
+
+    O1 -->|"Pipeline\nautomático"| B1
+    O1 --> B2; O1 --> B3; O1 --> B6; O1 --> B7
+    O2 -->|"API\nSharePoint"| B4
+    O3 -->|"API\nSharePoint"| B5
+
+    B1 -->|"RN-001\nRN-002\nRN-003"| SV1
+    B2 -->|"RN-001..005"| SV2
+    B3 -->|"RN-001,003\n006,007"| SV3
+    B4 -->|"Normalizar FRENTE\nFIELD MAPPING"| SV4
+    B5 -->|"Normalizar STATUS\nFIELD MAPPING"| SV4
+    B6 --> SV5
+    SV1 --> G1; SV2 --> G1; SV3 --> G1
+    SV4 --> G2
+    SV2 --> G3; SV3 --> G3
+    SV1 --> G4; SV2 --> G4; SV3 --> G4; SV4 --> G4
+
+    style ORIG fill:#fde8e8,stroke:#c0392b
+    style BRONZE fill:#f5e6d3,stroke:#d35400
+    style SILVER fill:#f0f0f0,stroke:#7f8c8d
+    style GOLD fill:#fef9e7,stroke:#f39c12
+    </div>
+  </div>
+</div>
+
+<div class="page page-break">
+  <h2 class="sub">6.3 Flujo de Integración Agenda Digital + Cluster → BD_REFERIDOS2</h2>
+  <div class="diagram-box">
+    <div class="diagram-title">Proceso de unificación y normalización de las dos agendas</div>
+    <div class="mermaid">
+flowchart TD
+    A1["📥 agenda_digital_raw\n5,030 registros\nFRENTE = canal digital"] --> N1
+    A2["📥 agenda_cluster_raw\n1,937 registros\nFRENTE = origen referido"] --> N2
+
+    N1["🔄 Normalización Digital\n• Renombrar campos divergentes\n• FRENTE_ORIGINAL → mantener\n• FRENTE_NORM → mapear a categorías estándar\n• STATUS → STATUS_0, STATUS_1\n• AGENDA = 'Digital'"]
+    N2["🔄 Normalización Cluster\n• Renombrar campos divergentes\n• FRENTE_ORIGINAL → mantener\n• FRENTE_NORM → ya estándar\n• STATUS → STATUS_0, STATUS_1\n• AGENDA = 'Cluster'"]
+
+    N1 --> U["🔗 UNION ALL\n(Silver: bd_referidos2)\n6,967 registros"]
+    N2 --> U
+
+    U --> D1["🔍 Deduplicación\nCOD_BUSCAR_REF\n= CONCAT(N°Doc, '_', AGENDA)"]
+    D1 --> E1["🔒 Enriquecimiento\n• COD_BUSCAR_REF → cruce con CERTIFICADOS\n• PERIODO_CREACION = YYYYMM(Fecha Registro)\n• ES_REFERIDO = (FRENTE_NORM = 'REFERIDO SCP')\n• STATUS_0, STATUS_1 ← tabla STATUS"]
+
+    E1 --> OUT["✅ bd_referidos2 Silver\nFuente única para dashboards"]
+
+    style A1 fill:#dce8f5,stroke:#2980b9
+    style A2 fill:#fef0e0,stroke:#e67e22
+    style N1 fill:#dce8f5,stroke:#2980b9
+    style N2 fill:#fef0e0,stroke:#e67e22
+    style U fill:#e8f8ee,stroke:#27ae60
+    style D1 fill:#f5eaf8,stroke:#8e44ad
+    style E1 fill:#f5eaf8,stroke:#8e44ad
+    style OUT fill:#e8f8ee,stroke:#27ae60
+    </div>
+  </div>
+
+  <h2 class="sub">6.4 Proceso de Auditoría y Trazabilidad</h2>
+  <div class="diagram-box">
+    <div class="diagram-title">Linaje de datos: de la fuente al registro Gold</div>
+    <div class="mermaid">
+flowchart LR
+    subgraph TRAZ["CAMPOS DE TRAZABILIDAD (por capa)"]
+        direction TB
+        T1["🟤 Bronze\n_source_file\n_ingest_ts\n_batch_id\n_source_system"]
+        T2["⚪ Silver\n_bronze_batch_id\n_transform_ts\n_rule_version\n_is_duplicate\n_tipo (REAL/PRUEBA)"]
+        T3["🟡 Gold\n_silver_key\n_gold_refresh_ts\n_report_period"]
+    end
+
+    subgraph AUDIT["CONTROLES DE CALIDAD"]
+        direction TB
+        Q1["Bronze\n• Nulos en campos clave\n• Formato de fecha\n• Cardinalidad mínima"]
+        Q2["Silver\n• TIPO REAL/PRUEBA balance\n• Duplicados residuales\n• FRENTE valores válidos\n• STATUS valores válidos"]
+        Q3["Gold\n• Totales cuadran\ncon Silver\n• Rango de fechas\n• KPIs dentro de\nbandas esperadas"]
+    end
+
+    T1 --> T2 --> T3
+    T1 -.->|"validar"| Q1
+    T2 -.->|"validar"| Q2
+    T3 -.->|"validar"| Q3
+
+    style TRAZ fill:#f8f9fa,stroke:#bdc3c7
+    style AUDIT fill:#fef9e7,stroke:#f39c12
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     7. REGLAS DE NEGOCIO
+══════════════════════════════════════════════════════ -->
+<div class="page page-break" id="s7">
+  <h1 class="section">7. Reglas de Negocio</h1>
+
+  <table class="table-red">
+    <thead><tr><th>ID</th><th>Nombre</th><th>Aplica a</th><th>Prioridad</th></tr></thead>
+    <tbody>
+      <tr><td>RN-001</td><td>Clasificación TIPO (REAL / PRUEBA)</td><td>Cotizaciones, Solicitudes, Certificados</td><td><span class="badge badge-red">Crítica</span></td></tr>
+      <tr><td>RN-002</td><td>Clave de deduplicación (FILTRO / NOMENCLATURA)</td><td>Cotizaciones, Solicitudes</td><td><span class="badge badge-red">Crítica</span></td></tr>
+      <tr><td>RN-003</td><td>Resolución de jerarquía de ejecutivos</td><td>Cotizaciones, Solicitudes, Certificados</td><td><span class="badge badge-red">Crítica</span></td></tr>
+      <tr><td>RN-004</td><td>Clasificación de estados (Estado2 / Estado3 / Estado4)</td><td>Solicitudes</td><td><span class="badge badge-orange">Alta</span></td></tr>
+      <tr><td>RN-005</td><td>Flags de hitos del proceso (7 flags binarios)</td><td>Solicitudes</td><td><span class="badge badge-orange">Alta</span></td></tr>
+      <tr><td>RN-006</td><td>Certificado válido y comisión CIA</td><td>Certificados</td><td><span class="badge badge-orange">Alta</span></td></tr>
+      <tr><td>RN-007</td><td>Dominio FRENTE y clasificación de referidos</td><td>Agenda Comercial, Certificados</td><td><span class="badge badge-orange">Alta</span></td></tr>
+      <tr><td><strong>RN-008</strong></td><td><strong>Normalización FRENTE Digital → dominio estándar</strong></td><td><strong>Agenda Digital (nuevo v3.0)</strong></td><td><span class="badge badge-red">Crítica</span></td></tr>
+      <tr><td><strong>RN-009</strong></td><td><strong>Normalización STATUS Digital/Cluster → STATUS_0 / STATUS_1</strong></td><td><strong>BD_REFERIDOS2 (nuevo v3.0)</strong></td><td><span class="badge badge-red">Crítica</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub2">RN-008 — Normalización FRENTE Digital (nueva regla)</h3>
+  <div class="callout callout-orange">
+    <div class="callout-title">Hallazgo v3.0: FRENTE en Digital tiene semántica de canal, no de origen de referido</div>
+    <p>En la Agenda Digital, el campo FRENTE registra el canal de captación digital (SCP SND, NEOAUTO WEB, REDES - FACEBOOK…). Estos valores no existen en la tabla STATUS ni en la Agenda Cluster. Para unificar en BD_REFERIDOS2 se requiere:</p>
+    <ol style="margin-top:10px; padding-left:20px; font-size:10pt;">
+      <li>Conservar el valor original en <strong>FRENTE_ORIGINAL</strong></li>
+      <li>Calcular <strong>FRENTE_NORM</strong> con el mapeo: SCP SND → CANAL DIGITAL SND · SCP AND → CANAL DIGITAL AND · NEOAUTO WEB/GMAIL → ALIANZA NEOAUTO · REDES-FACEBOOK/TIKTOK → CANAL REDES SOCIALES</li>
+      <li>El campo <strong>AGENDA = 'Digital'</strong> ya permite distinguir la fuente al consultar BD_REFERIDOS2</li>
+    </ol>
+  </div>
+
+  <h3 class="sub2">RN-009 — Normalización STATUS (nueva regla)</h3>
+  <table class="table-blue">
+    <thead><tr><th>STATUS literal (Digital / Cluster)</th><th>STATUS_0 (nivel macro)</th><th>STATUS_1 (nivel detalle)</th></tr></thead>
+    <tbody>
+      <tr><td>ASOCIADO</td><td>SI_CONTACTO</td><td>SC_ASOCIADO</td></tr>
+      <tr><td>SI CONTACTO en Gestión</td><td>SI_CONTACTO</td><td>SC_EN_GESTIÓN</td></tr>
+      <tr><td>SI CONTACTO Volver a llamar</td><td>SI_CONTACTO</td><td>SC_VOLVER_A_LLAMAR</td></tr>
+      <tr><td>SI CONTACTO No Desea</td><td>SI_CONTACTO</td><td>SC_NO_DESEA</td></tr>
+      <tr><td>NO CONTACTO Telf No Contesta</td><td>NO_CONTACTO</td><td>NC_TELF_NO_CONTESTA</td></tr>
+      <tr><td>NO CONTACTO No corresponde</td><td>NO_CONTACTO</td><td>NC_NO_CORRESPONDE</td></tr>
+      <tr><td>SIN GESTION / Sin Gestión_Sin_Consentimiento</td><td>SIN_GESTIÓN</td><td>SIN_GESTIÓN</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     8. PROCESO INTEGRACIÓN BD_REFERIDOS2
+══════════════════════════════════════════════════════ -->
+<div class="page page-break" id="s8">
+  <h1 class="section">8. Proceso de Integración BD_REFERIDOS2</h1>
+
+  <h2 class="sub">8.1 Mapeo de campos Digital → BD_REFERIDOS2 (Silver)</h2>
+  <table class="table-blue">
+    <thead><tr><th>Campo destino Silver</th><th>Fuente Digital</th><th>Fuente Cluster</th><th>Transformación requerida</th></tr></thead>
+    <tbody>
+      <tr><td>AGENDA</td><td>'Digital'</td><td>'Cluster'</td><td>Literal fijo por fuente</td></tr>
+      <tr><td>FRENTE_ORIGINAL</td><td>FRENTE</td><td>FRENTE</td><td>Sin transformación</td></tr>
+      <tr><td>FRENTE_NORM</td><td>FRENTE → mapeo RN-008</td><td>FRENTE</td><td>RN-008 solo en Digital</td></tr>
+      <tr><td>VISOR_DECISION</td><td>VISOR - Resultado</td><td>Decisión Riesgos</td><td>COALESCE(Digital, Cluster)</td></tr>
+      <tr><td>STATUS_OPERACION</td><td>Status</td><td>Status</td><td>Sin transformación</td></tr>
+      <tr><td>STATUS_0</td><td>Status → RN-009</td><td>Status → RN-009</td><td>Tabla de mapeo RN-009</td></tr>
+      <tr><td>STATUS_1</td><td>Status → RN-009</td><td>Status → RN-009</td><td>Tabla de mapeo RN-009</td></tr>
+      <tr><td>COMENTARIO</td><td>Comentarios</td><td>Comentario / Seguimiento</td><td>COALESCE</td></tr>
+      <tr><td>INTENTOS_CONTACTO</td><td>Intentos de Contacto</td><td>Intentos Contacto</td><td>COALESCE</td></tr>
+      <tr><td>COACH_SFC</td><td>—</td><td>Coach SFC</td><td>NULL en Digital</td></tr>
+      <tr><td>JEFATURA</td><td>Jefatura</td><td>—</td><td>NULL en Cluster</td></tr>
+      <tr><td>SUPERVISOR_SCP</td><td>—</td><td>Supervisor SCP</td><td>NULL en Digital</td></tr>
+      <tr><td>CONCESIONARIO</td><td>Concesionario / Punto de Venta</td><td>Concesionario</td><td>Trim y normalización de nombre</td></tr>
+      <tr><td>MARCA</td><td>Marca</td><td>Marca de Vehículo</td><td>COALESCE + normalización</td></tr>
+      <tr><td>LIDER_CANAL</td><td>AGENCIA</td><td>LIDER CANAL</td><td>COALESCE</td></tr>
+      <tr><td>N_DOC_CONYUGE</td><td>N° Doc Cónyuge / Conviviente</td><td>DNI Cónyuge / Conviviente</td><td>COALESCE</td></tr>
+      <tr><td>COD_BUSCAR_REF</td><td>CONCAT(N°Doc,'_','D')</td><td>CONCAT(N°Doc,'_','C')</td><td>Clave única por fuente</td></tr>
+      <tr><td>PERIODO_CREACION</td><td>DATE_FORMAT(Fecha Registro,'YYYYMM')</td><td>DATE_FORMAT(Fecha Registro,'YYYYMM')</td><td>Derivado</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub">8.2 Campos exclusivos de Digital a preservar en Silver</h2>
+  <table>
+    <thead><tr><th>Campo</th><th>Descripción</th><th>Acción en Silver</th></tr></thead>
+    <tbody>
+      <tr><td>Alianza</td><td>Grupo de concesionario aliado</td><td>Mantener; NULL en Cluster</td></tr>
+      <tr><td>Plaza</td><td>Plaza geográfica de captación</td><td>Mantener; NULL en Cluster</td></tr>
+      <tr><td>N° SOLICITUD SANTI</td><td>Nro. de solicitud en SANTO registrado desde la agenda</td><td>Mantener; útil para cruce directo</td></tr>
+      <tr><td>CUOTA INICIAL</td><td>Monto de cuota inicial declarado</td><td>Mantener; NULL en Cluster</td></tr>
+      <tr><td>Consentimiento Confirmado</td><td>Confirmación de consentimiento de datos personales</td><td>Mantener; PII control</td></tr>
+      <tr><td>ID AGENDA ANTERIOR</td><td>ID en versión anterior de la lista</td><td>Mantener para trazabilidad histórica</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     9. REQUERIMIENTOS ACTUALIZADOS
+══════════════════════════════════════════════════════ -->
+<div class="page page-break" id="s9">
+  <h1 class="section">9. Requerimientos Funcionales Actualizados</h1>
+
+  <h2 class="sub">9.1 Ingesta (Bronze)</h2>
+  <table class="table-red">
+    <thead><tr><th>ID</th><th>Requerimiento</th><th>Prior.</th><th>Nuevo v3</th></tr></thead>
+    <tbody>
+      <tr><td>RF-01</td><td>Ingerir Cotizaciones, Solicitudes, Certificados de SANTO sin transformación, con metadata</td><td><span class="badge badge-red">1</span></td><td></td></tr>
+      <tr><td>RF-02</td><td>Ingerir Agenda Digital desde SharePoint (Lists/Canal Digital SFC Nueva Agenda V2) vía API</td><td><span class="badge badge-red">1</span></td><td><span class="badge badge-blue">✓</span></td></tr>
+      <tr><td>RF-03</td><td>Ingerir Agenda Cluster desde SharePoint (Lists/Cluster Agenda Online V2) vía API</td><td><span class="badge badge-red">1</span></td><td><span class="badge badge-blue">✓</span></td></tr>
+      <tr><td>RF-04</td><td>Agregar metadata: _source_file, _ingest_ts, _batch_id, _source_system a cada registro ingerido</td><td><span class="badge badge-red">1</span></td><td></td></tr>
+      <tr><td>RF-05</td><td>Ingerir tablas de referencia: BD Lista Ejecutivos, BD Alianzas, STATUS, BD Estado Solicitud, Dias_Utiles, BD_Tipo</td><td><span class="badge badge-orange">2</span></td><td></td></tr>
+      <tr><td>RF-06</td><td>Frecuencia mínima diaria. Datos de Agenda disponibles antes de las 06:00 AM</td><td><span class="badge badge-orange">2</span></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub">9.2 Transformación (Silver)</h2>
+  <table class="table-blue">
+    <thead><tr><th>ID</th><th>Requerimiento</th><th>Prior.</th><th>Nuevo v3</th></tr></thead>
+    <tbody>
+      <tr><td>RT-01</td><td>Clasificación TIPO (REAL/PRUEBA) — RN-001</td><td><span class="badge badge-red">1</span></td><td></td></tr>
+      <tr><td>RT-02</td><td>Deduplicación FILTRO/NOMENCLATURA — RN-002</td><td><span class="badge badge-red">1</span></td><td></td></tr>
+      <tr><td>RT-03</td><td>Resolver jerarquía ejecutivos por join con BD Lista Ejecutivos — RN-003</td><td><span class="badge badge-red">1</span></td><td></td></tr>
+      <tr><td>RT-04</td><td>Descomponer fechas: AÑO, MES, DIA, PERIODO, SEMANA</td><td><span class="badge badge-red">1</span></td><td></td></tr>
+      <tr><td>RT-05</td><td>Normalizar FRENTE Digital con mapeo RN-008: canal digital → categoría estándar</td><td><span class="badge badge-red">1</span></td><td><span class="badge badge-blue">✓</span></td></tr>
+      <tr><td>RT-06</td><td>Normalizar STATUS de ambas agendas → STATUS_0 y STATUS_1 con tabla RN-009</td><td><span class="badge badge-red">1</span></td><td><span class="badge badge-blue">✓</span></td></tr>
+      <tr><td>RT-07</td><td>Unificar Digital + Cluster en bd_referidos2 Silver con campo AGENDA y mapeo de campos divergentes</td><td><span class="badge badge-red">1</span></td><td><span class="badge badge-blue">✓</span></td></tr>
+      <tr><td>RT-08</td><td>Clasificar estados Solicitudes en tres niveles — RN-004</td><td><span class="badge badge-orange">2</span></td><td></td></tr>
+      <tr><td>RT-09</td><td>Calcular 7 flags de hitos del proceso — RN-005</td><td><span class="badge badge-orange">2</span></td><td></td></tr>
+      <tr><td>RT-10</td><td>Implementar CERTIFICADO_VALIDO? y % CIA — RN-006</td><td><span class="badge badge-orange">2</span></td><td></td></tr>
+      <tr><td>RT-11</td><td>Calcular FRENTE en Certificados por lookup desde bd_referidos2 — RN-007</td><td><span class="badge badge-orange">2</span></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub">9.3 Capa Gold (Reportes)</h2>
+  <table class="table-green">
+    <thead><tr><th>ID</th><th>Requerimiento</th><th>Dashboard</th><th>Prior.</th></tr></thead>
+    <tbody>
+      <tr><td>RG-01</td><td>Tabla de certificados activos por mes, equipo y tipo</td><td>Resumen Certificados</td><td><span class="badge badge-red">1</span></td></tr>
+      <tr><td>RG-02</td><td>Tabla de seguimiento diario de ventas SCP/Digital</td><td>Resumen Certificados</td><td><span class="badge badge-red">1</span></td></tr>
+      <tr><td>RG-03</td><td>Tabla de referidos con métricas STATUS_0/STATUS_1 por AGENDA y FRENTE_NORM</td><td>Total Referidos SCP</td><td><span class="badge badge-red">1</span></td></tr>
+      <tr><td>RG-04</td><td>Serie temporal diaria de referidos con desglose por STATUS</td><td>Total Referidos SCP</td><td><span class="badge badge-orange">2</span></td></tr>
+      <tr><td>RG-05</td><td>Dashboards G10, G11, G12: solicitudes, rankings, días cierre</td><td>Grupos</td><td><span class="badge badge-orange">2</span></td></tr>
+      <tr><td>RG-06</td><td>Funnel de conversión: referidos → cotizaciones → solicitudes → certificados</td><td>Nuevo</td><td><span class="badge badge-yellow">3</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     10. AUDITORÍA Y TRAZABILIDAD
+══════════════════════════════════════════════════════ -->
+<div class="page page-break" id="s10">
+  <h1 class="section">10. Auditoría y Trazabilidad</h1>
+
+  <h2 class="sub">10.1 Modelo de trazabilidad por capa</h2>
+  <table class="table-red">
+    <thead><tr><th>Capa</th><th>Campo de trazabilidad</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="4"><strong>🟤 Bronze</strong></td><td>_source_file</td><td>Nombre del archivo origen (ej: DIGITAL_NUEVA_AGENDA_ONLINE_20260420.xlsx)</td></tr>
+      <tr><td>_ingest_ts</td><td>Timestamp de ingesta (UTC)</td></tr>
+      <tr><td>_batch_id</td><td>ID único del batch de carga</td></tr>
+      <tr><td>_source_system</td><td>SANTO | AGENDA_DIGITAL | AGENDA_CLUSTER</td></tr>
+      <tr><td rowspan="5"><strong>⚪ Silver</strong></td><td>_bronze_batch_id</td><td>Referencia al batch Bronze que originó el registro</td></tr>
+      <tr><td>_transform_ts</td><td>Timestamp de la transformación Silver</td></tr>
+      <tr><td>_rule_version</td><td>Versión del conjunto de reglas de negocio aplicadas</td></tr>
+      <tr><td>_is_duplicate</td><td>TRUE si fue marcado como duplicado (SE REPITE?)</td></tr>
+      <tr><td>_tipo</td><td>REAL / PRUEBA (RN-001)</td></tr>
+      <tr><td rowspan="3"><strong>🟡 Gold</strong></td><td>_silver_key</td><td>Clave primaria Silver que originó el registro Gold</td></tr>
+      <tr><td>_gold_refresh_ts</td><td>Timestamp del último refresco</td></tr>
+      <tr><td>_report_period</td><td>Periodo YYYYMM del reporte</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub">10.2 Controles de calidad por capa</h2>
+  <table>
+    <thead><tr><th>Capa</th><th>Control</th><th>Tipo</th><th>Acción si falla</th></tr></thead>
+    <tbody>
+      <tr><td>Bronze</td><td>N° Doc Identidad no nulo en &gt;95% de registros</td><td>Completitud</td><td>Alerta + log</td></tr>
+      <tr><td>Bronze</td><td>Fecha Registro en rango válido (2020–hoy)</td><td>Rango</td><td>Alerta + cuarentena</td></tr>
+      <tr><td>Bronze</td><td>Cardinalidad FRENTE: máximo 15 valores únicos por agenda</td><td>Cardinalidad</td><td>Alerta si nuevo valor</td></tr>
+      <tr><td>Silver</td><td>Registros TIPO=REAL &gt; 90% del total</td><td>Balance</td><td>Alerta</td></tr>
+      <tr><td>Silver</td><td>Duplicados &lt; 5% del total de referidos</td><td>Unicidad</td><td>Investigar</td></tr>
+      <tr><td>Silver</td><td>STATUS_0 solo valores: SI_CONTACTO, NO_CONTACTO, SIN_GESTIÓN</td><td>Dominio</td><td>Rechazar registro</td></tr>
+      <tr><td>Silver</td><td>AGENDA solo valores: 'Digital', 'Cluster'</td><td>Dominio</td><td>Rechazar registro</td></tr>
+      <tr><td>Gold</td><td>Total referidos Gold = Total Silver TIPO=REAL</td><td>Reconciliación</td><td>Detener pipeline</td></tr>
+      <tr><td>Gold</td><td>KPI ASOCIADO Gold ≥ valor del día anterior</td><td>Monotonía</td><td>Alerta</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub">10.3 Política de PII (datos personales)</h2>
+  <table class="table-orange">
+    <thead><tr><th>Campo PII</th><th>Clasificación</th><th>Acción en Silver/Gold</th></tr></thead>
+    <tbody>
+      <tr><td>N° Doc Identidad, DNI Cónyuge</td><td>PII — Identificador</td><td>Hash SHA-256 en Gold; acceso restringido en Silver</td></tr>
+      <tr><td>Nombre Prospecto, Nombre Cónyuge</td><td>PII — Nombre</td><td>Enmascarar en Gold público; visible solo en capa analítica restringida</td></tr>
+      <tr><td>Celular Prospecto</td><td>PII — Contacto</td><td>Enmascarar últimos 4 dígitos en Gold</td></tr>
+      <tr><td>Mail de Prospecto</td><td>PII — Contacto</td><td>Enmascarar dominio en Gold</td></tr>
+      <tr><td>Correo ejecutivo (BD Lista Ejecutivos)</td><td>PII — Corporativo</td><td>Sin enmascaramiento; acceso por rol</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     11. GAPS Y RIESGOS
+══════════════════════════════════════════════════════ -->
+<div class="page page-break" id="s11">
+  <h1 class="section">11. Gaps y Riesgos Identificados</h1>
+
+  <table>
+    <thead><tr><th>ID</th><th>Gap / Riesgo</th><th>Impacto</th><th>Severidad</th><th>Mitigación</th></tr></thead>
+    <tbody>
+      <tr><td>G-01</td><td>FRENTE tiene semánticas distintas entre Digital y Cluster (RN-008)</td><td>Imposible comparar canales directamente sin normalización</td><td><span class="badge badge-red">Alta</span></td><td>Implementar tabla de mapeo FRENTE_NORM y conservar original</td></tr>
+      <tr><td>G-02</td><td>Cluster usa la lista SharePoint "prueba" como source URL</td><td>Riesgo de que sea una lista temporal/test, no la lista de producción</td><td><span class="badge badge-red">Alta</span></td><td>Confirmar con TI que la lista "prueba" es la de producción del Cluster</td></tr>
+      <tr><td>G-03</td><td>Digital tiene 11 campos que Cluster no tiene</td><td>Pérdida de datos al unificar si no se gestiona correctamente</td><td><span class="badge badge-orange">Media</span></td><td>Campo AGENDA + NULLs explícitos para campos exclusivos de cada fuente</td></tr>
+      <tr><td>G-04</td><td>38 estados de Solicitudes no documentados completamente</td><td>Imposible implementar RN-004 sin tabla de mapeo validada</td><td><span class="badge badge-red">Alta</span></td><td>Sesión de levantamiento con equipo de negocio (P-03)</td></tr>
+      <tr><td>G-05</td><td>BD Lista Ejecutivos tiene Columna1 y Columna2 sin nombre</td><td>No se puede implementar RN-003 completamente</td><td><span class="badge badge-orange">Media</span></td><td>Sesión con Softek para documentar esos campos (P-02)</td></tr>
+      <tr><td>G-06</td><td>Total Digital+Cluster (6,967) es menor que lo reportado en feb/26 (8,209)</td><td>Posible discrepancia por rango de fechas o filtros diferentes</td><td><span class="badge badge-orange">Media</span></td><td>Verificar criterios de filtro del Dashboard consolidado vs exportación directa</td></tr>
+      <tr><td>G-07</td><td>Consentimiento Confirmado solo en Digital, sin equivalente en Cluster</td><td>Riesgo de cumplimiento para registros de Cluster</td><td><span class="badge badge-orange">Media</span></td><td>Confirmar con área legal si Cluster requiere campo de consentimiento</td></tr>
+      <tr><td>G-08</td><td>Acceso automatizado a SANTO no negociado con Softek</td><td>Sin pipeline de ingesta automatizado hasta resolver</td><td><span class="badge badge-red">Crítica</span></td><td>Negociación TI SCP + Softek (P-01)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     12. PENDIENTES
+══════════════════════════════════════════════════════ -->
+<div class="page page-break" id="s12">
+  <h1 class="section">12. Pendientes Críticos</h1>
+
+  <table class="table-red">
+    <thead><tr><th>#</th><th>Acción</th><th>Responsable</th><th>Prioridad</th><th>Estado</th></tr></thead>
+    <tbody>
+      <tr><td>P-01</td><td>Negociar acceso automatizado a SANTO con Softek para el pipeline de ingesta</td><td>TI SCP + Softek</td><td><span class="badge badge-red">Crítica</span></td><td><span class="badge badge-gray">Abierto</span></td></tr>
+      <tr><td>P-02</td><td>Confirmar campos Columna1/Columna2 de BD Lista Ejecutivos y reglas de canal/coach</td><td>Equipo + Softek</td><td><span class="badge badge-red">Alta</span></td><td><span class="badge badge-gray">Abierto</span></td></tr>
+      <tr><td>P-03</td><td>Documentar tabla de mapeo completa: 38 estados → Estado2/Estado3/Estado4</td><td>Equipo + Usuarios</td><td><span class="badge badge-red">Alta</span></td><td><span class="badge badge-gray">Abierto</span></td></tr>
+      <tr><td>P-04</td><td>Confirmar herramienta BI destino (Power BI u otra)</td><td>TI SCP</td><td><span class="badge badge-red">Alta</span></td><td><span class="badge badge-gray">Abierto</span></td></tr>
+      <tr><td><strong>P-05</strong></td><td><strong>Confirmar con TI que la lista SharePoint "prueba" del Cluster es la lista de producción (gap G-02)</strong></td><td>TI SCP</td><td><span class="badge badge-red">Crítica</span></td><td><span class="badge badge-gray">Abierto</span></td></tr>
+      <tr><td><strong>P-06</strong></td><td><strong>Definir y documentar tabla de mapeo FRENTE Digital → FRENTE_NORM (RN-008)</strong></td><td>Equipo + Usuarios</td><td><span class="badge badge-red">Alta</span></td><td><span class="badge badge-gray">Abierto</span></td></tr>
+      <tr><td><strong>P-07</strong></td><td><strong>Investigar discrepancia: 6,967 (export abr/26) vs 8,209 (Dashboard feb/26)</strong></td><td>Equipo</td><td><span class="badge badge-orange">Media</span></td><td><span class="badge badge-gray">Abierto</span></td></tr>
+      <tr><td>P-08</td><td>Elaborar STM campo a campo para las tres tablas SANTO principales</td><td>Equipo</td><td><span class="badge badge-red">Alta</span></td><td><span class="badge badge-gray">Abierto</span></td></tr>
+      <tr><td>P-09</td><td>Levantar tablas TD, TD_CERT y GUIA_CAMP de SANTO</td><td>Equipo + Softek</td><td><span class="badge badge-orange">Media</span></td><td><span class="badge badge-gray">Abierto</span></td></tr>
+      <tr><td>P-10</td><td>Definir modelo lógico de datos (ERD) en Databricks</td><td>Equipo</td><td><span class="badge badge-orange">Media</span></td><td><span class="badge badge-gray">Abierto</span></td></tr>
+      <tr><td>P-11</td><td>Elaborar Project Charter formal con cronograma, presupuesto y RACI</td><td>PM</td><td><span class="badge badge-red">Alta</span></td><td><span class="badge badge-gray">Abierto</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     13. GLOSARIO
+══════════════════════════════════════════════════════ -->
+<div class="page page-break" id="s13">
+  <h1 class="section">13. Glosario</h1>
+  <table>
+    <thead><tr><th>Término</th><th>Definición</th></tr></thead>
+    <tbody>
+      <tr><td>Certificado</td><td>Contrato de fondo colectivo vehicular suscrito por un asociado</td></tr>
+      <tr><td>Asociado</td><td>Cliente que ha contratado un certificado</td></tr>
+      <tr><td>Prospecto</td><td>Persona con interés en el producto, aún sin contratar</td></tr>
+      <tr><td>FRENTE</td><td>Campo que clasifica el origen comercial de un prospecto. Semántica distinta en Digital (canal) vs Cluster (origen referido)</td></tr>
+      <tr><td>FRENTE_NORM</td><td>Versión normalizada de FRENTE para unificación en BD_REFERIDOS2 Silver</td></tr>
+      <tr><td>AGENDA</td><td>Campo calculado que distingue la fuente: 'Digital' o 'Cluster'</td></tr>
+      <tr><td>STATUS_0</td><td>Clasificación macro del status: SI_CONTACTO, NO_CONTACTO, SIN_GESTIÓN</td></tr>
+      <tr><td>STATUS_1</td><td>Clasificación detalle del status: SC_EN_GESTIÓN, NC_TELF_NO_CONTESTA, etc.</td></tr>
+      <tr><td>TIPO</td><td>Clasificación REAL / PRUEBA de cada registro (RN-001)</td></tr>
+      <tr><td>BD_REFERIDOS2</td><td>Tabla Silver unificada de ambas agendas comerciales</td></tr>
+      <tr><td>SCP SND</td><td>Canal digital SND (Santander Digital) de Santander Consumer Perú</td></tr>
+      <tr><td>SCP AND</td><td>Canal digital AND de Santander Consumer Perú</td></tr>
+      <tr><td>CIA</td><td>Comisión de Incentivo Anual</td></tr>
+      <tr><td>WC</td><td>Welcome Call — llamada de bienvenida al asociado (estado 38)</td></tr>
+      <tr><td>SANTO / Softek</td><td>Sistema core de Fondos Colectivos administrado por Softek (on-premise)</td></tr>
+      <tr><td>Bronze / Silver / Gold</td><td>Capas de la arquitectura Medallion en Databricks</td></tr>
+      <tr><td>STM</td><td>Source-to-Target Mapping — plantilla de transformación campo a campo</td></tr>
+      <tr><td>PII</td><td>Personally Identifiable Information — datos personales identificables</td></tr>
+      <tr><td>Unity Catalog</td><td>Módulo de gobernanza y linaje de Databricks</td></tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <p>BRD Fondos Colectivos v3.0 · Banco Santander Consumer Perú · Abril 2026 · <strong>CONFIDENCIAL</strong></p>
+    <p style="margin-top:4px;">Para convertir a PDF: abrir en navegador → Ctrl+P → Guardar como PDF · Orientación: Vertical · Márgenes: Mínimos</p>
+  </div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#2980b9',
+      primaryTextColor: '#fff',
+      primaryBorderColor: '#1a5276',
+      lineColor: '#7f8c8d',
+      secondaryColor: '#ecf0f1',
+      tertiaryColor: '#f8f9fa'
+    },
+    flowchart: { curve: 'basis', padding: 20 }
+  });
+</script>
+</body>
+</html>

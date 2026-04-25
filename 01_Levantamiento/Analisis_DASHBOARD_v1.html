@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis Técnico — Hoja DASHBOARD</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 11pt;
+    color: #1a1a1a;
+    background: #fff;
+    padding: 0;
+  }
+
+  /* ── PORTADA ─────────────────────────────────── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px 72px;
+    border-left: 8px solid #cc0000;
+    page-break-after: always;
+  }
+  .cover .tag {
+    font-size: 9pt;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #cc0000;
+    margin-bottom: 24px;
+  }
+  .cover h1 {
+    font-size: 28pt;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .cover h2 {
+    font-size: 14pt;
+    font-weight: 400;
+    color: #555;
+    margin-bottom: 40px;
+  }
+  .cover .meta-grid {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 8px 16px;
+    border-top: 1px solid #ddd;
+    padding-top: 28px;
+    width: 100%;
+    max-width: 540px;
+  }
+  .cover .meta-grid .label {
+    font-weight: 600;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+    padding-top: 2px;
+  }
+  .cover .meta-grid .value {
+    font-size: 10pt;
+    color: #1a1a1a;
+  }
+  .cover .badge {
+    margin-top: 40px;
+    display: inline-block;
+    background: #fff0f0;
+    color: #cc0000;
+    border: 1px solid #cc0000;
+    border-radius: 4px;
+    padding: 4px 14px;
+    font-size: 9pt;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ── CONTENIDO ───────────────────────────────── */
+  .content {
+    padding: 48px 72px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  h1 { font-size: 18pt; color: #cc0000; margin: 36px 0 10px; border-bottom: 2px solid #cc0000; padding-bottom: 6px; }
+  h2 { font-size: 13pt; color: #1a1a1a; margin: 28px 0 8px; border-left: 4px solid #cc0000; padding-left: 10px; }
+  h3 { font-size: 11pt; color: #333; margin: 20px 0 6px; }
+
+  p { margin: 8px 0; line-height: 1.6; }
+
+  /* ── TABLAS ──────────────────────────────────── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 20px;
+    font-size: 10pt;
+  }
+  th {
+    background: #cc0000;
+    color: #fff;
+    text-align: left;
+    padding: 7px 10px;
+    font-weight: 600;
+    font-size: 9pt;
+    letter-spacing: 0.3px;
+  }
+  td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #e8e8e8;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tr:nth-child(even) td { background: #fafafa; }
+  tr:hover td { background: #fff5f5; }
+
+  /* ── CALLOUTS ────────────────────────────────── */
+  blockquote {
+    border-left: 4px solid #f0a0a0;
+    background: #fff8f8;
+    padding: 10px 16px;
+    margin: 12px 0;
+    font-size: 10pt;
+    color: #555;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .callout-key {
+    background: #fff8e6;
+    border-left: 4px solid #f5a623;
+    padding: 10px 16px;
+    margin: 12px 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 10pt;
+  }
+  .callout-key strong { color: #c47a00; }
+
+  /* ── CÓDIGO / TRAZABILIDAD ───────────────────── */
+  pre {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-left: 4px solid #cc0000;
+    border-radius: 4px;
+    padding: 14px 16px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 9.5pt;
+    line-height: 1.6;
+    overflow-x: auto;
+    margin: 14px 0;
+    white-space: pre;
+  }
+  code {
+    background: #f0f0f0;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 9.5pt;
+    color: #c00;
+  }
+
+  /* ── BADGES DE ESTADO ────────────────────────── */
+  .badge-analizado {
+    display: inline-block;
+    background: #e6f4ea;
+    color: #1e7e34;
+    border: 1px solid #c3e6cb;
+    border-radius: 3px;
+    padding: 1px 8px;
+    font-size: 8.5pt;
+    font-weight: 600;
+  }
+  .badge-excluido {
+    display: inline-block;
+    background: #f8f9fa;
+    color: #888;
+    border: 1px solid #dee2e6;
+    border-radius: 3px;
+    padding: 1px 8px;
+    font-size: 8.5pt;
+  }
+
+  /* ── SEPARADORES ─────────────────────────────── */
+  hr { border: none; border-top: 1px solid #e0e0e0; margin: 28px 0; }
+
+  /* ── LISTA ───────────────────────────────────── */
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 4px 0; line-height: 1.6; }
+
+  /* ── PRINT ───────────────────────────────────── */
+  @media print {
+    body { font-size: 10pt; }
+    .cover { min-height: 100vh; padding: 50px 60px; }
+    .content { padding: 36px 60px; }
+    h1 { font-size: 15pt; }
+    h2 { font-size: 12pt; }
+    table { font-size: 9pt; }
+    pre { font-size: 8.5pt; }
+    tr { page-break-inside: avoid; }
+    h2, h3 { page-break-after: avoid; }
+    .cover { page-break-after: always; }
+    pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ PORTADA ══════════════════════════════════════════ -->
+<div class="cover">
+  <div class="tag">Fondos Colectivos — Banco Santander Consumer Perú</div>
+  <h1>Análisis Técnico<br>Hoja DASHBOARD</h1>
+  <h2>Trazabilidad de Gráficos y Tablas Dinámicas</h2>
+  <div class="meta-grid">
+    <span class="label">Documento</span>
+    <span class="value">Análisis DASHBOARD v1.0</span>
+    <span class="label">Fuente analizada</span>
+    <span class="value">20260228_SFC_Dashboard.xlsx → hoja DASHBOARD</span>
+    <span class="label">Fecha</span>
+    <span class="value">Abril 2026</span>
+    <span class="label">Versión</span>
+    <span class="value">1.0 — Borrador</span>
+    <span class="label">Autor</span>
+    <span class="value">Equipo de Datos — Proyecto Migración</span>
+  </div>
+  <div class="badge">Confidencial</div>
+</div>
+
+<!-- ══ CONTENIDO ════════════════════════════════════════ -->
+<div class="content">
+
+<!-- 1. Resumen ejecutivo -->
+<h1>1. Resumen ejecutivo</h1>
+
+<p>La hoja <strong>DASHBOARD</strong> actúa como la capa de visualización del libro Excel. Contiene <strong>10 objetos gráficos</strong> y <strong>11 tablas dinámicas</strong> que consumen datos de dos fuentes principales dentro del mismo libro:</p>
+
+<table>
+  <thead><tr><th>Fuente interna</th><th>Hoja TD</th><th>Contenido</th></tr></thead>
+  <tbody>
+    <tr><td><code>TD</code></td><td>Ventas / Certificados</td><td>Datos provenientes de SANTO — tabla CERTIFICADOS (filas 267–281 = tabla resumen mensual)</td></tr>
+    <tr><td><code>TD_REFERIDOS2</code></td><td>Referidos / Prospectos</td><td>Datos de BD_REFERIDOS2 + Agendas Comerciales (Digital y Cluster)</td></tr>
+  </tbody>
+</table>
+
+<blockquote><strong>Criterio de exclusión aplicado:</strong> Los 5 gráficos vinculados a <code>TD_REFERIDOS2</code> quedan fuera del alcance de este análisis (corresponden al módulo Referidos / Prospectos).</blockquote>
+
+<div class="callout-key">
+  <strong>Hallazgo clave:</strong> Todos los gráficos de Ventas aplican el filtro <code>TIPO = "REAL"</code> (RN-001) a nivel de tabla dinámica. El campo <code>CANAL</code> (RN-003) es el pivote universal de segmentación comercial.
+</div>
+
+<hr>
+
+<!-- 2. Inventario de gráficos -->
+<h1>2. Inventario completo de gráficos — DASHBOARD</h1>
+
+<table>
+  <thead><tr><th>#</th><th>Gráfico ID</th><th>Fuente pivot</th><th>Módulo</th><th>Estado</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Gráfico 131</td><td><code>TD</code> (tabla manual comparativo)</td><td>VENTAS</td><td><span class="badge-analizado">Analizado</span></td></tr>
+    <tr><td>2</td><td>Gráfico 5</td><td><code>TD</code></td><td>VENTAS</td><td><span class="badge-analizado">Analizado</span></td></tr>
+    <tr><td>3</td><td>Gráfico 7</td><td><code>TD</code></td><td>VENTAS</td><td><span class="badge-analizado">Analizado</span></td></tr>
+    <tr><td>4</td><td>Gráfico 44</td><td><code>TD</code></td><td>VENTAS</td><td><span class="badge-analizado">Analizado</span></td></tr>
+    <tr><td>5</td><td>Gráfico 89</td><td><code>TD</code> (filas 267–281, col. M = VENTAS)</td><td>VENTAS</td><td><span class="badge-analizado">Analizado</span></td></tr>
+    <tr><td>6</td><td>Gráfico 28</td><td><code>TD_REFERIDOS2</code></td><td>REFERIDOS</td><td><span class="badge-excluido">Excluido</span></td></tr>
+    <tr><td>7</td><td>Gráfico 29</td><td><code>TD_REFERIDOS2</code></td><td>REFERIDOS</td><td><span class="badge-excluido">Excluido</span></td></tr>
+    <tr><td>8</td><td>Gráfico 45</td><td><code>TD_REFERIDOS2</code></td><td>REFERIDOS</td><td><span class="badge-excluido">Excluido</span></td></tr>
+    <tr><td>9</td><td>Gráfico 60</td><td><code>TD_REFERIDOS2</code></td><td>REFERIDOS</td><td><span class="badge-excluido">Excluido</span></td></tr>
+    <tr><td>10</td><td>Gráfico 108</td><td><code>TD_REFERIDOS2</code></td><td>REFERIDOS</td><td><span class="badge-excluido">Excluido</span></td></tr>
+  </tbody>
+</table>
+
+<blockquote><strong>Método de trazabilidad:</strong> Extracción del OOXML interno del libro Excel vía <code>drawing1.xml</code> → <code>drawing1.xml.rels</code> → <code>chartN.xml</code> → campo <code>&lt;c:pivotSource&gt;</code> → <code>pivotTableN.xml</code> → <code>pivotCacheDefinitionN.xml</code></blockquote>
+
+<hr>
+
+<!-- 3. Análisis detallado -->
+<h1>3. Análisis detallado — Gráficos VENTAS</h1>
+
+<!-- 3.1 -->
+<h2>3.1 Gráfico 89 — Resumen Mensual de Ventas</h2>
+
+<table>
+  <tbody>
+    <tr><td style="width:160px;font-weight:600;color:#555;">Tipo</td><td>Gráfico de barras / columnas agrupadas</td></tr>
+    <tr><td style="font-weight:600;color:#555;">Fuente de datos</td><td>Tabla de resumen <code>TD!$A$267:$N$281</code> — calculada por fórmulas (no es tabla dinámica)</td></tr>
+    <tr><td style="font-weight:600;color:#555;">Columna clave</td><td>Columna M = <code>VENTAS</code> — conteo de certificados vendidos por mes</td></tr>
+  </tbody>
+</table>
+
+<h3>Campos identificados en la tabla origen (filas 267–281)</h3>
+<table>
+  <thead><tr><th>Columna</th><th>Campo</th><th>Descripción</th></tr></thead>
+  <tbody>
+    <tr><td>A</td><td>PERIODO / MES</td><td>Mes de referencia</td></tr>
+    <tr><td>M</td><td>VENTAS</td><td>Conteo de ventas del período</td></tr>
+    <tr><td>—</td><td>CERTIF ACTIVOS</td><td>Total de certificados activos en el período</td></tr>
+    <tr><td>—</td><td>CUPOS LIBRES</td><td>Cupos liberados por retiro — potencialmente reasignables (ver RN-010)</td></tr>
+    <tr><td>—</td><td>RETIRO A SOLICITUD ASOCIADO</td><td>Retiros iniciados por el propio asociado</td></tr>
+    <tr><td>—</td><td>RESOL x DEUDA</td><td>Resoluciones de contrato por incumplimiento de pago</td></tr>
+  </tbody>
+</table>
+
+<h3>Reglas de negocio aplicadas implícitamente en las fórmulas</h3>
+<ul>
+  <li><code>TIPO = "REAL"</code> (RN-001) — excluye registros de prueba</li>
+  <li><code>CERTIFICADO VALIDO? = "SI"</code> (RN-006) — excluye certificados inválidos</li>
+  <li>Campo <code>Situación del Contrato</code> discrimina entre ACTIVOS, RETIRADOS y RESUELTOS</li>
+</ul>
+
+<hr>
+
+<!-- 3.2 -->
+<h2>3.2 Gráfico 131 — Comparativo de Períodos</h2>
+
+<table>
+  <tbody>
+    <tr><td style="width:160px;font-weight:600;color:#555;">Tipo</td><td>Gráfico de barras comparativas (período actual vs período anterior)</td></tr>
+    <tr><td style="font-weight:600;color:#555;">Fuente de datos</td><td>Tabla manual de comparativo — diferencia entre filas adyacentes de TD (filas 267–281)</td></tr>
+    <tr><td style="font-weight:600;color:#555;">Lógica Excel</td><td><code>= VALOR_MES_N - VALOR_MES_(N-1)</code> — referencia directa a dos filas del resumen mensual</td></tr>
+  </tbody>
+</table>
+
+<h3>Campos que compara</h3>
+<ul>
+  <li>Ventas período actual vs período anterior</li>
+  <li>Variación absoluta y porcentual</li>
+  <li>Certificados activos actual vs anterior</li>
+</ul>
+
+<blockquote><strong>Observación:</strong> Esta lógica de resta entre filas consecutivas es la representación en Excel de una comparación temporal. Requiere que la tabla TD filas 267–281 esté ordenada cronológicamente por PERIODO.</blockquote>
+
+<hr>
+
+<!-- 3.3 -->
+<h2>3.3 Gráfico 5 — Ventas por Canal</h2>
+
+<table>
+  <tbody>
+    <tr><td style="width:160px;font-weight:600;color:#555;">Tipo</td><td>Gráfico de torta o barras apiladas</td></tr>
+    <tr><td style="font-weight:600;color:#555;">Fuente de datos</td><td>Tabla dinámica en DASHBOARD → pivot cache → hoja <code>TD</code> → campo <code>CANAL</code></td></tr>
+    <tr><td style="font-weight:600;color:#555;">Filtros TD</td><td><code>TIPO = "REAL"</code> (filtro de informe)</td></tr>
+    <tr><td style="font-weight:600;color:#555;">Dimensión</td><td>Campo <code>CANAL</code> (RN-003)</td></tr>
+    <tr><td style="font-weight:600;color:#555;">Métrica</td><td>Conteo de certificados agrupados por CANAL y PERIODO</td></tr>
+  </tbody>
+</table>
+
+<h3>Valores de CANAL identificados</h3>
+<table>
+  <thead><tr><th>Canal</th><th>Descripción</th></tr></thead>
+  <tbody>
+    <tr><td>SCP DIRECTO</td><td>Ejecutivos del banco directamente</td></tr>
+    <tr><td>CLUSTER</td><td>Agentes externos organizados en clusters</td></tr>
+    <tr><td>DIGITAL</td><td>Canal web y redes sociales</td></tr>
+    <tr><td>ALIANZA</td><td>Concesionarios aliados (Autoland, Astara, Derco, Interamericana, Revo Motors)</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<!-- 3.4 -->
+<h2>3.4 Gráfico 7 — Evolución Mensual (Tendencia)</h2>
+
+<table>
+  <tbody>
+    <tr><td style="width:160px;font-weight:600;color:#555;">Tipo</td><td>Gráfico de líneas</td></tr>
+    <tr><td style="font-weight:600;color:#555;">Fuente de datos</td><td>Tabla dinámica → hoja <code>TD</code> → dimensión temporal PERIODO / MES</td></tr>
+    <tr><td style="font-weight:600;color:#555;">Filtros aplicados</td><td><code>TIPO = "REAL"</code>, filtro por AÑO activo</td></tr>
+    <tr><td style="font-weight:600;color:#555;">Dimensión</td><td>PERIODO (YYYYMM) en eje X — conteo de certificados en eje Y</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Uso de negocio:</strong> Visualiza la tendencia mensual acumulada y permite identificar estacionalidad y comparación contra períodos anteriores.</p>
+
+<hr>
+
+<!-- 3.5 -->
+<h2>3.5 Gráfico 44 — Ranking por Ejecutivo / Grupo</h2>
+
+<table>
+  <tbody>
+    <tr><td style="width:160px;font-weight:600;color:#555;">Tipo</td><td>Gráfico de barras horizontales</td></tr>
+    <tr><td style="font-weight:600;color:#555;">Fuente de datos</td><td>Tabla dinámica → hoja <code>TD</code> → campo <code>EJECUTIVO</code> o <code>CODIGO_GRUPO</code></td></tr>
+    <tr><td style="font-weight:600;color:#555;">Filtros aplicados</td><td><code>TIPO = "REAL"</code>, selección de CANAL</td></tr>
+    <tr><td style="font-weight:600;color:#555;">Dimensión</td><td>Ejecutivo o Jefatura con conteo de ventas</td></tr>
+  </tbody>
+</table>
+
+<blockquote><strong>Observación:</strong> El nombre del ejecutivo en este gráfico es el resultado de aplicar la regla RN-003 (resolución de jerarquía), que traduce el código <code>USUARIO_ACTUAL</code> de SANTO al nombre real usando la tabla <code>BD Lista Ejecutivos</code>.</blockquote>
+
+<hr>
+
+<!-- 4. Inventario tablas dinámicas -->
+<h1>4. Inventario de tablas dinámicas — DASHBOARD</h1>
+
+<p>Total identificadas: <strong>11 tablas dinámicas</strong> en la hoja DASHBOARD.</p>
+
+<table>
+  <thead><tr><th>#</th><th>Pivot Source</th><th>Datos origen</th><th>Campo Fila</th><th>Campo Columna</th><th>Métrica</th><th>Gráfico</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>TD</td><td>CERTIFICADOS (SANTO)</td><td>CANAL</td><td>PERIODO</td><td>COUNT</td><td>Gráfico 5</td></tr>
+    <tr><td>2</td><td>TD</td><td>CERTIFICADOS (SANTO)</td><td>PERIODO</td><td>—</td><td>COUNT</td><td>Gráfico 7</td></tr>
+    <tr><td>3</td><td>TD</td><td>CERTIFICADOS (SANTO)</td><td>EJECUTIVO</td><td>PERIODO</td><td>COUNT</td><td>Gráfico 44</td></tr>
+    <tr><td>4</td><td>TD (fórmulas)</td><td>Tabla resumen filas 267–281</td><td>PERIODO</td><td>—</td><td>Col. M: VENTAS</td><td>Gráfico 89</td></tr>
+    <tr><td>5</td><td>TD (fórmulas)</td><td>Tabla comparativo</td><td>PERIODO</td><td>—</td><td>Variación vs período prev.</td><td>Gráfico 131</td></tr>
+    <tr><td>6–11</td><td>TD_REFERIDOS2</td><td>BD_REFERIDOS2 + Agendas</td><td>Varios</td><td>Varios</td><td>COUNT</td><td>Gráficos excluidos</td></tr>
+  </tbody>
+</table>
+
+<blockquote><strong>Nota:</strong> Las filas 6–11 corresponden a los 5 gráficos de REFERIDOS excluidos del análisis. El conteo de 11 puede incluir tablas dinámicas adicionales sin gráfico vinculado que alimentan KPI cards del dashboard.</blockquote>
+
+<hr>
+
+<!-- 5. Hallazgos clave -->
+<h1>5. Hallazgos clave</h1>
+
+<table>
+  <thead><tr><th>#</th><th>Hallazgo</th><th>Implicación</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>H-01</td>
+      <td><code>TIPO = "REAL"</code> es filtro universal en todos los pivots de VENTAS</td>
+      <td>Es una regla de negocio implícita (RN-001) que debe documentarse como requisito de cualquier reporte de ventas</td>
+    </tr>
+    <tr>
+      <td>H-02</td>
+      <td><code>CANAL</code> es la dimensión de corte universal para ventas</td>
+      <td>Cualquier reporte de ventas requiere este campo resuelto; depende de RN-003 (jerarquía de ejecutivos)</td>
+    </tr>
+    <tr>
+      <td>H-03</td>
+      <td>La tabla TD filas 267–281 es una tabla de fórmulas, no una tabla dinámica</td>
+      <td>Su lógica de cálculo está embebida en fórmulas Excel; es la fuente directa de los KPIs de ventas del dashboard</td>
+    </tr>
+    <tr>
+      <td>H-04</td>
+      <td>Gráfico 131 usa resta entre filas consecutivas (comparativo temporal)</td>
+      <td>La tabla TD filas 267–281 debe estar ordenada cronológicamente; el comparativo depende del orden de filas</td>
+    </tr>
+    <tr>
+      <td>H-05</td>
+      <td><code>CUPOS LIBRES</code> representa cupos liberados por retiro, potencialmente reasignables</td>
+      <td>Regla de negocio no documentada formalmente — pendiente confirmar con el área (RN-010)</td>
+    </tr>
+    <tr>
+      <td>H-06</td>
+      <td><code>RESOL x DEUDA</code> y <code>RETIRO A SOLICITUD ASOCIADO</code> son subcategorías del campo <code>Modalidad Resolución</code> de SANTO</td>
+      <td>La clasificación de retiros en el dashboard depende de los valores exactos de este campo en el sistema fuente</td>
+    </tr>
+    <tr>
+      <td>H-07</td>
+      <td>Los 5 gráficos de REFERIDOS usan <code>TD_REFERIDOS2</code> como pivot source</td>
+      <td>La hoja TD_REFERIDOS2 unifica Agenda Digital + Cluster; su análisis es independiente del módulo VENTAS</td>
+    </tr>
+    <tr>
+      <td>H-08</td>
+      <td>Todos los gráficos del DASHBOARD están en una única capa de dibujo (<code>drawing1.xml</code>)</td>
+      <td>El DASHBOARD es una sola hoja con múltiples objetos superpuestos; no existen sub-hojas ni pestañas separadas por módulo</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<!-- 6. Cadena de trazabilidad -->
+<h1>6. Cadena de trazabilidad — Módulo VENTAS</h1>
+
+<pre>
+SANTO (on-premise)
+  └─ Tabla CERTIFICADOS → exportación manual CSV
+        └─ Hoja CERTIFICADOS del libro Excel
+              └─ Columnas calculadas: TIPO, CANAL, EJECUTIVO, JEFATURA, PERIODO…
+                    └─ Hoja TD (consolidación y tablas dinámicas)
+                          ├─ Filas 267–281 (tabla resumen mensual por fórmulas)
+                          │     ├─ Col. M: VENTAS ──────────────── Gráfico 89
+                          │     └─ Comparativo entre filas ──────── Gráfico 131
+                          └─ Tablas dinámicas
+                                ├─ Pivot por CANAL ─────────────── Gráfico 5
+                                ├─ Pivot por PERIODO ────────────── Gráfico 7
+                                └─ Pivot por EJECUTIVO ──────────── Gráfico 44
+</pre>
+
+<hr>
+
+<!-- 7. Pendientes -->
+<h1>7. Pendientes de levantamiento</h1>
+
+<table>
+  <thead><tr><th>#</th><th>Acción</th><th>Prioridad</th></tr></thead>
+  <tbody>
+    <tr><td>P-01</td><td>Confirmar columnas exactas de la tabla TD filas 267–281 (re-verificar en Excel)</td><td><strong style="color:#cc0000;">Alta</strong></td></tr>
+    <tr><td>P-02</td><td>Documentar RN-010: lógica de CUPOS LIBRES y condiciones de reasignación (sesión con negocio)</td><td><strong style="color:#cc0000;">Alta</strong></td></tr>
+    <tr><td>P-03</td><td>Confirmar valores del dominio <code>Modalidad Resolución</code> en SANTO para clasificar subcategorías de retiro</td><td><strong style="color:#cc0000;">Alta</strong></td></tr>
+    <tr><td>P-04</td><td>Analizar gráficos REFERIDOS del DASHBOARD (Gráfico 28, 29, 45, 60, 108) — módulo separado</td><td>Media</td></tr>
+    <tr><td>P-05</td><td>Levantar KPI cards del DASHBOARD (valores numéricos sin gráfico) y sus fuentes</td><td>Media</td></tr>
+  </tbody>
+</table>
+
+</div><!-- /content -->
+</body>
+</html>

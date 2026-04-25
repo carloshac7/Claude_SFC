@@ -10,9 +10,9 @@ Proyecto de migración, orquestación y modelado de datos para el área de **Fon
 
 **Problema actual:** Fuentes administradas por Softek (tercero on-premise), usuarios descargan CSV manualmente desde SANTO y procesan en Excel. Lógica de negocio sin versionar ni documentar.
 
-**Why:** Eliminar dependencia de procesos manuales en Excel y establecer plataforma de datos moderna con gobernanza Unity Catalog.
+**Why:** Documentar y trazar los datos tal como existen hoy: fuentes, campos, reglas de negocio implícitas en Excel, flujos de consumo y dashboards.
 
-**How to apply:** Todas las decisiones de diseño deben favorecer la automatización de pipelines, documentación de reglas de negocio y trazabilidad campo a campo (STM).
+**How to apply:** Producir únicamente documentación descriptiva del estado actual (as-is). No proponer ni mencionar implementaciones tecnológicas futuras (Databricks, Medallion, PySpark, etc.).
 
 ---
 
@@ -53,6 +53,11 @@ Medallion en Databricks:
 | RN-005 | Flags de hitos del proceso (7 flags binarios) | Solicitudes |
 | RN-006 | Certificado válido y comisión CIA | Certificados |
 | RN-007 | Dominio FRENTE y clasificación de referidos | Agenda Comercial, Certificados |
+| RN-008 | Normalización FRENTE_NORM para Agenda Digital | Agenda Digital |
+| RN-009 | Normalización STATUS | BD_REFERIDOS2 |
+| RN-010 | Cupos Libres — reasignación por retiro | Certificados (Gold) — **pendiente confirmar lógica exacta** |
+
+> RN-010 descubierta en análisis DASHBOARD: la tabla TD rows 267–281 incluye la columna CUPOS LIBRES. Un cupo liberado por retiro puede ser reasignado a otro asociado. La lógica exacta (¿es siempre = retiros_total?) debe ser confirmada con negocio.
 
 Detalle completo planeado en `03_Modelado/Reglas_de_Negocio.md` y el BRD.
 
@@ -79,6 +84,10 @@ Detalle completo planeado en `03_Modelado/Reglas_de_Negocio.md` y el BRD.
 | P-07 | Levantar tablas TD, GUIA_CAMP y STATUS de SANTO | Media |
 | P-08 | Diseñar modelo lógico ERD en Databricks | Media |
 | P-09 | Project Charter formal con cronograma y RACI | Alta |
+| P-10 | Confirmar columnas exactas de TD rows 267–281 y lógica CUPOS LIBRES (RN-010) | Alta |
+| P-11 | Confirmar dominio `modalidad_resolucion` para clasificar retiros vs resoluciones por deuda | Alta |
+| P-12 | Confirmar frecuencia de actualización pipelines: mensual vs diaria | Media |
+| P-13 | Definir esquema Unity Catalog: permisos y namespace `scp_fondos.*` | Media |
 
 ---
 
