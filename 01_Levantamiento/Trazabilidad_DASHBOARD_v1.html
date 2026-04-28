@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trazabilidad DASHBOARD — Fondos Colectivos SCP</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --red: #c0392b; --dark: #1a1a2e; --mid: #2c3e50;
+    --light: #ecf0f1; --accent: #e74c3c; --border: #bdc3c7;
+    --blue: #2980b9; --green: #27ae60; --orange: #e67e22;
+    --purple: #8e44ad;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 10.5pt; color: #222; background: #fff; }
+
+  /* ── COVER ── */
+  .cover {
+    page-break-after: always; height: 100vh; min-height: 900px;
+    background: linear-gradient(145deg, #1a1a2e 0%, #c0392b 100%);
+    color: #fff; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center; padding: 60px;
+  }
+  .cover .logo { font-size: 12pt; letter-spacing: 4px; text-transform: uppercase; opacity: .7; margin-bottom: 40px; }
+  .cover h1 { font-size: 28pt; font-weight: 700; line-height: 1.2; margin-bottom: 14px; }
+  .cover h2 { font-size: 14pt; font-weight: 300; margin-bottom: 48px; opacity: .9; }
+  .cover-meta { background: rgba(255,255,255,.12); border-radius: 10px; padding: 28px 48px; display: inline-block; }
+  .cover-meta table { border-collapse: collapse; }
+  .cover-meta td { padding: 5px 18px; font-size: 10pt; text-align: left; }
+  .cover-meta td:first-child { font-weight: 600; opacity: .7; text-align: right; }
+  .cover-badge {
+    margin-top: 36px; display: inline-block;
+    border: 2px solid rgba(255,255,255,.5); border-radius: 20px;
+    padding: 6px 22px; font-size: 9pt; letter-spacing: 2px; text-transform: uppercase;
+  }
+
+  /* ── LAYOUT ── */
+  .page { padding: 48px 56px; max-width: 1200px; margin: 0 auto; }
+  .page-break { page-break-before: always; }
+
+  /* ── HEADERS ── */
+  h1.section {
+    font-size: 17pt; color: var(--dark); border-left: 6px solid var(--red);
+    padding-left: 16px; margin: 36px 0 20px; page-break-after: avoid;
+  }
+  h2.sub { font-size: 12pt; color: var(--mid); margin: 28px 0 12px; border-bottom: 2px solid var(--border); padding-bottom: 6px; }
+  h3.sub2 { font-size: 10.5pt; color: var(--blue); margin: 18px 0 8px; }
+  h4.sub3 { font-size: 10pt; color: var(--mid); margin: 14px 0 6px; font-style: italic; }
+
+  /* ── TOC ── */
+  .toc { background: #f8f9fa; border-radius: 8px; padding: 28px 36px; margin: 24px 0; }
+  .toc h2 { font-size: 12pt; color: var(--dark); margin-bottom: 16px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { padding: 4px 0; font-size: 10pt; }
+  .toc a { color: var(--mid); text-decoration: none; }
+
+  /* ── TABLES ── */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 22px; font-size: 9.5pt; }
+  th { background: var(--mid); color: #fff; padding: 8px 10px; text-align: left; font-weight: 600; }
+  td { padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: #f9f9f9; }
+  .table-red th { background: var(--red); }
+  .table-blue th { background: var(--blue); }
+  .table-green th { background: var(--green); }
+  .table-orange th { background: var(--orange); }
+  .table-purple th { background: var(--purple); }
+  .table-dark th { background: var(--dark); }
+
+  /* traceability master table */
+  .trace-table { table-layout: fixed; font-size: 8.5pt; }
+  .trace-table th { font-size: 8pt; padding: 6px 8px; }
+  .trace-table td { padding: 5px 8px; word-wrap: break-word; }
+  .col-destino { width: 120px; }
+  .col-tabla { width: 130px; }
+  .col-campo { width: 130px; }
+  .col-def { width: 200px; }
+  .col-regla { width: 230px; }
+  .col-tipo { width: 70px; }
+  .col-estado { width: 80px; }
+
+  /* ── BADGES ── */
+  .badge { display: inline-block; border-radius: 4px; padding: 2px 8px; font-size: 8.5pt; font-weight: 600; }
+  .badge-red { background: #fde8e8; color: var(--red); }
+  .badge-green { background: #e8f8ee; color: var(--green); }
+  .badge-blue { background: #e8f0fd; color: var(--blue); }
+  .badge-orange { background: #fef3e2; color: var(--orange); }
+  .badge-gray { background: #eee; color: #555; }
+  .badge-yellow { background: #fffbdd; color: #7d6000; }
+  .badge-purple { background: #f5eafb; color: var(--purple); }
+
+  /* ── CALLOUT BOXES ── */
+  .callout { border-radius: 8px; padding: 14px 18px; margin: 14px 0; font-size: 10pt; }
+  .callout-red { background: #fde8e8; border-left: 4px solid var(--red); }
+  .callout-blue { background: #e8f0fd; border-left: 4px solid var(--blue); }
+  .callout-green { background: #e8f8ee; border-left: 4px solid var(--green); }
+  .callout-orange { background: #fef3e2; border-left: 4px solid var(--orange); }
+  .callout-gray { background: #f5f5f5; border-left: 4px solid #999; }
+  .callout-purple { background: #f5eafb; border-left: 4px solid var(--purple); }
+
+  /* ── MERMAID ── */
+  .diagram-wrap { background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 16px 0; overflow-x: auto; }
+
+  /* ── CHART CARD ── */
+  .chart-card {
+    border: 1px solid var(--border); border-radius: 8px;
+    margin: 24px 0; overflow: hidden;
+  }
+  .chart-card-header {
+    background: var(--dark); color: #fff; padding: 12px 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .chart-card-header .chart-id { font-size: 10pt; opacity: .7; }
+  .chart-card-header .chart-title { font-size: 12pt; font-weight: 700; }
+  .chart-card-header .chart-type { font-size: 9pt; background: rgba(255,255,255,.15); border-radius: 12px; padding: 2px 12px; }
+  .chart-card-body { padding: 18px 20px; }
+
+  /* ── META GRID ── */
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .meta-item { background: #f8f9fa; border-radius: 6px; padding: 10px 14px; }
+  .meta-item label { font-size: 8pt; text-transform: uppercase; color: #888; display: block; margin-bottom: 4px; }
+  .meta-item span { font-size: 10pt; font-weight: 600; color: var(--dark); }
+
+  /* print */
+  @media print {
+    body { font-size: 9pt; }
+    .page-break { page-break-before: always; }
+    .cover { height: auto; min-height: unset; padding: 60px 40px; }
+    table { page-break-inside: avoid; }
+    .chart-card { page-break-inside: avoid; }
+  }
+
+  code { background: #f0f0f0; border-radius: 3px; padding: 1px 5px; font-size: 8.5pt; font-family: 'Consolas', monospace; }
+  p { margin: 8px 0; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ PORTADA ═══════════════ -->
+<div class="cover">
+  <div class="logo">Fondos Colectivos · Banco Santander Consumer Perú</div>
+  <h1>Documento de Trazabilidad<br>de Reportes y Dashboard</h1>
+  <h2>20260228_SFC_Dashboard.xlsx — Hoja DASHBOARD</h2>
+  <div class="cover-meta">
+    <table>
+      <tr><td>Documento</td><td>Trazabilidad DASHBOARD v1.0</td></tr>
+      <tr><td>Archivo fuente</td><td>20260228_SFC_Dashboard.xlsx</td></tr>
+      <tr><td>Módulo</td><td>VENTAS (Certificados activos)</td></tr>
+      <tr><td>Fecha análisis</td><td>Abril 2026</td></tr>
+      <tr><td>Estado</td><td>Borrador — pendiente validación con negocio</td></tr>
+      <tr><td>Autor</td><td>Equipo de Datos — Proyecto Migración</td></tr>
+    </table>
+  </div>
+  <div class="cover-badge">Confidencial</div>
+</div>
+
+<!-- ═══════════════ CONTENIDO ═══════════════ -->
+<div class="page">
+
+  <!-- TOC -->
+  <div class="toc">
+    <h2>Tabla de Contenido</h2>
+    <ol>
+      <li><a href="#s1">Alcance y propósito</a></li>
+      <li><a href="#s2">Inventario de reportes y gráficos — DASHBOARD</a></li>
+      <li><a href="#s3">Cadena de trazabilidad global</a></li>
+      <li><a href="#s4">Trazabilidad detallada — Módulo VENTAS</a>
+        <ol>
+          <li><a href="#g89">Gráfico 89 — Resumen Mensual de Ventas</a></li>
+          <li><a href="#g131">Gráfico 131 — Comparativo de Períodos</a></li>
+          <li><a href="#g5">Gráfico 5 — Ventas por Canal</a></li>
+          <li><a href="#g7">Gráfico 7 — Evolución Mensual (Tendencia)</a></li>
+          <li><a href="#g44">Gráfico 44 — Ranking por Ejecutivo</a></li>
+        </ol>
+      </li>
+      <li><a href="#s5">Campos de CERTIFICADOS referenciados por el Dashboard</a></li>
+      <li><a href="#s6">Reglas de negocio implícitas</a></li>
+      <li><a href="#s7">Hallazgos y pendientes</a></li>
+    </ol>
+  </div>
+
+  <!-- ── S1: Alcance ── -->
+  <h1 class="section" id="s1">1. Alcance y propósito</h1>
+  <p>Este documento traza el origen de cada dato que aparece en la hoja <strong>DASHBOARD</strong> del archivo <code>20260228_SFC_Dashboard.xlsx</code>, remontándolo hasta su fuente primaria en el sistema <strong>SANTO</strong> (Softek on-premise). El objetivo es documentar de forma auditada las reglas de transformación que convierte datos crudos de CERTIFICADOS en los gráficos y métricas del dashboard.</p>
+
+  <div class="callout callout-blue">
+    <strong>Criterio de inclusión:</strong> Este documento cubre únicamente los <strong>5 gráficos del módulo VENTAS</strong> que consumen datos de la hoja <code>TD</code> (fuente: tabla CERTIFICADOS de SANTO). Los 5 gráficos del módulo REFERIDOS (fuente: <code>TD_REFERIDOS2</code>) quedan fuera del alcance de este documento y requieren análisis separado.
+  </div>
+
+  <div class="callout callout-orange">
+    <strong>Limitación del análisis:</strong> Las fórmulas de la tabla de resumen en <code>TD!$A$267:$N$281</code> no son accesibles directamente desde el OOXML sin ejecutar el motor de cálculo de Excel. Los campos y lógicas documentados en esta sección se derivan de la interpretación de las fórmulas mediante inspección del XML interno y validación con el análisis visual del dashboard.
+  </div>
+
+  <h2 class="sub">1.1 Arquitectura de fuentes</h2>
+  <table class="table-dark">
+    <tr><th>Capa</th><th>Sistema / Archivo</th><th>Descripción</th><th>Tipo acceso</th></tr>
+    <tr><td><strong>Origen primario</strong></td><td>SANTO (Softek on-premise)</td><td>Sistema de gestión de Fondos Colectivos. Tabla CERTIFICADOS: estado de cada contrato activo, retirado o resuelto.</td><td>Exportación manual CSV</td></tr>
+    <tr><td><strong>Carga en Excel</strong></td><td>Hoja CERTIFICADOS<br><code>20260228_SFC_Dashboard.xlsx</code></td><td>Datos crudos de SANTO pegados en la hoja. Contiene ~93 columnas incluyendo campos derivados por fórmulas de Excel.</td><td>Carga manual mensual</td></tr>
+    <tr><td><strong>Consolidación</strong></td><td>Hoja TD<br>(misma hoja del libro)</td><td>Tablas dinámicas y tabla de resumen mensual (filas 267–281) que consolidan CERTIFICADOS aplicando filtros y agrupaciones de negocio.</td><td>Tablas dinámicas + fórmulas</td></tr>
+    <tr><td><strong>Visualización</strong></td><td>Hoja DASHBOARD</td><td>10 gráficos y 11 tablas dinámicas que consumen la hoja TD. Capa de presentación final.</td><td>Vinculación a TD</td></tr>
+    <tr><td><strong>Referencia</strong></td><td>BD Lista Ejecutivos</td><td>Tabla de resolución de jerarquía: mapea USUARIO_EJECUTIVO al nombre real y CANAL del ejecutivo (RN-003).</td><td>Tabla estática Excel</td></tr>
+  </table>
+
+  <!-- ── S2: Inventario ── -->
+  <h1 class="section page-break" id="s2">2. Inventario de reportes y gráficos — DASHBOARD</h1>
+
+  <table class="table-blue">
+    <tr><th>#</th><th>Gráfico ID</th><th>Nombre</th><th>Tipo</th><th>Fuente pivot</th><th>Módulo</th><th>Incluido</th></tr>
+    <tr><td>1</td><td><strong>Gráfico 89</strong></td><td>Resumen Mensual de Ventas</td><td>Barras / columnas</td><td>TD (tabla fórmulas A267:N281)</td><td>VENTAS</td><td><span class="badge badge-green">✔ Analizado</span></td></tr>
+    <tr><td>2</td><td><strong>Gráfico 131</strong></td><td>Comparativo de Períodos</td><td>Barras comparativas</td><td>TD (comparativo entre filas)</td><td>VENTAS</td><td><span class="badge badge-green">✔ Analizado</span></td></tr>
+    <tr><td>3</td><td><strong>Gráfico 5</strong></td><td>Ventas por Canal</td><td>Torta / barras apiladas</td><td>TD (tabla dinámica pivot CANAL)</td><td>VENTAS</td><td><span class="badge badge-green">✔ Analizado</span></td></tr>
+    <tr><td>4</td><td><strong>Gráfico 7</strong></td><td>Evolución Mensual (Tendencia)</td><td>Líneas</td><td>TD (tabla dinámica pivot PERIODO)</td><td>VENTAS</td><td><span class="badge badge-green">✔ Analizado</span></td></tr>
+    <tr><td>5</td><td><strong>Gráfico 44</strong></td><td>Ranking por Ejecutivo / Grupo</td><td>Barras horizontales</td><td>TD (tabla dinámica pivot EJECUTIVO)</td><td>VENTAS</td><td><span class="badge badge-green">✔ Analizado</span></td></tr>
+    <tr><td>6</td><td>Gráfico 28</td><td>Referidos — módulo pendiente</td><td>—</td><td>TD_REFERIDOS2</td><td>REFERIDOS</td><td><span class="badge badge-gray">Excluido</span></td></tr>
+    <tr><td>7</td><td>Gráfico 29</td><td>Referidos — módulo pendiente</td><td>—</td><td>TD_REFERIDOS2</td><td>REFERIDOS</td><td><span class="badge badge-gray">Excluido</span></td></tr>
+    <tr><td>8</td><td>Gráfico 45</td><td>Referidos — módulo pendiente</td><td>—</td><td>TD_REFERIDOS2</td><td>REFERIDOS</td><td><span class="badge badge-gray">Excluido</span></td></tr>
+    <tr><td>9</td><td>Gráfico 60</td><td>Referidos — módulo pendiente</td><td>—</td><td>TD_REFERIDOS2</td><td>REFERIDOS</td><td><span class="badge badge-gray">Excluido</span></td></tr>
+    <tr><td>10</td><td>Gráfico 108</td><td>Referidos — módulo pendiente</td><td>—</td><td>TD_REFERIDOS2</td><td>REFERIDOS</td><td><span class="badge badge-gray">Excluido</span></td></tr>
+  </table>
+
+  <!-- ── S3: Diagrama global ── -->
+  <h1 class="section page-break" id="s3">3. Cadena de trazabilidad global</h1>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+flowchart TD
+    SANTO["🗄️ SISTEMA SANTO\n(Softek on-premise)\nTabla: CERTIFICADOS"]:::src
+    CSV["📄 Exportación manual CSV\n(descarga mensual)"]:::extract
+    HCERT["📋 Hoja CERTIFICADOS\n~93 columnas\nFilas = un contrato por registro"]:::raw
+
+    HBDEJ["📋 BD Lista Ejecutivos\n16 campos\nMapeo usuario → ejecutivo + canal"]:::ref
+    HBDAL["📋 BD Alianzas\nConcesionarios asociados"]:::ref
+
+    subgraph DERIVADOS ["Columnas calculadas en CERTIFICADOS (fórmulas Excel)"]
+        TIPO["Col BH: TIPO\n'REAL' / 'PRUEBA'\n(RN-001)"]:::calc
+        CANAL["Col M / AH: CANAL\n'SCP DIRECTO' / 'CLUSTER' / 'DIGITAL' / 'ALIANZA'\n(RN-003)"]:::calc
+        PERIODO["Col P: PERIODO\nYYYYMM derivado de FECHA ORIG (col AS)\n(ej: 202601)"]:::calc
+        CERTVAL["Col N: CERTIFICADO VALIDO?\n'SI' / 'NO'\n(RN-006)"]:::calc
+        EJECUTIVO["Col AH: EJECUTIVO SCP\nnombre resuelto vía BD Lista Ejecutivos\n(RN-003)"]:::calc
+    end
+
+    subgraph TD_HOJA ["Hoja TD — Consolidación"]
+        RESUMEN["Tabla resumen filas 267–281\n(fórmulas CONTAR.SI.CONJUNTO)\nCampos: PERIODO, VENTAS, CERTIF ACTIVOS,\nCUPOS LIBRES, RETIRO ASOC, RESOL x DEUDA"]:::td
+        PIV_CANAL["Tabla Dinámica\npivot CANAL × PERIODO\nFiltro: TIPO='REAL'"]:::td
+        PIV_PER["Tabla Dinámica\npivot PERIODO\nFiltro: TIPO='REAL'"]:::td
+        PIV_EJEC["Tabla Dinámica\npivot EJECUTIVO × PERIODO\nFiltro: TIPO='REAL'"]:::td
+    end
+
+    subgraph DASH ["Hoja DASHBOARD"]
+        G89["📊 Gráfico 89\nResumen Mensual de Ventas\n(barras)"]:::chart
+        G131["📊 Gráfico 131\nComparativo de Períodos\n(barras)"]:::chart
+        G5["📊 Gráfico 5\nVentas por Canal\n(torta)"]:::chart
+        G7["📊 Gráfico 7\nEvolución Mensual\n(líneas)"]:::chart
+        G44["📊 Gráfico 44\nRanking Ejecutivo\n(barras horiz.)"]:::chart
+    end
+
+    SANTO --> CSV --> HCERT
+    HBDEJ --> EJECUTIVO
+    HBDEJ --> CANAL
+    HBDAL --> CANAL
+    HCERT --> TIPO & CANAL & PERIODO & CERTVAL & EJECUTIVO
+    HCERT --> RESUMEN & PIV_CANAL & PIV_PER & PIV_EJEC
+    RESUMEN --> G89 & G131
+    PIV_CANAL --> G5
+    PIV_PER --> G7
+    PIV_EJEC --> G44
+
+    classDef src fill:#c0392b,color:#fff,stroke:#922b21
+    classDef extract fill:#e67e22,color:#fff,stroke:#a04000
+    classDef raw fill:#2980b9,color:#fff,stroke:#1a5276
+    classDef ref fill:#8e44ad,color:#fff,stroke:#6c3483
+    classDef calc fill:#16a085,color:#fff,stroke:#0e6655
+    classDef td fill:#2c3e50,color:#fff,stroke:#1a252f
+    classDef chart fill:#27ae60,color:#fff,stroke:#196f3d
+    </div>
+  </div>
+
+  <!-- ── S4: Trazabilidad detallada ── -->
+  <h1 class="section page-break" id="s4">4. Trazabilidad detallada — Módulo VENTAS</h1>
+
+  <p>Para cada gráfico se presenta: (a) ficha técnica de identificación, (b) tabla de trazabilidad campo a campo entre CERTIFICADOS → TD → DASHBOARD, y (c) notas de negocio.</p>
+
+  <!-- ─── G89 ─── -->
+  <div class="chart-card page-break" id="g89">
+    <div class="chart-card-header">
+      <div>
+        <div class="chart-id">Gráfico 89 · rId drawing: rId5 · chart5.xml</div>
+        <div class="chart-title">Resumen Mensual de Ventas</div>
+      </div>
+      <div class="chart-type">Barras / columnas agrupadas</div>
+    </div>
+    <div class="chart-card-body">
+      <div class="meta-grid">
+        <div class="meta-item"><label>Fuente pivot / rango</label><span>TD!$A$267:$N$281 (tabla de fórmulas)</span></div>
+        <div class="meta-item"><label>Dimensión eje X</label><span>PERIODO (YYYYMM) — mes de referencia</span></div>
+        <div class="meta-item"><label>Frecuencia actualización</label><span>Mensual (carga manual)</span></div>
+        <div class="meta-item"><label>Filtro universal</label><span>TIPO = "REAL" (RN-001)</span></div>
+        <div class="meta-item"><label>Filtro adicional</label><span>CERTIFICADO VALIDO? = "SI" (RN-006)</span></div>
+        <div class="meta-item"><label>Estado mapeo</label><span class="badge badge-yellow">Pendiente validación P-01</span></div>
+      </div>
+
+      <h3 class="sub2">Tabla de trazabilidad — campo a campo</h3>
+      <table class="trace-table table-blue">
+        <tr>
+          <th class="col-destino">Métrica Dashboard</th>
+          <th class="col-tabla">Sistema Origen</th>
+          <th class="col-tabla">Tabla / Hoja Origen</th>
+          <th class="col-campo">Campo(s) Origen</th>
+          <th class="col-def">Definición campo origen</th>
+          <th class="col-regla">Regla de transformación (fórmula)</th>
+          <th class="col-tipo">Tipo dato origen</th>
+          <th class="col-tipo">Tipo dato destino</th>
+          <th class="col-estado">Estado mapeo</th>
+        </tr>
+        <tr>
+          <td><strong>PERIODO (eje X)</strong></td>
+          <td>SANTO</td>
+          <td>CERTIFICADOS (col AS: FECHA ORIG)<br>→ col P: PERIODO</td>
+          <td><code>AS</code> FECHA ORIG<br>→ <code>P</code> PERIODO</td>
+          <td>Fecha de originación del certificado. PERIODO es texto YYYYMM derivado de FECHA ORIG.</td>
+          <td><code>=TEXTO(AS_n;"YYYYMM")</code> (derivación implícita en fórmula de tabla resumen). La tabla TD rows 267–281 agrupa las cuentas por este campo.</td>
+          <td>DATE (FECHA ORIG)<br>→ TEXT 6 dígitos</td>
+          <td>Etiqueta texto en eje X del gráfico</td>
+          <td><span class="badge badge-yellow">Pendiente<br>P-01</span></td>
+        </tr>
+        <tr>
+          <td><strong>VENTAS</strong><br>(col M de la tabla)</td>
+          <td>SANTO</td>
+          <td>CERTIFICADOS</td>
+          <td><code>P</code> PERIODO<br><code>BH</code> TIPO<br><code>N</code> CERTIFICADO VALIDO?</td>
+          <td>TIPO: clasificación REAL/PRUEBA (RN-001). CERTIFICADO VALIDO?: flag SI/NO (RN-006). Conteo de certificados nuevos del período.</td>
+          <td><code>=CONTAR.SI.CONJUNTO(CERTIFICADOS[TIPO];"REAL"; CERTIFICADOS[CERTIFICADO VALIDO?];"SI"; CERTIFICADOS[PERIODO];periodo_n)</code></td>
+          <td>TEXT (TIPO)<br>TEXT (CERT VAL)<br>TEXT (PERIODO)</td>
+          <td>INTEGER (conteo)</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+        <tr>
+          <td><strong>CERTIF ACTIVOS</strong></td>
+          <td>SANTO</td>
+          <td>CERTIFICADOS</td>
+          <td><code>Z</code> Situación del Contrato<br><code>BH</code> TIPO<br><code>N</code> CERTIFICADO VALIDO?</td>
+          <td>Situación del Contrato: ACTIVO / RETIRADO / RESUELTO. Conteo de contratos vigentes en el período.</td>
+          <td><code>=CONTAR.SI.CONJUNTO(CERTIFICADOS[TIPO];"REAL"; CERTIFICADOS[CERTIFICADO VALIDO?];"SI"; CERTIFICADOS[Situación del Contrato];"ACTIVO")</code></td>
+          <td>TEXT (Situación)</td>
+          <td>INTEGER (conteo)</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+        <tr>
+          <td><strong>CUPOS LIBRES</strong></td>
+          <td>SANTO</td>
+          <td>CERTIFICADOS</td>
+          <td><code>Z</code> Situación del Contrato<br><code>AA</code> Modalidad Resolución<br><code>BO</code> FECHA RETIRO</td>
+          <td>Cupos liberados en el período por retiro a solicitud o resolución, que quedan disponibles para ser reasignados a un nuevo asociado (RN-010 — pendiente confirmar lógica exacta).</td>
+          <td>Interpretación: <code>=CONTAR.SI.CONJUNTO(... Situación del Contrato;"RETIRADO";FECHA RETIRO;periodo_n)</code> + resoluciones del período. Lógica exacta <strong>pendiente confirmar</strong> (P-01, RN-010).</td>
+          <td>TEXT (Situación)<br>DATE (Fecha Retiro)</td>
+          <td>INTEGER (conteo)</td>
+          <td><span class="badge badge-red">Pendiente<br>RN-010</span></td>
+        </tr>
+        <tr>
+          <td><strong>RETIRO A SOLICITUD ASOCIADO</strong></td>
+          <td>SANTO</td>
+          <td>CERTIFICADOS</td>
+          <td><code>Z</code> Situación del Contrato<br><code>AA</code> Modalidad Resolución<br><code>BO</code> FECHA RETIRO</td>
+          <td>Contratos cuyo retiro fue iniciado por el propio asociado. Valor exacto del campo Modalidad Resolución pendiente confirmar con SANTO (H-06).</td>
+          <td><code>=CONTAR.SI.CONJUNTO(... Situación del Contrato;"RETIRADO"; Modalidad Resolución;"A solicitud del asociado"; FECHA RETIRO;periodo_n)</code> — valor exacto del dominio por confirmar (P-03).</td>
+          <td>TEXT (Modalidad)</td>
+          <td>INTEGER (conteo)</td>
+          <td><span class="badge badge-red">Pendiente<br>P-03</span></td>
+        </tr>
+        <tr>
+          <td><strong>RESOL x DEUDA</strong></td>
+          <td>SANTO</td>
+          <td>CERTIFICADOS</td>
+          <td><code>Z</code> Situación del Contrato<br><code>AA</code> Modalidad Resolución<br><code>BO</code> FECHA RETIRO</td>
+          <td>Contratos resueltos por incumplimiento de pago. Subcategoría del campo Modalidad Resolución (H-06).</td>
+          <td><code>=CONTAR.SI.CONJUNTO(... Situación del Contrato;"RESUELTO"; Modalidad Resolución;"[valor deuda]"; FECHA RETIRO;periodo_n)</code> — valor exacto del dominio por confirmar (P-03).</td>
+          <td>TEXT (Modalidad)</td>
+          <td>INTEGER (conteo)</td>
+          <td><span class="badge badge-red">Pendiente<br>P-03</span></td>
+        </tr>
+      </table>
+
+      <div class="callout callout-orange">
+        <strong>Pendiente P-01:</strong> Confirmar las columnas exactas del rango <code>TD!$A$267:$N$281</code> directamente en el archivo Excel abierto (la tabla usa fórmulas cuyo resultado requiere motor de cálculo activo). Las columnas A–N deben validarse con el equipo de datos.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── G131 ─── -->
+  <div class="chart-card page-break" id="g131">
+    <div class="chart-card-header">
+      <div>
+        <div class="chart-id">Gráfico 131 · rId drawing: rId1 · chart1.xml</div>
+        <div class="chart-title">Comparativo de Períodos</div>
+      </div>
+      <div class="chart-type">Barras comparativas</div>
+    </div>
+    <div class="chart-card-body">
+      <div class="meta-grid">
+        <div class="meta-item"><label>Fuente de datos</label><span>Tabla manual comparativo (referencia directa a TD filas 267–281)</span></div>
+        <div class="meta-item"><label>Lógica Excel</label><span>ROW_N − ROW_(N−1) entre filas adyacentes de la tabla resumen</span></div>
+        <div class="meta-item"><label>Frecuencia actualización</label><span>Mensual (carga manual)</span></div>
+        <div class="meta-item"><label>Filtro heredado</label><span>TIPO = "REAL" (vía tabla resumen G89)</span></div>
+        <div class="meta-item"><label>Prerequisito</label><span>Tabla TD rows 267–281 ordenada cronológicamente por PERIODO</span></div>
+        <div class="meta-item"><label>Estado mapeo</label><span class="badge badge-yellow">Pendiente P-01</span></div>
+      </div>
+
+      <h3 class="sub2">Tabla de trazabilidad — campo a campo</h3>
+      <table class="trace-table table-blue">
+        <tr>
+          <th class="col-destino">Métrica Dashboard</th>
+          <th class="col-tabla">Sistema Origen</th>
+          <th class="col-tabla">Tabla / Hoja Origen</th>
+          <th class="col-campo">Campo(s) Origen</th>
+          <th class="col-def">Definición</th>
+          <th class="col-regla">Regla de transformación</th>
+          <th class="col-tipo">Tipo origen</th>
+          <th class="col-tipo">Tipo destino</th>
+          <th class="col-estado">Estado mapeo</th>
+        </tr>
+        <tr>
+          <td><strong>Variación de VENTAS<br>(período N vs N−1)</strong></td>
+          <td>SANTO (vía G89)</td>
+          <td>TD fila resumen<br>(tabla fórmulas)</td>
+          <td>Col M (VENTAS): valor período N<br>Col M (VENTAS): valor período N−1</td>
+          <td>Diferencia absoluta entre ventas del período actual y ventas del período anterior. Requiere que las filas estén ordenadas cronológicamente.</td>
+          <td><code>= TD!M[n] - TD!M[n-1]</code> — resta directa entre dos celdas adyacentes de la columna VENTAS de la tabla resumen. Referencia directa sin función de lookup.</td>
+          <td>INTEGER (VENTAS)</td>
+          <td>INTEGER (variación)</td>
+          <td><span class="badge badge-yellow">Pendiente<br>P-01</span></td>
+        </tr>
+        <tr>
+          <td><strong>Variación % de VENTAS</strong></td>
+          <td>SANTO (vía G89)</td>
+          <td>TD fila resumen</td>
+          <td>Col M (VENTAS): filas N y N−1</td>
+          <td>Variación porcentual entre períodos consecutivos.</td>
+          <td><code>= (TD!M[n] - TD!M[n-1]) / TD!M[n-1]</code> — cálculo implícito en tabla comparativo.</td>
+          <td>INTEGER (VENTAS)</td>
+          <td>DECIMAL (porcentaje)</td>
+          <td><span class="badge badge-yellow">Pendiente<br>P-01</span></td>
+        </tr>
+        <tr>
+          <td><strong>Variación de CERTIF ACTIVOS</strong></td>
+          <td>SANTO (vía G89)</td>
+          <td>TD fila resumen</td>
+          <td>Col CERTIF ACTIVOS: filas N y N−1</td>
+          <td>Diferencia de certificados activos entre períodos consecutivos.</td>
+          <td><code>= TD!col_certif[n] - TD!col_certif[n-1]</code></td>
+          <td>INTEGER</td>
+          <td>INTEGER (variación)</td>
+          <td><span class="badge badge-yellow">Pendiente<br>P-01</span></td>
+        </tr>
+      </table>
+
+      <div class="callout callout-red">
+        <strong>Hallazgo H-04:</strong> La lógica de resta entre filas consecutivas implica una dependencia de orden: si la tabla TD rows 267–281 no está ordenada cronológicamente por PERIODO, el comparativo produce valores incorrectos sin emitir error. Este riesgo debe documentarse como restricción de operación del dashboard actual.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── G5 ─── -->
+  <div class="chart-card page-break" id="g5">
+    <div class="chart-card-header">
+      <div>
+        <div class="chart-id">Gráfico 5 · rId drawing: rId3 · chart3.xml</div>
+        <div class="chart-title">Ventas por Canal</div>
+      </div>
+      <div class="chart-type">Torta / Barras apiladas</div>
+    </div>
+    <div class="chart-card-body">
+      <div class="meta-grid">
+        <div class="meta-item"><label>Fuente pivot</label><span>Tabla dinámica en DASHBOARD → cache → hoja TD → CERTIFICADOS</span></div>
+        <div class="meta-item"><label>Dimensión de análisis</label><span>CANAL (RN-003)</span></div>
+        <div class="meta-item"><label>Filtro pivot</label><span>TIPO = "REAL" (filtro de informe)</span></div>
+        <div class="meta-item"><label>Métrica</label><span>COUNT de certificados por CANAL y PERIODO</span></div>
+        <div class="meta-item"><label>Frecuencia actualización</label><span>Mensual (carga manual)</span></div>
+        <div class="meta-item"><label>Estado mapeo</label><span class="badge badge-green">Mapeado</span></td></div>
+      </div>
+
+      <h3 class="sub2">Tabla de trazabilidad — campo a campo</h3>
+      <table class="trace-table table-blue">
+        <tr>
+          <th class="col-destino">Métrica Dashboard</th>
+          <th class="col-tabla">Sistema Origen</th>
+          <th class="col-tabla">Tabla / Hoja Origen</th>
+          <th class="col-campo">Campo(s) Origen</th>
+          <th class="col-def">Definición</th>
+          <th class="col-regla">Regla de transformación</th>
+          <th class="col-tipo">Tipo origen</th>
+          <th class="col-tipo">Tipo destino</th>
+          <th class="col-estado">Estado mapeo</th>
+        </tr>
+        <tr>
+          <td><strong>Filtro TIPO="REAL"</strong></td>
+          <td>SANTO</td>
+          <td>CERTIFICADOS (col BH)</td>
+          <td><code>BH</code> TIPO</td>
+          <td>Clasifica el registro como 'REAL' (operación de producción) o 'PRUEBA' (test). Fórmula Excel en col BH derivada de campos internos del registro (RN-001).</td>
+          <td>Filtro de informe en tabla dinámica: solo se incluyen filas donde <code>BH = "REAL"</code>. No requiere transformación adicional — es un filtro directo.</td>
+          <td>TEXT</td>
+          <td>Filtro boolean</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+        <tr>
+          <td><strong>SCP DIRECTO</strong><br>(segmento CANAL)</td>
+          <td>SANTO + BD Lista Ejecutivos</td>
+          <td>CERTIFICADOS (col M / AH)<br>+ BD Lista Ejecutivos</td>
+          <td><code>M</code> Tipo Canal<br><code>AH</code> EJECUTIVO SCP<br><code>AZ</code> USUARIO_EJECUTIVO</td>
+          <td>Certificados vendidos directamente por ejecutivos SCP internos. El CANAL se determina cruzando USUARIO_EJECUTIVO contra BD Lista Ejecutivos (RN-003).</td>
+          <td>Tabla dinámica agrupa por campo CANAL derivado. CANAL = "SCP DIRECTO" cuando el ejecutivo pertenece al equipo SCP interno según BD Lista Ejecutivos.</td>
+          <td>TEXT (USUARIO)</td>
+          <td>INTEGER (conteo)</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+        <tr>
+          <td><strong>CLUSTER</strong><br>(segmento CANAL)</td>
+          <td>SANTO + BD Lista Ejecutivos</td>
+          <td>CERTIFICADOS + BD Lista Ejecutivos</td>
+          <td><code>M</code> Tipo Canal<br><code>AZ</code> USUARIO_EJECUTIVO</td>
+          <td>Certificados vendidos por agentes externos agrupados en clusters comerciales. Resuelto vía RN-003.</td>
+          <td>CANAL = "CLUSTER" cuando USUARIO_EJECUTIVO resuelve a un agente de cluster en BD Lista Ejecutivos.</td>
+          <td>TEXT (USUARIO)</td>
+          <td>INTEGER (conteo)</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+        <tr>
+          <td><strong>DIGITAL</strong><br>(segmento CANAL)</td>
+          <td>SANTO + BD Lista Ejecutivos</td>
+          <td>CERTIFICADOS + BD Lista Ejecutivos</td>
+          <td><code>M</code> Tipo Canal<br><code>AZ</code> USUARIO_EJECUTIVO</td>
+          <td>Certificados vendidos a través del canal digital (formularios online / Microsoft Lists Agenda Digital).</td>
+          <td>CANAL = "DIGITAL" cuando el registro proviene del canal digital según resolución de jerarquía RN-003.</td>
+          <td>TEXT (USUARIO)</td>
+          <td>INTEGER (conteo)</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+        <tr>
+          <td><strong>ALIANZA</strong><br>(segmento CANAL)</td>
+          <td>SANTO + BD Alianzas</td>
+          <td>CERTIFICADOS + BD Alianzas</td>
+          <td><code>U</code> Dealer<br><code>M</code> Tipo Canal</td>
+          <td>Certificados vendidos vía concesionarios aliados: Autoland, Astara, Derco, Interamericana, Revo Motors. Identificados por campo Dealer contra BD Alianzas.</td>
+          <td>CANAL = "ALIANZA" cuando el campo Dealer corresponde a un concesionario registrado en BD Alianzas. El código del concesionario se cruza contra la tabla de referencia.</td>
+          <td>TEXT (Dealer)</td>
+          <td>INTEGER (conteo)</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+      </table>
+
+      <h3 class="sub2">Diagrama de resolución CANAL</h3>
+      <div class="diagram-wrap">
+        <div class="mermaid">
+flowchart LR
+    CERT["CERTIFICADOS\nfila = contrato"]:::raw
+    USUARIO["col AZ\nUSUARIO_EJECUTIVO"]:::campo
+    DEALER["col U\nDealer"]:::campo
+    TIPOCANAL["col M\nTipo Canal"]:::campo
+    BDEJEC["BD Lista Ejecutivos\n(16 campos)"]:::ref
+    BDAL["BD Alianzas\n(concesionarios)"]:::ref
+    CANAL["Campo derivado\nCANAL"]:::calc
+
+    CERT --> USUARIO & DEALER & TIPOCANAL
+    USUARIO -->|"BUSCARV / XLOOKUP"| BDEJEC
+    DEALER -->|"BUSCARV"| BDAL
+    BDEJEC -->|"SCP DIRECTO\nCLUSTER\nDIGITAL"| CANAL
+    BDAL -->|"ALIANZA"| CANAL
+    TIPOCANAL -.->|"apoyo resolución"| CANAL
+
+    classDef raw fill:#2980b9,color:#fff
+    classDef campo fill:#16a085,color:#fff
+    classDef ref fill:#8e44ad,color:#fff
+    classDef calc fill:#c0392b,color:#fff
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── G7 ─── -->
+  <div class="chart-card page-break" id="g7">
+    <div class="chart-card-header">
+      <div>
+        <div class="chart-id">Gráfico 7 · chart7.xml</div>
+        <div class="chart-title">Evolución Mensual — Tendencia de Ventas</div>
+      </div>
+      <div class="chart-type">Líneas</div>
+    </div>
+    <div class="chart-card-body">
+      <div class="meta-grid">
+        <div class="meta-item"><label>Fuente pivot</label><span>Tabla dinámica → hoja TD → CERTIFICADOS</span></div>
+        <div class="meta-item"><label>Dimensión eje X</label><span>PERIODO (YYYYMM)</span></div>
+        <div class="meta-item"><label>Filtros pivot</label><span>TIPO = "REAL" + filtro AÑO seleccionado</span></div>
+        <div class="meta-item"><label>Métrica eje Y</label><span>COUNT de certificados por período</span></div>
+        <div class="meta-item"><label>Frecuencia actualización</label><span>Mensual (carga manual)</span></div>
+        <div class="meta-item"><label>Estado mapeo</label><span class="badge badge-green">Mapeado</span></div>
+      </div>
+
+      <h3 class="sub2">Tabla de trazabilidad — campo a campo</h3>
+      <table class="trace-table table-blue">
+        <tr>
+          <th class="col-destino">Métrica Dashboard</th>
+          <th class="col-tabla">Sistema Origen</th>
+          <th class="col-tabla">Tabla / Hoja Origen</th>
+          <th class="col-campo">Campo(s) Origen</th>
+          <th class="col-def">Definición</th>
+          <th class="col-regla">Regla de transformación</th>
+          <th class="col-tipo">Tipo origen</th>
+          <th class="col-tipo">Tipo destino</th>
+          <th class="col-estado">Estado mapeo</th>
+        </tr>
+        <tr>
+          <td><strong>PERIODO (eje X)</strong></td>
+          <td>SANTO</td>
+          <td>CERTIFICADOS (col AS, P)</td>
+          <td><code>AS</code> FECHA ORIG<br><code>P</code> PERIODO<br><code>BF</code> AÑO_FEC_ORIG</td>
+          <td>FECHA ORIG: fecha de colocación del certificado. PERIODO = YYYYMM derivado de FECHA ORIG. AÑO_FEC_ORIG: año de colocación — usado como filtro de informe en la tabla dinámica.</td>
+          <td>La tabla dinámica usa PERIODO como campo de fila (eje X) y AÑO_FEC_ORIG como filtro de informe, permitiendo seleccionar un año específico. Los meses del año seleccionado aparecen en el eje X.</td>
+          <td>DATE → TEXT(YYYYMM)</td>
+          <td>Etiqueta eje X</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+        <tr>
+          <td><strong>Conteo Ventas (eje Y)</strong></td>
+          <td>SANTO</td>
+          <td>CERTIFICADOS</td>
+          <td><code>BH</code> TIPO<br><code>P</code> PERIODO</td>
+          <td>Cantidad de certificados colocados en cada período del año seleccionado. TIPO="REAL" excluye registros de prueba (RN-001).</td>
+          <td>La tabla dinámica cuenta filas donde TIPO="REAL" agrupadas por PERIODO. El resultado es el número de certificados nuevos por mes.</td>
+          <td>TEXT (TIPO)<br>TEXT (PERIODO)</td>
+          <td>INTEGER (conteo)</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+        <tr>
+          <td><strong>Filtro AÑO</strong><br>(slicer/filtro informe)</td>
+          <td>SANTO</td>
+          <td>CERTIFICADOS (col BF)</td>
+          <td><code>BF</code> AÑO_FEC_ORIG</td>
+          <td>Año de colocación del certificado, derivado de FECHA ORIG. Permite al usuario del dashboard filtrar la tendencia por año.</td>
+          <td>Filtro de informe en tabla dinámica. El campo BF es una columna calculada en Excel: <code>=AÑO(AS_n)</code>. El usuario selecciona el año desde el filtro del dashboard.</td>
+          <td>DATE → INTEGER (año)</td>
+          <td>Filtro interactivo</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ─── G44 ─── -->
+  <div class="chart-card page-break" id="g44">
+    <div class="chart-card-header">
+      <div>
+        <div class="chart-id">Gráfico 44 · chart44.xml</div>
+        <div class="chart-title">Ranking por Ejecutivo / Grupo</div>
+      </div>
+      <div class="chart-type">Barras horizontales</div>
+    </div>
+    <div class="chart-card-body">
+      <div class="meta-grid">
+        <div class="meta-item"><label>Fuente pivot</label><span>Tabla dinámica → hoja TD → CERTIFICADOS + BD Lista Ejecutivos</span></div>
+        <div class="meta-item"><label>Dimensión eje Y</label><span>EJECUTIVO SCP (nombre resuelto — RN-003)</span></div>
+        <div class="meta-item"><label>Filtros pivot</label><span>TIPO = "REAL" + filtro CANAL seleccionado</span></div>
+        <div class="meta-item"><label>Métrica eje X</label><span>COUNT de certificados por ejecutivo</span></div>
+        <div class="meta-item"><label>Frecuencia actualización</label><span>Mensual (carga manual)</span></div>
+        <div class="meta-item"><label>Estado mapeo</label><span class="badge badge-green">Mapeado</span></div>
+      </div>
+
+      <h3 class="sub2">Tabla de trazabilidad — campo a campo</h3>
+      <table class="trace-table table-blue">
+        <tr>
+          <th class="col-destino">Métrica Dashboard</th>
+          <th class="col-tabla">Sistema Origen</th>
+          <th class="col-tabla">Tabla / Hoja Origen</th>
+          <th class="col-campo">Campo(s) Origen</th>
+          <th class="col-def">Definición</th>
+          <th class="col-regla">Regla de transformación</th>
+          <th class="col-tipo">Tipo origen</th>
+          <th class="col-tipo">Tipo destino</th>
+          <th class="col-estado">Estado mapeo</th>
+        </tr>
+        <tr>
+          <td><strong>Nombre Ejecutivo (eje Y)</strong></td>
+          <td>SANTO + BD Lista Ejecutivos</td>
+          <td>CERTIFICADOS (col AZ, AH)<br>+ BD Lista Ejecutivos</td>
+          <td><code>AZ</code> USUARIO_EJECUTIVO<br><code>AH</code> EJECUTIVO SCP<br>BD: columna Nombre</td>
+          <td>USUARIO_EJECUTIVO: código de usuario en SANTO (ej: x493786). EJECUTIVO SCP: nombre resuelto usando BD Lista Ejecutivos. La tabla dinámica usa el nombre resuelto (col AH) como dimensión de fila.</td>
+          <td>RN-003: <code>=BUSCARV(AZ_n; BD_Lista_Ejecutivos; col_nombre; 0)</code>. El nombre real del ejecutivo reemplaza el código de usuario en la visualización. Si el código no existe en BD Lista Ejecutivos se muestra el código crudo.</td>
+          <td>TEXT (código USUARIO)</td>
+          <td>TEXT (nombre ejecutivo)</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+        <tr>
+          <td><strong>Conteo Ventas (eje X)</strong></td>
+          <td>SANTO</td>
+          <td>CERTIFICADOS</td>
+          <td><code>BH</code> TIPO<br><code>AH</code> EJECUTIVO SCP</td>
+          <td>Cantidad de certificados colocados por cada ejecutivo. Se ordena de mayor a menor para mostrar el ranking.</td>
+          <td>Tabla dinámica: COUNT de filas agrupadas por EJECUTIVO SCP donde TIPO="REAL". La ordenación descendente se configura en las opciones de la tabla dinámica.</td>
+          <td>TEXT (EJECUTIVO)<br>TEXT (TIPO)</td>
+          <td>INTEGER (conteo)</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+        <tr>
+          <td><strong>Filtro CANAL</strong><br>(slicer/filtro informe)</td>
+          <td>SANTO + BD Lista Ejecutivos + BD Alianzas</td>
+          <td>CERTIFICADOS (col derivada CANAL)</td>
+          <td><code>M</code> Tipo Canal<br><code>AZ</code> USUARIO_EJECUTIVO<br>Campo derivado CANAL</td>
+          <td>Permite filtrar el ranking por canal comercial: SCP DIRECTO, CLUSTER, DIGITAL, ALIANZA. El CANAL se deriva según RN-003.</td>
+          <td>Filtro de informe en tabla dinámica sobre el campo CANAL derivado. El usuario selecciona el canal desde el dashboard; la tabla dinámica muestra solo ejecutivos del canal elegido.</td>
+          <td>TEXT (CANAL derivado)</td>
+          <td>Filtro interactivo</td>
+          <td><span class="badge badge-green">Mapeado</span></td>
+        </tr>
+        <tr>
+          <td><strong>JEFATURA / GRUPO</strong><br>(agrupación opcional)</td>
+          <td>SANTO + BD Lista Ejecutivos</td>
+          <td>CERTIFICADOS (col BC, BE)<br>+ BD Lista Ejecutivos</td>
+          <td><code>BC</code> USUARIO_JEFATURA<br><code>BE</code> USUARIO_JEFATURA2<br>BD: columnas jerarquía</td>
+          <td>La jefatura agrupa a los ejecutivos bajo un responsable de ventas. Permite ver el ranking por jefatura en lugar de por ejecutivo individual.</td>
+          <td>RN-003 (jerarquía): cuando el pivot se configura a nivel de jefatura, usa USUARIO_JEFATURA resuelto vía BD Lista Ejecutivos en lugar de USUARIO_EJECUTIVO.</td>
+          <td>TEXT (código JEFATURA)</td>
+          <td>TEXT (nombre jefatura)</td>
+          <td><span class="badge badge-yellow">Pendiente<br>P-02 BD Ejec.</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── S5: Campos CERTIFICADOS ── -->
+  <h1 class="section page-break" id="s5">5. Campos de CERTIFICADOS referenciados por el Dashboard</h1>
+
+  <p>Inventario de todas las columnas de la hoja <strong>CERTIFICADOS</strong> que alimentan directa o indirectamente los gráficos del módulo VENTAS.</p>
+
+  <table class="table-dark">
+    <tr><th>Columna Excel</th><th>Nombre campo</th><th>Tipo</th><th>Origen</th><th>Descripción</th><th>Gráfico(s) que lo usan</th><th>Regla de negocio</th></tr>
+    <tr>
+      <td><code>col AS</code></td><td>FECHA ORIG</td><td>DATE</td><td>SANTO</td>
+      <td>Fecha de originación / colocación del certificado. Campo primario para derivar PERIODO y AÑO.</td>
+      <td>G89, G7, G131</td><td>Base para RN-001 y RN-006</td>
+    </tr>
+    <tr>
+      <td><code>col P</code></td><td>PERIODO</td><td>TEXT (YYYYMM)</td><td>Calculado Excel</td>
+      <td>Período en formato YYYYMM derivado de FECHA ORIG. Dimensión temporal universal del dashboard.</td>
+      <td>G89, G131, G7, G5</td><td>—</td>
+    </tr>
+    <tr>
+      <td><code>col BF</code></td><td>AÑO_FEC_ORIG</td><td>INTEGER</td><td>Calculado Excel</td>
+      <td>Año de colocación del certificado. Usado como filtro de informe en las tablas dinámicas del dashboard.</td>
+      <td>G7</td><td>—</td>
+    </tr>
+    <tr>
+      <td><code>col BH</code></td><td>TIPO</td><td>TEXT</td><td>Calculado Excel (RN-001)</td>
+      <td>Clasifica el registro: 'REAL' (operación productiva) o 'PRUEBA' (registro de test). Filtro universal de todos los gráficos de ventas.</td>
+      <td>G89, G131, G5, G7, G44</td><td><strong>RN-001</strong></td>
+    </tr>
+    <tr>
+      <td><code>col N</code></td><td>CERTIFICADO VALIDO?</td><td>TEXT (SI/NO)</td><td>Calculado Excel (RN-006)</td>
+      <td>Flag de validez del certificado. Solo certificados con "SI" se incluyen en métricas de ventas.</td>
+      <td>G89, G131</td><td><strong>RN-006</strong></td>
+    </tr>
+    <tr>
+      <td><code>col Z</code></td><td>Situación del Contrato</td><td>TEXT</td><td>SANTO</td>
+      <td>Estado actual del contrato: ACTIVO / RETIRADO / RESUELTO. Determina si el certificado es activo, se retiró o se resolvió por deuda.</td>
+      <td>G89 (CERTIF ACTIVOS, CUPOS LIBRES, RETIRO, RESOL)</td><td>—</td>
+    </tr>
+    <tr>
+      <td><code>col AA</code></td><td>Modalidad Resolución</td><td>TEXT</td><td>SANTO</td>
+      <td>Subcategoría del retiro o resolución del contrato. Los valores exactos del dominio están por confirmar con SANTO (P-03).</td>
+      <td>G89 (RETIRO ASOC, RESOL x DEUDA)</td><td>H-06 — pendiente P-03</td>
+    </tr>
+    <tr>
+      <td><code>col BO</code></td><td>FECHA RETIRO</td><td>DATE</td><td>SANTO</td>
+      <td>Fecha en que se formalizó el retiro o resolución del contrato. Usada para clasificar retiros por período mensual.</td>
+      <td>G89 (CUPOS LIBRES, RETIRO, RESOL)</td><td>RN-010 — pendiente</td>
+    </tr>
+    <tr>
+      <td><code>col AZ</code></td><td>USUARIO_EJECUTIVO</td><td>TEXT (código)</td><td>SANTO</td>
+      <td>Código de usuario del ejecutivo que colocó el certificado en el sistema SANTO (ej: x493786). Requiere resolución vía BD Lista Ejecutivos.</td>
+      <td>G44, G5</td><td><strong>RN-003</strong></td>
+    </tr>
+    <tr>
+      <td><code>col AH</code></td><td>EJECUTIVO SCP</td><td>TEXT (nombre)</td><td>Calculado Excel (RN-003)</td>
+      <td>Nombre real del ejecutivo resuelto desde USUARIO_EJECUTIVO usando BD Lista Ejecutivos. Campo que aparece en el ranking del dashboard.</td>
+      <td>G44, G5</td><td><strong>RN-003</strong></td>
+    </tr>
+    <tr>
+      <td><code>col M</code></td><td>Tipo Canal</td><td>TEXT</td><td>SANTO / Calculado</td>
+      <td>Clasificación del canal de venta. Junto con USUARIO_EJECUTIVO y BD Alianzas, determina el campo derivado CANAL.</td>
+      <td>G5, G44</td><td><strong>RN-003</strong></td>
+    </tr>
+    <tr>
+      <td><code>col U</code></td><td>Dealer</td><td>TEXT</td><td>SANTO</td>
+      <td>Nombre del concesionario aliado si aplica (Autoland, Astara, Derco, Interamericana, Revo Motors). Determina CANAL = "ALIANZA".</td>
+      <td>G5</td><td>RN-003 + BD Alianzas</td>
+    </tr>
+    <tr>
+      <td><code>col BC</code></td><td>USUARIO_JEFATURA</td><td>TEXT (código)</td><td>SANTO</td>
+      <td>Código del jefe de ventas responsable del ejecutivo. Resuelto vía BD Lista Ejecutivos para mostrar jerarquía en el ranking.</td>
+      <td>G44 (agrupación opcional)</td><td>RN-003</td>
+    </tr>
+    <tr>
+      <td><code>col BE</code></td><td>USUARIO_JEFATURA2</td><td>TEXT (código)</td><td>SANTO</td>
+      <td>Segundo nivel de jefatura. Parte de la cadena de jerarquía comercial (RN-003).</td>
+      <td>G44 (agrupación opcional)</td><td>RN-003</td>
+    </tr>
+    <tr>
+      <td><code>col AO</code></td><td>MOTIVO RETIRO</td><td>TEXT</td><td>SANTO</td>
+      <td>Descripción libre del motivo de retiro del contrato. Complementa Modalidad Resolución para la clasificación de retiros.</td>
+      <td>G89 (contexto CUPOS LIBRES)</td><td>—</td>
+    </tr>
+  </table>
+
+  <!-- ── S6: Reglas de negocio ── -->
+  <h1 class="section page-break" id="s6">6. Reglas de negocio implícitas</h1>
+
+  <p>Las siguientes reglas de negocio están implementadas como fórmulas Excel en la hoja CERTIFICADOS o como configuraciones de las tablas dinámicas de la hoja TD. No están documentadas formalmente en el sistema SANTO.</p>
+
+  <table class="table-red">
+    <tr><th>ID</th><th>Nombre</th><th>Implementación actual (Excel)</th><th>Campos involucrados</th><th>Impacto en Dashboard</th><th>Estado</th></tr>
+    <tr>
+      <td><strong>RN-001</strong></td>
+      <td>Clasificación TIPO (REAL / PRUEBA)</td>
+      <td>Columna BH de CERTIFICADOS: fórmula que evalúa si el registro es una operación productiva o un test de datos.</td>
+      <td><code>BH</code> TIPO</td>
+      <td>Filtro universal en todos los gráficos de ventas. Sin este filtro, las métricas incluirían registros de prueba y serían incorrectas.</td>
+      <td><span class="badge badge-green">Documentado</span></td>
+    </tr>
+    <tr>
+      <td><strong>RN-003</strong></td>
+      <td>Resolución de jerarquía de ejecutivos</td>
+      <td>BUSCARV de USUARIO_EJECUTIVO (col AZ) contra BD Lista Ejecutivos → nombre ejecutivo (col AH) y CANAL del ejecutivo.</td>
+      <td><code>AZ</code> USUARIO_EJ.<br><code>AH</code> EJECUTIVO SCP<br><code>M</code> Tipo Canal<br><code>BC</code> USUARIO_JEF.</td>
+      <td>Determina el nombre del ejecutivo en el ranking (G44) y la segmentación por CANAL (G5). Sin esta resolución, los gráficos mostrarían códigos de usuario ilegibles.</td>
+      <td><span class="badge badge-green">Documentado</span></td>
+    </tr>
+    <tr>
+      <td><strong>RN-006</strong></td>
+      <td>Certificado válido y comisión CIA</td>
+      <td>Columna N de CERTIFICADOS: flag "SI"/"NO" basado en condiciones de validez del certificado (comisión CIA pagada y otros criterios).</td>
+      <td><code>N</code> CERTIFICADO VALIDO?<br><code>D</code> % CIA</td>
+      <td>Filtro adicional en la tabla de resumen mensual (G89, G131). Excluye certificados inválidos del conteo de ventas.</td>
+      <td><span class="badge badge-green">Documentado</span></td>
+    </tr>
+    <tr>
+      <td><strong>RN-010</strong></td>
+      <td>Cupos Libres — reasignación por retiro</td>
+      <td>Columna calculada en tabla TD filas 267–281: conteo de certificados retirados en el período que liberan un cupo en el grupo.</td>
+      <td><code>Z</code> Situación Contrato<br><code>BO</code> FECHA RETIRO<br><code>AA</code> Modalidad Resolución</td>
+      <td>Métrica CUPOS LIBRES en Gráfico 89. Representa la capacidad de incorporar nuevos asociados en cupos dejados por retiros previos.</td>
+      <td><span class="badge badge-red">Pendiente — P-01/P-03<br>confirmar con negocio</span></td>
+    </tr>
+  </table>
+
+  <!-- ── S7: Hallazgos y pendientes ── -->
+  <h1 class="section page-break" id="s7">7. Hallazgos y pendientes</h1>
+
+  <h2 class="sub">7.1 Hallazgos del análisis</h2>
+  <table class="table-orange">
+    <tr><th>#</th><th>Hallazgo</th><th>Descripción</th><th>Implicación operativa</th></tr>
+    <tr>
+      <td>H-01</td>
+      <td>TIPO="REAL" es filtro universal</td>
+      <td>Todos los gráficos de ventas aplican implícitamente TIPO="REAL" como filtro de informe en la tabla dinámica o mediante la tabla de fórmulas.</td>
+      <td>Cualquier análisis de ventas que no aplique este filtro producirá datos inflados con registros de prueba.</td>
+    </tr>
+    <tr>
+      <td>H-02</td>
+      <td>CANAL es la dimensión universal de corte</td>
+      <td>El campo CANAL (derivado por RN-003) aparece en todos los gráficos de ventas como dimensión de segmentación o filtro.</td>
+      <td>La calidad del campo CANAL depende de la integridad de BD Lista Ejecutivos y BD Alianzas. Errores en estas tablas se propagan a todos los reportes.</td>
+    </tr>
+    <tr>
+      <td>H-03</td>
+      <td>Tabla TD filas 267–281 es una tabla de fórmulas, no una tabla dinámica</td>
+      <td>Los Gráficos 89 y 131 no consumen una tabla dinámica sino una tabla estática de fórmulas CONTAR.SI.CONJUNTO en la hoja TD.</td>
+      <td>La lógica de cálculo está embebida en las celdas. Un cambio en la estructura de CERTIFICADOS puede romper las referencias sin aviso.</td>
+    </tr>
+    <tr>
+      <td>H-04</td>
+      <td>Gráfico 131 depende del orden cronológico de filas</td>
+      <td>El comparativo de períodos usa resta directa entre filas adyacentes. Si la tabla TD rows 267–281 pierde el orden cronológico, el comparativo muestra valores incorrectos sin error visible.</td>
+      <td>Riesgo operativo: el usuario no tiene ningún indicador visual si el orden se altera. Se debe documentar como restricción operativa del dashboard actual.</td>
+    </tr>
+    <tr>
+      <td>H-05</td>
+      <td>CUPOS LIBRES no tiene fórmula confirmada</td>
+      <td>La métrica CUPOS LIBRES aparece en la tabla resumen TD pero su fórmula exacta no ha sido validada con el equipo de negocio.</td>
+      <td>Posible interpretación incorrecta: ¿es siempre igual a retiros totales? ¿o solo incluye ciertos tipos de retiro? Requiere sesión de validación (P-01, RN-010).</td>
+    </tr>
+    <tr>
+      <td>H-06</td>
+      <td>RESOL x DEUDA y RETIRO A SOLICITUD son subcategorías de Modalidad Resolución</td>
+      <td>Ambas métricas del dashboard dependen de los valores exactos del campo Modalidad Resolución en SANTO. Estos valores no están documentados.</td>
+      <td>Si SANTO cambia los valores del dominio (ej: capitalización, traducción), las fórmulas del dashboard dejan de clasificar correctamente los retiros.</td>
+    </tr>
+    <tr>
+      <td>H-07</td>
+      <td>Los gráficos de REFERIDOS (5) son independientes del módulo VENTAS</td>
+      <td>Los Gráficos 28, 29, 45, 60, 108 consumen TD_REFERIDOS2 como pivot source, que unifica BD_REFERIDOS2 + Agendas Comerciales. Son un módulo completamente separado.</td>
+      <td>El análisis de REFERIDOS debe realizarse en un documento separado con la misma metodología de trazabilidad.</td>
+    </tr>
+    <tr>
+      <td>H-08</td>
+      <td>Todos los gráficos en una sola hoja sin separación por módulo</td>
+      <td>La hoja DASHBOARD es una sola capa con todos los objetos superpuestos. No existen pestañas o sub-secciones separadas por VENTAS vs REFERIDOS.</td>
+      <td>La gestión y mantenimiento de los gráficos requiere conocer los IDs internos (chart XML) para identificar a qué módulo pertenece cada objeto.</td>
+    </tr>
+  </table>
+
+  <h2 class="sub">7.2 Acciones pendientes de validación</h2>
+  <table class="table-red">
+    <tr><th>#</th><th>Acción</th><th>Responsable</th><th>Prioridad</th><th>Referencia</th></tr>
+    <tr>
+      <td>P-01</td>
+      <td>Confirmar columnas exactas del rango TD!$A$267:$N$281: nombres reales, orden de las métricas y fórmulas completas de cada columna.</td>
+      <td>Equipo de datos + usuario del dashboard</td>
+      <td><span class="badge badge-red">Alta</span></td>
+      <td>H-03, G89, G131</td>
+    </tr>
+    <tr>
+      <td>P-02</td>
+      <td>Documentar RN-010: lógica exacta de CUPOS LIBRES. ¿La fórmula cuenta todos los retiros del período o solo un subconjunto? ¿Incluye resoluciones por deuda?</td>
+      <td>Equipo de datos + área de negocio Fondos Colectivos</td>
+      <td><span class="badge badge-red">Alta</span></td>
+      <td>H-05, RN-010, G89</td>
+    </tr>
+    <tr>
+      <td>P-03</td>
+      <td>Confirmar el dominio exacto del campo Modalidad Resolución en SANTO: valores posibles (texto exacto, mayúsculas/minúsculas) que clasifican como "retiro a solicitud" vs "resolución por deuda".</td>
+      <td>Equipo de datos + Softek (SANTO)</td>
+      <td><span class="badge badge-red">Alta</span></td>
+      <td>H-06, G89 métricas RETIRO y RESOL</td>
+    </tr>
+    <tr>
+      <td>P-04</td>
+      <td>Analizar los 5 gráficos de REFERIDOS (Gráfico 28, 29, 45, 60, 108) con la misma metodología de trazabilidad. Requiere levantamiento de la hoja TD_REFERIDOS2.</td>
+      <td>Equipo de datos</td>
+      <td><span class="badge badge-orange">Media</span></td>
+      <td>H-07</td>
+    </tr>
+    <tr>
+      <td>P-05</td>
+      <td>Levantar los KPI cards numéricos del DASHBOARD (valores sin gráfico: "Total Activos", "Ventas del mes", etc.) y confirmar sus fuentes.</td>
+      <td>Equipo de datos + usuario del dashboard</td>
+      <td><span class="badge badge-orange">Media</span></td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>P-06</td>
+      <td>Completar levantamiento de BD Lista Ejecutivos: confirmar los 16 campos, la clave de búsqueda usada en BUSCARV y la frecuencia de actualización de esta tabla de referencia.</td>
+      <td>Equipo de datos + responsable comercial</td>
+      <td><span class="badge badge-red">Alta</span></td>
+      <td>RN-003, G44, G5</td>
+    </tr>
+  </table>
+
+  <!-- Pie de página -->
+  <div style="margin-top:60px; padding-top:20px; border-top:1px solid var(--border); font-size:9pt; color:#888; text-align:center;">
+    <p>Trazabilidad DASHBOARD v1.0 — Fondos Colectivos SCP — Confidencial — Abril 2026</p>
+    <p>Equipo de Datos — Proyecto Migración · Este documento es un borrador pendiente de validación con el área de negocio.</p>
+  </div>
+
+</div>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+</script>
+</body>
+</html>
