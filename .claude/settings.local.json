@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pandoc --version)"
+      "Bash(pandoc --version)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }
