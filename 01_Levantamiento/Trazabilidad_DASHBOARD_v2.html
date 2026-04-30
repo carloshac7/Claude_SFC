@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trazabilidad de Datos — DASHBOARD SFC v2</title>
+<title>Trazabilidad de Datos — DASHBOARD SFC v3</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 9pt; color: #222; background: #f0f2f5; }
@@ -13,7 +13,7 @@ body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 9pt; color: #222; 
   border-bottom: 4px solid #e63946;
 }
 .main-header h1 { font-size: 13pt; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-.main-header p { font-size: 8.5pt; opacity: .75; margin-top: 4px; }
+.main-header p  { font-size: 8.5pt; opacity: .75; margin-top: 4px; }
 
 .section-label {
   background: #253059; color: #fff; text-align: center;
@@ -28,13 +28,13 @@ body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 9pt; color: #222; 
   border-radius: 4px; padding: 10px 14px; margin: 10px 0 18px; font-size: 8.5pt;
 }
 .example-box .label { font-weight: 700; color: #1565c0; margin-bottom: 4px; }
-code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1px 5px; font-family: 'Consolas', monospace; font-size: 8pt; }
+code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1px 5px;
+       font-family: 'Consolas', monospace; font-size: 8pt; }
 
 /* ── CHART SECTION ── */
 .chart-section {
   background: #fff; border: 1px solid #ccc; border-radius: 6px;
-  margin: 14px 0; overflow: hidden;
-  page-break-inside: avoid;
+  margin: 14px 0; overflow: hidden; page-break-inside: avoid;
 }
 .chart-section-header {
   background: #1a2744; color: #fff; padding: 10px 16px;
@@ -44,6 +44,7 @@ code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1p
   background: rgba(255,255,255,.2); border-radius: 4px;
   padding: 2px 8px; font-size: 8pt; font-weight: 700;
 }
+.chart-id-badge.ref { background: rgba(255,200,50,.3); }
 .chart-type-badge {
   background: rgba(255,255,255,.1); border-radius: 10px;
   padding: 2px 10px; font-size: 7.5pt;
@@ -64,7 +65,7 @@ code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1p
   padding: 6px 14px; font-weight: 700; font-size: 8pt;
   letter-spacing: .3px; text-transform: uppercase; color: #fff;
 }
-.pane-left .pane-header  { background: #1565c0; }
+.pane-left  .pane-header { background: #1565c0; }
 .pane-right .pane-header { background: #00695c; }
 
 /* ── FIELD ROWS ── */
@@ -82,7 +83,8 @@ code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1p
 .field-value.code-style { font-family: 'Consolas', monospace; font-size: 7.5pt; color: #1a2744; }
 .field-value.rule-style { font-size: 7.5pt; color: #333; }
 
-.tag { display: inline-block; border-radius: 3px; padding: 1px 6px; font-size: 7pt; font-weight: 700; margin: 1px 2px 1px 0; }
+.tag { display: inline-block; border-radius: 3px; padding: 1px 6px;
+       font-size: 7pt; font-weight: 700; margin: 1px 2px 1px 0; }
 .tag-green  { background: #c8e6c9; color: #1b5e20; }
 .tag-blue   { background: #bbdefb; color: #0d47a1; }
 .tag-orange { background: #ffe0b2; color: #bf360c; }
@@ -91,17 +93,22 @@ code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1p
 .tag-teal   { background: #b2dfdb; color: #004d40; }
 .tag-gray   { background: #eeeeee; color: #424242; }
 .tag-yellow { background: #fff9c4; color: #f57f17; }
+.tag-amber  { background: #fff3e0; color: #e65100; }
 
 .pending { color: #e65100; font-weight: 700; font-size: 7.5pt; }
 
-/* module dividers */
+/* ── MODULE DIVIDERS ── */
 .mod-divider {
   padding: 5px 16px; font-weight: 700; font-size: 8pt;
   letter-spacing: .5px; text-transform: uppercase;
 }
 .mod-cert   { background: #e0f2f1; color: #004d40; border-left: 4px solid #00695c; }
 .mod-ventas { background: #e3f2fd; color: #0d47a1; border-left: 4px solid #1565c0; }
-.mod-ref    { background: #f5f5f5; color: #757575; border-left: 4px solid #9e9e9e; }
+.mod-comp   { background: #fce4ec; color: #880e4f; border-left: 4px solid #ad1457; }
+.mod-ref    { background: #fff8e1; color: #6d4c00; border-left: 4px solid #f9a825; }
+
+/* ── REFERIDOS header variant ── */
+.chart-section-header.ref-header { background: #4a3500; }
 
 @media print {
   body { font-size: 8pt; background: #fff; }
@@ -114,35 +121,37 @@ code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1p
 
 <div class="main-header">
   <h1>Tabla de Trazabilidad de Datos — Dashboard SFC</h1>
-  <p>Archivo fuente: 20260228_SFC_Dashboard.xlsx · Hoja DASHBOARD · Proyecto Fondos Colectivos SCP · Abril 2026</p>
+  <p>Archivo fuente: 20260228_SFC_Dashboard.xlsx · Hoja DASHBOARD · Proyecto Fondos Colectivos SCP · Abril 2026 · v3</p>
 </div>
 
-<div class="section-label">TRAZABILIDAD CAMPO A CAMPO — FUENTE ORIGEN → FUENTE DESTINO</div>
+<div class="section-label">TRAZABILIDAD CAMPO A CAMPO — FUENTE ORIGEN → FUENTE DESTINO · 24 GRÁFICOS</div>
 
 <div class="page">
 
-<!-- Ejemplo de notación -->
 <div class="example-box">
-  <div class="label">Notación de referencia (Ejemplo 1 — shorthand):</div>
-  <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; FRENTE; FECHA ORIG; Cuenta de Id Solicitud)</code><br><br>
-  <div class="label">Notación extendida (Ejemplo 2 — formato completo): ver cada gráfico a continuación</div>
+  <div class="label">Convención de nombres:</div>
+  Los gráficos se identifican por su nombre en Excel (ej. <code>Gráfico 128</code>) seguido del nombre interno
+  de archivo (<code>chart23</code>). La notación de trazabilidad sigue el formato:<br><br>
+  <code>FUENTE.Tabla.(campos) → TD.NombreTabla.(campos destino) → Dashboard: "Título visual"</code>
 </div>
 
 <!-- ══════════════════════════════════════════════════════ -->
 <!-- MÓDULO: CERTIFICADOS ACTIVOS -->
 <!-- ══════════════════════════════════════════════════════ -->
-<div class="mod-divider mod-cert">📊 Módulo: Certificados Activos</div>
+<div class="mod-divider mod-cert" style="margin-top:8px;">📊 Módulo: Certificados Activos</div>
 
-<!-- ─── CHART 2 ─── -->
+<!-- ─── GRÁFICO 4 (chart2) ─── -->
 <div class="chart-section">
   <div class="chart-section-header">
-    <span class="chart-id-badge">chart2</span>
+    <span class="chart-id-badge">Gráfico 4</span>
     <span class="chart-title-text">Certificados Activos por Día / Equipo / Tipo</span>
     <span class="chart-type-badge">Barras apiladas</span>
     <span class="chart-id-badge" style="background:rgba(0,200,150,.25);">TD_Certif_Activos_DIA_EQUIPO_TIPO</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart2</span>
   </div>
   <div class="chart-notacion">
-    <strong>Notación:</strong> <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; FRENTE; FECHA ORIG; Cuenta de Id Solicitud)</code>
+    <strong>Notación:</strong>
+    <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; FRENTE; FECHA ORIG; Cuenta de Id Solicitud)</code>
     → <code>TD.TD_Certif_Activos_DIA_EQUIPO_TIPO.(DIA ORIG; FRENTE; Cuenta Id Solicitud)</code>
     → <strong>Dashboard: "CERTIFICADOS ACTIVOS [MES] POR DIA / EQUIPO / TIPO"</strong>
   </div>
@@ -151,40 +160,39 @@ code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1p
       <div class="pane-header">FUENTE ORIGEN</div>
       <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">SISTEMA FONDOS COLECTIVOS SOFTEK (SANTO)</div></div>
       <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (hoja CERTIFICADOS — Tabla3)</div></div>
-      <div class="field-row"><div class="field-label">Campo transformación_1</div><div class="field-value code-style">TD.TD_Certif_Activos_DIA_EQUIPO_TIPO.<br>(PERIODO; Estado Contrato; TIPO; FECHA ORIG; FRENTE; Cuenta de Id Solicitud)</div></div>
-      <div class="field-row"><div class="field-label">Campo transformación_2</div><div class="field-value code-style">—</div></div>
-      <div class="field-row"><div class="field-label">Definición de campos</div><div class="field-value">Certificados activos por día del mes y tipo de canal. Muestra cuántos certificados están activos en cada día hábil del período, desglosados por FRENTE (canal de venta).</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD.TD_Certif_Activos_DIA_EQUIPO_TIPO.<br>(PERIODO; Estado Contrato; TIPO; FECHA ORIG; FRENTE; Cuenta de Id Solicitud)</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Certificados activos por día del mes y tipo de canal. Muestra cuántos certificados están activos en cada día hábil del período, desglosados por FRENTE (canal de venta).</div></div>
       <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-blue">PERIODO</span> <span class="tag tag-green">Estado Contrato = Activo</span> <span class="tag tag-red">TIPO = REAL</span> <span class="tag tag-teal">FRENTE</span> <span class="tag tag-orange">FECHA ORIG</span></div></div>
-      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de Id Solicitud agrupado por DIA ORIG (FECHA ORIG) y FRENTE, filtrando: PERIODO = mes seleccionado, Estado Contrato = "Activo", TIPO = "REAL". Cada barra del gráfico es la suma de activos por día, apilada por canal.</div></div>
-      <div class="field-row"><div class="field-label">Es campo DA / DAC</div><div class="field-value">No</div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de Id Solicitud agrupado por DIA ORIG (FECHA ORIG) y FRENTE, filtrando: PERIODO = mes seleccionado, Estado Contrato = "Activo", TIPO = "REAL". Cada barra = suma de activos por día apilada por canal.</div></div>
     </div>
     <div class="pane pane-right">
       <div class="pane-header">FUENTE DESTINO</div>
       <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard (20260228_SFC_Dashboard.xlsx)</div></div>
-      <div class="field-row"><div class="field-label">Interfaz / Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico chart2</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 4</div></div>
       <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Certificados Activos (conteo diario por FRENTE)</div></div>
-      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Número de certificados activos por día del mes seleccionado, desglosado por canal de venta (DIG_DIRECTO, SCP_REFERIDOS, SCP_CLUSTER_DIRECTO). Permite identificar la evolución diaria del stock de contratos activos dentro del período.</div></div>
-      <div class="field-row"><div class="field-label">Tipo de dato destino</div><div class="field-value">Integer (conteo)</div></div>
-      <div class="field-row"><div class="field-label">Longitud destino</div><div class="field-value">10</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Número de certificados activos por día del mes seleccionado, desglosado por canal (DIG_DIRECTO, SCP_REFERIDOS, SCP_CLUSTER_DIRECTO). Permite identificar la evolución diaria del stock de contratos activos.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo)</div></div>
       <div class="field-row"><div class="field-label">Lista de valores</div><div class="field-value"><span class="tag tag-teal">DIG_DIRECTO</span> <span class="tag tag-blue">SCP_REFERIDOS</span> <span class="tag tag-green">SCP_CLUSTER_DIRECTO</span></div></div>
       <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Count de Id Solicitud (tabla dinámica TD_Certif_Activos_DIA_EQUIPO_TIPO)</div></div>
-      <div class="field-row"><div class="field-label">Frecuencia actualización</div><div class="field-value">A demanda (mensual — carga manual desde SANTO)</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (mensual — carga manual desde SANTO)</div></div>
       <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">ABR 26: 01/04 → DIG_DIRECTO=4, SCP_CLUSTER=1 · Total general=49 activos en el mes</div></div>
       <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
     </div>
   </div>
 </div>
 
-<!-- ─── CHART 3 ─── -->
+<!-- ─── GRÁFICO 5 (chart3) ─── -->
 <div class="chart-section">
   <div class="chart-section-header">
-    <span class="chart-id-badge">chart3</span>
+    <span class="chart-id-badge">Gráfico 5</span>
     <span class="chart-title-text">Acumulado Certificados Activos por Día Útil Restante</span>
     <span class="chart-type-badge">Líneas</span>
     <span class="chart-id-badge" style="background:rgba(0,200,150,.25);">TD_Certif_Activos_DIA_ACUM_EQUIPO_TIPO</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart3</span>
   </div>
   <div class="chart-notacion">
-    <strong>Notación:</strong> <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; DIAS_UTILES_RESTANTES; FLAG CIERRE DE MES; Cuenta Id Solicitud)</code>
+    <strong>Notación:</strong>
+    <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; DIAS_UTILES_RESTANTES; FLAG CIERRE DE MES; Cuenta Id Solicitud)</code>
     → <code>TD.TD_Certif_Activos_DIA_ACUM_EQUIPO_TIPO.(DIAS_UTILES_RESTANTES; Acumulado Id Solicitud)</code>
   </div>
   <div class="pane-grid">
@@ -192,38 +200,38 @@ code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1p
       <div class="pane-header">FUENTE ORIGEN</div>
       <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">SISTEMA FONDOS COLECTIVOS SOFTEK (SANTO)</div></div>
       <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (hoja CERTIFICADOS — Tabla3)</div></div>
-      <div class="field-row"><div class="field-label">Campo transformación_1</div><div class="field-value code-style">TD.TD_Certif_Activos_DIA_ACUM_EQUIPO_TIPO.<br>(PERIODO; Estado Contrato; TIPO; FLAG CIERRE DE MES; DIAS_UTILES_RESTANTES; Cuenta de Id Solicitud)</div></div>
-      <div class="field-row"><div class="field-label">Definición de campos</div><div class="field-value">Certificados activos acumulados al corte de cada día útil restante para el cierre del mes. FLAG CIERRE DE MES = "SI" identifica los registros del día de corte.</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD.TD_Certif_Activos_DIA_ACUM_EQUIPO_TIPO.<br>(PERIODO; Estado Contrato; TIPO; FLAG CIERRE DE MES; DIAS_UTILES_RESTANTES; Cuenta de Id Solicitud)</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Certificados activos acumulados al corte de cada día útil restante para el cierre del mes. FLAG CIERRE DE MES = "SI" identifica los registros del día de corte.</div></div>
       <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-blue">PERIODO</span> <span class="tag tag-green">Estado Contrato = Activo</span> <span class="tag tag-red">TIPO = REAL</span> <span class="tag tag-yellow">FLAG CIERRE DE MES = SI</span></div></div>
       <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de Id Solicitud agrupado por DIAS_UTILES_RESTANTES, filtrando FLAG CIERRE DE MES = "SI". Permite comparar el stock de activos al corte del mismo día útil en meses diferentes.</div></div>
-      <div class="field-row"><div class="field-label">Es campo DA / DAC</div><div class="field-value">No</div></div>
     </div>
     <div class="pane pane-right">
       <div class="pane-header">FUENTE DESTINO</div>
       <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
-      <div class="field-row"><div class="field-label">Interfaz / Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico chart3 (línea superpuesta)</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 5</div></div>
       <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Acumulado Certificados Activos (por día útil)</div></div>
       <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Línea de acumulado de certificados activos al corte de cada día útil restante para el cierre del período. Sirve como referencia para comparar el ritmo de crecimiento mes a mes al mismo punto del ciclo.</div></div>
-      <div class="field-row"><div class="field-label">Tipo de dato destino</div><div class="field-value">Integer (conteo acumulado)</div></div>
-      <div class="field-row"><div class="field-label">Longitud destino</div><div class="field-value">10</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo acumulado)</div></div>
       <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Count acumulado de Id Solicitud por día útil</div></div>
-      <div class="field-row"><div class="field-label">Frecuencia actualización</div><div class="field-value">A demanda (mensual)</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (mensual)</div></div>
       <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">Día útil 10 restante → 49 certificados activos acumulados (ABR 26)</div></div>
       <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
     </div>
   </div>
 </div>
 
-<!-- ─── CHART 4 ─── -->
+<!-- ─── GRÁFICO 7 (chart4) ─── -->
 <div class="chart-section">
   <div class="chart-section-header">
-    <span class="chart-id-badge">chart4</span>
+    <span class="chart-id-badge">Gráfico 7</span>
     <span class="chart-title-text">Certificados Activos por Equipo / Tipo — Mes</span>
     <span class="chart-type-badge">Barras horizontales</span>
     <span class="chart-id-badge" style="background:rgba(0,200,150,.25);">TD_Total_Certif_Activos_MES_EQUIPO_TIPO</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart4</span>
   </div>
   <div class="chart-notacion">
-    <strong>Notación:</strong> <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; FRENTE; Cuenta Id Solicitud)</code>
+    <strong>Notación:</strong>
+    <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; FRENTE; Cuenta Id Solicitud)</code>
     → <code>TD.TD_Total_Certif_Activos_MES_EQUIPO_TIPO.(FRENTE[detalle]; Cuenta Id Solicitud)</code>
   </div>
   <div class="pane-grid">
@@ -231,101 +239,101 @@ code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1p
       <div class="pane-header">FUENTE ORIGEN</div>
       <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">SISTEMA FONDOS COLECTIVOS SOFTEK (SANTO)</div></div>
       <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (hoja CERTIFICADOS — Tabla3)</div></div>
-      <div class="field-row"><div class="field-label">Campo transformación_1</div><div class="field-value code-style">TD.TD_Total_Certif_Activos_MES_EQUIPO_TIPO.<br>(PERIODO; Estado Contrato; TIPO; FRENTE; Cuenta de Id Solicitud)</div></div>
-      <div class="field-row"><div class="field-label">Definición de campos</div><div class="field-value">Total de certificados activos en el mes seleccionado, agrupados por subcanal de venta (detalle de FRENTE). Muestra la distribución de activos por equipo comercial al cierre del período.</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD.TD_Total_Certif_Activos_MES_EQUIPO_TIPO.<br>(PERIODO; Estado Contrato; TIPO; FRENTE; Cuenta de Id Solicitud)</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Total de certificados activos en el mes seleccionado, agrupados por subcanal de venta (detalle de FRENTE). Muestra distribución de activos por equipo comercial al cierre del período.</div></div>
       <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-blue">PERIODO</span> <span class="tag tag-green">Estado Contrato = Activo</span> <span class="tag tag-red">TIPO = REAL</span></div></div>
-      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de Id Solicitud agrupado por FRENTE (subcanal detallado), filtrando PERIODO = mes seleccionado, Estado Contrato = "Activo", TIPO = "REAL". Resultado: una barra por subcanal.</div></div>
-      <div class="field-row"><div class="field-label">Es campo DA / DAC</div><div class="field-value">No</div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de Id Solicitud agrupado por FRENTE (subcanal detallado). Resultado: una barra por subcanal ordenado de mayor a menor.</div></div>
     </div>
     <div class="pane pane-right">
       <div class="pane-header">FUENTE DESTINO</div>
       <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
-      <div class="field-row"><div class="field-label">Interfaz / Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico chart4</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 7</div></div>
       <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Certificados Activos totales por subcanal (mes)</div></div>
-      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Número total de certificados activos en el período seleccionado, desglosado por subcanal de venta. Permite evaluar el peso relativo de cada equipo comercial en el stock de contratos vigentes.</div></div>
-      <div class="field-row"><div class="field-label">Tipo de dato destino</div><div class="field-value">Integer (conteo)</div></div>
-      <div class="field-row"><div class="field-label">Longitud destino</div><div class="field-value">10</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Número total de certificados activos en el período, desglosado por subcanal de venta. Permite evaluar el peso relativo de cada equipo comercial en el stock de contratos vigentes.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo)</div></div>
       <div class="field-row"><div class="field-label">Lista de valores</div><div class="field-value"><span class="tag tag-teal">DIG_DIRECTO</span> <span class="tag tag-blue">SCP_REFERIDOS</span> <span class="tag tag-green">SCP_CLUSTER_DIRECTO</span></div></div>
       <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Count agrupado por FRENTE (tabla dinámica)</div></div>
-      <div class="field-row"><div class="field-label">Frecuencia actualización</div><div class="field-value">A demanda (mensual)</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (mensual)</div></div>
       <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">ABR 26: SCP_CLUSTER_DIRECTO=21 · SCP_REFERIDOS=11 · DIG_DIRECTO=17 · Total=49</div></div>
       <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
     </div>
   </div>
 </div>
 
-<!-- ─── CHART 5 ─── -->
+<!-- ─── GRÁFICO 14 (chart5) ─── -->
 <div class="chart-section">
   <div class="chart-section-header">
-    <span class="chart-id-badge">chart5</span>
-    <span class="chart-title-text">Resumen Mensual por Canal (Agrupado)</span>
+    <span class="chart-id-badge">Gráfico 14</span>
+    <span class="chart-title-text">Resumen Mensual Certificados Activos por Canal (Agrupado)</span>
     <span class="chart-type-badge">Barras agrupadas</span>
     <span class="chart-id-badge" style="background:rgba(0,200,150,.25);">TD_Total_Certif_Activos_MES_EQUIPO</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart5</span>
   </div>
   <div class="chart-notacion">
-    <strong>Notación:</strong> <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; FRENTE[agrupado]; Cuenta Id Solicitud)</code>
-    → <code>TD.TD_Total_Certif_Activos_MES_EQUIPO.(CANAL[CANAL DIG / CLUSTER]; Cuenta Id Solicitud)</code>
+    <strong>Notación:</strong>
+    <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; FRENTE[agrupado]; Cuenta Id Solicitud)</code>
+    → <code>TD.TD_Total_Certif_Activos_MES_EQUIPO.(CANAL[DIG / CLUSTER]; Cuenta Id Solicitud)</code>
   </div>
   <div class="pane-grid">
     <div class="pane pane-left">
       <div class="pane-header">FUENTE ORIGEN</div>
       <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">SISTEMA FONDOS COLECTIVOS SOFTEK (SANTO)</div></div>
       <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (hoja CERTIFICADOS — Tabla3)</div></div>
-      <div class="field-row"><div class="field-label">Campo transformación_1</div><div class="field-value code-style">TD.TD_Total_Certif_Activos_MES_EQUIPO.<br>(PERIODO; Estado Contrato; TIPO; CANAL; Cuenta de Id Solicitud)</div></div>
-      <div class="field-row"><div class="field-label">Definición de campos</div><div class="field-value">Certificados activos del mes agrupados en dos macro-canales: CANAL DIG (digital) y CLUSTER. Nivel de agrupación superior al chart4.</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD.TD_Total_Certif_Activos_MES_EQUIPO.<br>(PERIODO; Estado Contrato; TIPO; CANAL; Cuenta de Id Solicitud)</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Certificados activos del mes agrupados en dos macro-canales: CANAL DIG (digital) y CLUSTER. Nivel de agrupación superior al Gráfico 7.</div></div>
       <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-blue">PERIODO</span> <span class="tag tag-green">Estado Contrato = Activo</span> <span class="tag tag-red">TIPO = REAL</span></div></div>
-      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de Id Solicitud agrupado por CANAL (nivel macro), donde CANAL DIG = DIG_DIRECTO, y CLUSTER = SCP_REFERIDOS + SCP_CLUSTER_DIRECTO.</div></div>
-      <div class="field-row"><div class="field-label">Es campo DA / DAC</div><div class="field-value">No</div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT agrupado por CANAL macro: CANAL DIG = DIG_DIRECTO; CLUSTER = SCP_REFERIDOS + SCP_CLUSTER_DIRECTO.</div></div>
     </div>
     <div class="pane pane-right">
       <div class="pane-header">FUENTE DESTINO</div>
       <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
-      <div class="field-row"><div class="field-label">Interfaz / Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico chart5</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 14</div></div>
       <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Certificados Activos por Canal (macro)</div></div>
-      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Distribución de certificados activos en el mes entre los dos macro-canales: Canal Digital y Cluster. Vista consolidada para KPI de mix de canal.</div></div>
-      <div class="field-row"><div class="field-label">Tipo de dato destino</div><div class="field-value">Integer (conteo)</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Distribución de certificados activos en el mes entre dos macro-canales: Canal Digital y Cluster. Vista consolidada para KPI de mix de canal.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo)</div></div>
       <div class="field-row"><div class="field-label">Lista de valores</div><div class="field-value"><span class="tag tag-teal">CANAL DIG</span> <span class="tag tag-green">CLUSTER</span></div></div>
-      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Count agrupado por CANAL macro (2 niveles)</div></div>
-      <div class="field-row"><div class="field-label">Frecuencia actualización</div><div class="field-value">A demanda (mensual)</div></div>
       <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">ABR 26: CANAL DIG=17 · CLUSTER=32 · Total=49</div></div>
       <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
     </div>
   </div>
 </div>
 
-<!-- ─── CHART 11 ─── -->
+<!-- ─── GRÁFICO 43 + GRÁFICO 44 (chart11 + chart12) ─── -->
 <div class="chart-section">
   <div class="chart-section-header">
-    <span class="chart-id-badge">chart11</span>
-    <span class="chart-title-text">Certificados Activos por Mes de Colocación</span>
-    <span class="chart-type-badge">Barras agrupadas</span>
-    <span class="chart-id-badge" style="background:rgba(150,150,150,.25);">Sin tabla dinámica (rango directo TD!F-I 106:115)</span>
+    <span class="chart-id-badge">Gráfico 43</span>
+    <span class="chart-id-badge">Gráfico 44</span>
+    <span class="chart-title-text">Certificados Activos por Mes de Colocación + % Activos (Línea)</span>
+    <span class="chart-type-badge">Barras + Línea eje secundario</span>
+    <span class="chart-id-badge" style="background:rgba(150,150,150,.25);">TD!F106:I115</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart11 + chart12</span>
   </div>
   <div class="chart-notacion">
-    <strong>Notación:</strong> <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; FECHA ORIG[mes]; Cuenta Id Solicitud)</code>
-    → <code>TD.(F106:I115) — tabla de fórmulas por mes de colocación</code>
+    <strong>Notación:</strong>
+    <code>CERTIFICADOS.Tabla3.(FECHA ORIG[mes]; Estado Contrato; TIPO; CIA 0%; Cuenta Id Solicitud)</code>
+    → <code>TD.(F106:I115) — tabla fórmulas: MES / SIN CAMPAÑA / CIA 0% / TOTAL</code>
+    → Gráfico 44: <code>TD.(I106:I115)</code> — línea TOTAL sobre eje secundario
   </div>
   <div class="pane-grid">
     <div class="pane pane-left">
       <div class="pane-header">FUENTE ORIGEN</div>
       <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">SISTEMA FONDOS COLECTIVOS SOFTEK (SANTO)</div></div>
       <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (Tabla3) → TD rango F106:I115 (fórmulas)</div></div>
-      <div class="field-row"><div class="field-label">Campo transformación_1</div><div class="field-value code-style">TD.(F106:I115).<br>(PERIODO_ALTA; Estado Contrato; TIPO; Activos; % Activos)</div></div>
-      <div class="field-row"><div class="field-label">Definición de campos</div><div class="field-value">Certificados activos agrupados por el mes en que fueron colocados (FECHA ORIG). Muestra el stock histórico de contratos vigentes según su mes de alta.</div></div>
-      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-green">Estado Contrato = Activo</span> <span class="tag tag-red">TIPO = REAL</span> <span class="tag tag-blue">PERIODO de alta</span></div></div>
-      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">CONTAR.SI.CONJUNTO sobre Tabla3 agrupando por PERIODO_ALTA (mes de FECHA ORIG), filtrando Estado Contrato = "Activo" y TIPO = "REAL". Dos series: activos absolutos y % activos del total.</div></div>
-      <div class="field-row"><div class="field-label">Es campo DA / DAC</div><div class="field-value">No</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD.(F106:I115).<br>(MES[serial fecha]; SIN_CAMPAÑA; CIA_0%; TOTAL)</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Certificados activos agrupados por el mes en que fueron colocados (FECHA ORIG). Dos series de barras: SIN CAMPAÑA y CIA 0% (comisión). La línea Gráfico 44 superpone el TOTAL para referencia de tendencia.</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-green">Estado Contrato = Activo</span> <span class="tag tag-red">TIPO = REAL</span> <span class="tag tag-blue">PERIODO de alta (202507–202604)</span></div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">Tabla F106:I115 con 10 filas (Jul-25 a Abr-26). Col G = activos SIN CAMPAÑA, Col H = activos CIA 0%, Col I = TOTAL. Gráfico 43 (barras) usa G-H; Gráfico 44 (línea) usa solo col I.</div></div>
     </div>
     <div class="pane pane-right">
       <div class="pane-header">FUENTE DESTINO</div>
       <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
-      <div class="field-row"><div class="field-label">Interfaz / Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico chart11</div></div>
-      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Certificados Activos (histórico por mes de colocación)</div></div>
-      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Distribución histórica del stock de certificados activos según el mes en que fueron colocados. Permite analizar la supervivencia (retención) de los contratos por cohorte mensual.</div></div>
-      <div class="field-row"><div class="field-label">Tipo de dato destino</div><div class="field-value">Integer (conteo) + Decimal (% activos)</div></div>
-      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">CONTAR.SI.CONJUNTO (fórmula en rango TD F106:I115)</div></div>
-      <div class="field-row"><div class="field-label">Frecuencia actualización</div><div class="field-value">A demanda (mensual)</div></div>
-      <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">MAR-25: 52 activos · FEB-26: 49 activos</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 43 (barras) + Gráfico 44 (línea)</div></div>
+      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Certificados Activos (histórico por mes de colocación + TOTAL línea)</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Distribución histórica del stock de certificados activos según el mes de colocación, separados por campaña (SIN CAMPAÑA vs CIA 0%). La línea del Gráfico 44 muestra el TOTAL acumulado por corte mensual, permitiendo analizar la supervivencia por cohorte.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo) — Gráfico 43 · Integer TOTAL — Gráfico 44</div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Fórmulas en rango TD F106:I115 (CONTAR.SI.CONJUNTO sobre Tabla3)</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (mensual)</div></div>
+      <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">Jul-25: SIN_CAMP=2, CIA_0%=7, TOTAL=9 · Feb-26: SIN_CAMP=118, CIA_0%=0, TOTAL=118 · Abr-26: TOTAL=49</div></div>
       <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
     </div>
   </div>
@@ -336,63 +344,66 @@ code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1p
 <!-- ══════════════════════════════════════════════════════ -->
 <div class="mod-divider mod-ventas" style="margin-top:16px;">📈 Módulo: Ventas</div>
 
-<!-- ─── CHART 17 + 18 ─── -->
+<!-- ─── GRÁFICO 88 + GRÁFICO 89 (chart17 + chart18) ─── -->
 <div class="chart-section">
   <div class="chart-section-header">
-    <span class="chart-id-badge">chart17</span><span class="chart-id-badge">chart18</span>
+    <span class="chart-id-badge">Gráfico 88</span>
+    <span class="chart-id-badge">Gráfico 89</span>
     <span class="chart-title-text">Ventas Total por Mes y Status de Certificado</span>
     <span class="chart-type-badge">Barras apiladas + Línea</span>
-    <span class="chart-id-badge" style="background:rgba(150,150,150,.25);">Rango directo TD!C-M 272:281</span>
+    <span class="chart-id-badge" style="background:rgba(150,150,150,.25);">TD!C272:M281</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart17 + chart18</span>
   </div>
   <div class="chart-notacion">
-    <strong>Notación:</strong> <code>CERTIFICADOS.Tabla3.(PERIODO; TIPO; Estado Contrato; Situación del Contrato; Cuenta Id Solicitud)</code>
-    → <code>TD.(C272:M281) — tabla resumen mensual por fórmulas</code>
+    <strong>Notación:</strong>
+    <code>CERTIFICADOS.Tabla3.(PERIODO; TIPO; Estado Contrato; Situación del Contrato; Cuenta Id Solicitud)</code>
+    → <code>TD.(C272:M281) — tabla resumen mensual por fórmulas (10 períodos)</code>
     → <strong>Dashboard: "Ventas Total por Mes y Status de Certificado"</strong>
   </div>
   <div class="pane-grid">
     <div class="pane pane-left">
       <div class="pane-header">FUENTE ORIGEN</div>
       <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">SISTEMA FONDOS COLECTIVOS SOFTEK (SANTO)</div></div>
-      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (Tabla3) → TD rango C272:M281 (tabla fórmulas)</div></div>
-      <div class="field-row"><div class="field-label">Campo transformación_1</div><div class="field-value code-style">TD.(C272:M281).<br>(PERIODO; VENTAS; CERTIF ACTIVOS; CUPOS LIBRES;<br>RETIRO A SOLICITUD ASOCIADO; RESOL x DEUDA; % acumulado)</div></div>
-      <div class="field-row"><div class="field-label">Campo transformación_2</div><div class="field-value code-style">—</div></div>
-      <div class="field-row"><div class="field-label">Definición de campos</div><div class="field-value">Resumen mensual de ventas (nuevos certificados) y estado del portafolio: activos, retirados (a solicitud del asociado) y resueltos (por deuda). La tabla compila los últimos 10 períodos en filas ordenadas cronológicamente.</div></div>
-      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-red">TIPO = REAL</span> <span class="tag tag-green">CERTIFICADO VALIDO? = SI</span> <span class="tag tag-blue">PERIODO</span></div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (Tabla3) → TD rango C272:M281</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD.(C272:M281).<br>(PERIODO; VENTAS; CERTIF_ACTIVOS; CUPOS_LIBRES;<br>RETIRO_SOLICITUD_ASOC; RESOL_x_DEUDA; %_acumulado)</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Resumen mensual de ventas (nuevos certificados) y estado del portafolio: activos, retirados y resueltos por deuda. Cubre los últimos 10 períodos.</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-red">TIPO = REAL</span> <span class="tag tag-green">CERTIFICADO VÁLIDO? = SI</span> <span class="tag tag-blue">PERIODO</span></div></div>
       <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">
-        <b>VENTAS</b>: CONTAR.SI.CONJUNTO(TIPO;"REAL"; CERTIFICADO VALIDO?;"SI"; PERIODO;mes_n)<br>
-        <b>CERTIF ACTIVOS</b>: CONTAR.SI.CONJUNTO(... Situación del Contrato;"ACTIVO")<br>
-        <b>RETIRO ASOC.</b>: CONTAR.SI.CONJUNTO(... Modalidad Resolución;"[valor a confirmar]"; FECHA RETIRO;mes_n) — <span class="pending">P-03</span><br>
+        <b>VENTAS</b>: CONTAR.SI.CONJUNTO(TIPO;"REAL"; CERT.VÁLIDO?;"SI"; PERIODO;mes_n)<br>
+        <b>CERTIF ACTIVOS</b>: CONTAR.SI.CONJUNTO(... Situación;"ACTIVO")<br>
+        <b>RETIRO ASOC.</b>: CONTAR.SI.CONJUNTO(... Modalidad Resolución;"[valor]") — <span class="pending">P-03</span><br>
         <b>RESOL x DEUDA</b>: CONTAR.SI.CONJUNTO(... Modalidad Resolución;"[valor deuda]") — <span class="pending">P-03</span><br>
-        chart18 (línea): columna M = % acumulado o tendencia
+        Gráfico 89 (línea): columna M = % acumulado o tendencia
       </div></div>
-      <div class="field-row"><div class="field-label">Es campo DA / DAC</div><div class="field-value">No</div></div>
     </div>
     <div class="pane pane-right">
       <div class="pane-header">FUENTE DESTINO</div>
       <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
-      <div class="field-row"><div class="field-label">Interfaz / Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico chart17 (barras) + chart18 (línea)</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 88 (barras) + Gráfico 89 (línea)</div></div>
       <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Ventas mensuales + Status del portafolio</div></div>
       <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Evolución mensual de ventas nuevas y composición del portafolio (activos, retirados, resueltos por deuda). La línea superpuesta muestra la tendencia acumulada o porcentual. Cubre los últimos 10 períodos disponibles.</div></div>
-      <div class="field-row"><div class="field-label">Tipo de dato destino</div><div class="field-value">Integer (conteo) · Decimal (% línea)</div></div>
-      <div class="field-row"><div class="field-label">Longitud destino</div><div class="field-value">10</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo) · Decimal (% línea)</div></div>
       <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">CONTAR.SI.CONJUNTO (tabla de fórmulas en TD C272:M281)</div></div>
-      <div class="field-row"><div class="field-label">Frecuencia actualización</div><div class="field-value">A demanda (mensual)</div></div>
-      <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">FEB-26: VENTAS=X · CERTIF ACTIVOS=402 · CUPOS LIBRES=pendiente confirmar (RN-010)</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (mensual)</div></div>
+      <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">Feb-26: CERTIF ACTIVOS=402 · CUPOS LIBRES=pendiente confirmar (RN-010)</div></div>
       <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
     </div>
   </div>
 </div>
 
-<!-- ─── CHART 21 + 22 ─── -->
+<!-- ─── GRÁFICO 109 + GRÁFICO 99 (chart21 + chart22) ─── -->
 <div class="chart-section">
   <div class="chart-section-header">
-    <span class="chart-id-badge">chart21</span><span class="chart-id-badge">chart22</span>
+    <span class="chart-id-badge">Gráfico 109</span>
+    <span class="chart-id-badge">Gráfico 99</span>
     <span class="chart-title-text">Ventas por Jefatura SCP / Supervisor Digital</span>
     <span class="chart-type-badge">Barras horizontales</span>
     <span class="chart-id-badge" style="background:rgba(0,200,150,.25);">TablaDinámica21 + TablaDinámica24</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart21 + chart22</span>
   </div>
   <div class="chart-notacion">
-    <strong>Notación:</strong> <code>CERTIFICADOS.Tabla3.(PERIODO; TIPO; USUARIO_JEFATURA; Cuenta Id Solicitud)</code>
+    <strong>Notación:</strong>
+    <code>CERTIFICADOS.Tabla3.(PERIODO; TIPO; USUARIO_JEFATURA; Cuenta Id Solicitud)</code>
     → <code>TD.TablaDinámica21.(USUARIO_JEFATURA[nombre resuelto]; PERIODO; Cuenta Id Solicitud)</code>
   </div>
   <div class="pane-grid">
@@ -400,100 +411,148 @@ code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1p
       <div class="pane-header">FUENTE ORIGEN</div>
       <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">SISTEMA FONDOS COLECTIVOS SOFTEK (SANTO) + BD Lista Ejecutivos</div></div>
       <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (Tabla3) + BD Lista Ejecutivos</div></div>
-      <div class="field-row"><div class="field-label">Campo transformación_1</div><div class="field-value code-style">TD.TablaDinámica21.<br>(PERIODO; TIPO; USUARIO_JEFATURA; Cuenta de Id Solicitud)</div></div>
-      <div class="field-row"><div class="field-label">Campo transformación_2</div><div class="field-value code-style">BD Lista Ejecutivos.(USUARIO_JEFATURA → Nombre Jefatura)</div></div>
-      <div class="field-row"><div class="field-label">Definición de campos</div><div class="field-value">Ventas del mes seleccionado agrupadas por jefatura de ventas (SCP) y supervisor digital. USUARIO_JEFATURA se resuelve a nombre real vía BD Lista Ejecutivos (RN-003). chart22 muestra detalle adicional por ejecutivo.</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD.TablaDinámica21.(PERIODO; TIPO; USUARIO_JEFATURA; Cuenta de Id Solicitud)<br>+ BD Lista Ejecutivos.(USUARIO_JEFATURA → Nombre Jefatura) [RN-003]</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Ventas del mes seleccionado por jefatura SCP (Gráfico 109) y supervisor digital (Gráfico 99). USUARIO_JEFATURA se resuelve a nombre real vía BD Lista Ejecutivos.</div></div>
       <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-blue">PERIODO</span> <span class="tag tag-red">TIPO = REAL</span> <span class="tag tag-purple">USUARIO_JEFATURA</span></div></div>
-      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de Id Solicitud agrupado por USUARIO_JEFATURA (resuelto a nombre), filtrado por TIPO="REAL" y PERIODO seleccionado. Ordenado de mayor a menor para mostrar ranking.</div></div>
-      <div class="field-row"><div class="field-label">Es campo DA / DAC</div><div class="field-value">No</div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de Id Solicitud agrupado por USUARIO_JEFATURA (resuelto a nombre), filtrado por TIPO="REAL" y PERIODO. Ordenado de mayor a menor para ranking.</div></div>
     </div>
     <div class="pane pane-right">
       <div class="pane-header">FUENTE DESTINO</div>
       <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
-      <div class="field-row"><div class="field-label">Interfaz / Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico chart21 + chart22 (ranking jefaturas)</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 109 (jefatura SCP) + Gráfico 99 (supervisor digital)</div></div>
       <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Ventas por Jefatura / Supervisor (ranking mensual)</div></div>
-      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Ranking de ventas del período por jefatura de ventas SCP y supervisor digital. Permite evaluar el desempeño comercial por responsable de equipo. chart22 desglosa al nivel de ejecutivo individual.</div></div>
-      <div class="field-row"><div class="field-label">Tipo de dato destino</div><div class="field-value">Integer (conteo) · Text (nombre jefatura)</div></div>
-      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Count agrupado por USUARIO_JEFATURA (tabla dinámica TablaDinámica21)</div></div>
-      <div class="field-row"><div class="field-label">Frecuencia actualización</div><div class="field-value">A demanda (mensual)</div></div>
-      <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">ABR 26 — Jefatura A: 12 ventas · Jefatura B: 8 ventas (valores referenciales)</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Ranking de ventas del período por jefatura SCP y supervisor digital. Permite evaluar el desempeño comercial por responsable de equipo. Gráfico 99 desglosa al nivel de supervisor digital.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo) · Text (nombre jefatura)</div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Count por USUARIO_JEFATURA (TablaDinámica21 / TablaDinámica24)</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (mensual)</div></div>
       <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
     </div>
   </div>
 </div>
 
-<!-- ─── CHART 1 ─── -->
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MÓDULO: COMPARATIVOS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="mod-divider mod-comp" style="margin-top:16px;">📉 Módulo: Comparativos y Evolución Histórica</div>
+
+<!-- ─── GRÁFICO 131 (chart1) ─── -->
 <div class="chart-section">
   <div class="chart-section-header">
-    <span class="chart-id-badge">chart1</span>
-    <span class="chart-title-text">Comparativa certificados activos corte mismo día — Últimos 4 meses</span>
-    <span class="chart-type-badge">Líneas</span>
-    <span class="chart-id-badge" style="background:rgba(150,150,150,.25);">Rango directo TD!H-L 691</span>
+    <span class="chart-id-badge">Gráfico 131</span>
+    <span class="chart-title-text">Comparativa Certificados Activos — Corte Mismo Día · Últimos 4 Meses</span>
+    <span class="chart-type-badge">Líneas múltiples</span>
+    <span class="chart-id-badge" style="background:rgba(150,150,150,.25);">TD!H-L 691</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart1</span>
   </div>
   <div class="chart-notacion">
-    <strong>Notación:</strong> <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; DIAS_UTILES_RESTANTES; FLAG CIERRE DE MES; Cuenta Id Solicitud)</code>
+    <strong>Notación:</strong>
+    <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; DIAS_UTILES_RESTANTES; FLAG CIERRE DE MES; Cuenta Id Solicitud)</code>
     → <code>TD.(H691:L691) — corte mismo día mes anterior; últimos 4 meses</code>
   </div>
   <div class="pane-grid">
     <div class="pane pane-left">
       <div class="pane-header">FUENTE ORIGEN</div>
       <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">SISTEMA FONDOS COLECTIVOS SOFTEK (SANTO)</div></div>
-      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (Tabla3) → TD rango H-L 691 (tabla fórmulas)</div></div>
-      <div class="field-row"><div class="field-label">Campo transformación_1</div><div class="field-value code-style">TD.(H691:L691).<br>(PERIODO[últimos 4 meses]; DIAS_UTILES_RESTANTES; FLAG CIERRE DE MES; Activos al corte)</div></div>
-      <div class="field-row"><div class="field-label">Definición de campos</div><div class="field-value">Certificados activos al corte del mismo día útil en los últimos 4 meses. Permite comparar si el nivel de activos crece, cae o se mantiene respecto a los meses anteriores al mismo punto del ciclo.</div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (Tabla3) → TD rango H-L 691</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD.(H691:L691).<br>(PERIODO[últimos 4 meses]; DIAS_UTILES_RESTANTES;<br>FLAG CIERRE DE MES; Activos al corte)</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Certificados activos al corte del mismo día útil en los últimos 4 meses. Permite comparar si el nivel de activos crece, cae o se mantiene respecto a meses anteriores al mismo punto del ciclo.</div></div>
       <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-yellow">FLAG CIERRE DE MES = SI</span> <span class="tag tag-green">Estado Contrato = Activo</span> <span class="tag tag-red">TIPO = REAL</span> <span class="tag tag-blue">4 últimos períodos</span></div></div>
-      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de Id Solicitud activos al corte del mismo día útil, para cada uno de los 4 períodos anteriores al actual. Se compara el acumulado al día D del mes M contra el acumulado al día D del mes M-1, M-2, M-3.</div></div>
-      <div class="field-row"><div class="field-label">Es campo DA / DAC</div><div class="field-value">No</div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT activos al corte del mismo día útil para cada uno de los 4 períodos anteriores. Se compara el acumulado al día D del mes M vs M-1, M-2, M-3.</div></div>
     </div>
     <div class="pane pane-right">
       <div class="pane-header">FUENTE DESTINO</div>
       <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
-      <div class="field-row"><div class="field-label">Interfaz / Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico chart1 (Comparativa por CANAL)</div></div>
-      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Certificados activos al corte · Últimos 4 meses · Por CANAL</div></div>
-      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Líneas de tendencia que comparan el stock de certificados activos al mismo punto del ciclo mensual en los últimos 4 meses, desglosado por CANAL. Herramienta de benchmarking mensual sin esperar el cierre.</div></div>
-      <div class="field-row"><div class="field-label">Tipo de dato destino</div><div class="field-value">Integer (conteo acumulado al corte)</div></div>
-      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">CONTAR.SI.CONJUNTO con referencia al mismo día útil de cada período (rango TD H-L 691)</div></div>
-      <div class="field-row"><div class="field-label">Frecuencia actualización</div><div class="field-value">A demanda (diaria durante el mes / mensual al cierre)</div></div>
-      <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">Día 10 ABR: 49 activos · Día 10 MAR: 47 activos · Día 10 FEB: 52 activos · Día 10 ENE: 44 activos</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 131</div></div>
+      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Certificados activos al corte · Por CANAL · Últimos 4 meses</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Líneas de tendencia que comparan el stock de activos al mismo punto del ciclo mensual en los últimos 4 meses, desglosado por CANAL. Herramienta de benchmarking mensual sin esperar el cierre.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo acumulado al corte)</div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">CONTAR.SI.CONJUNTO referenciando mismo día útil de cada período (rango TD H-L 691)</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (diaria durante el mes / mensual al cierre)</div></div>
+      <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">Día 10 ABR-26: 49 activos · Día 10 MAR-26: 47 · Día 10 FEB-26: 52 · Día 10 ENE-26: 44</div></div>
       <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
     </div>
   </div>
 </div>
 
-<!-- ─── CHART 24 ─── -->
+<!-- ─── GRÁFICO 128 (chart23) ─── -->
 <div class="chart-section">
   <div class="chart-section-header">
-    <span class="chart-id-badge">chart24</span>
-    <span class="chart-title-text">Acumulado Certificados Activos (Stock) por Canal y Mes</span>
-    <span class="chart-type-badge">Líneas múltiples</span>
-    <span class="chart-id-badge" style="background:rgba(0,200,150,.25);">TablaDinámica20</span>
+    <span class="chart-id-badge">Gráfico 128</span>
+    <span class="chart-title-text">Comparativo Certificados Activos Acumulado — MoM por Período</span>
+    <span class="chart-type-badge">Barras agrupadas comparativas</span>
+    <span class="chart-id-badge" style="background:rgba(150,150,150,.25);">TD!P-S 692:701</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart23</span>
   </div>
   <div class="chart-notacion">
-    <strong>Notación:</strong> <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; FRENTE; Cuenta Id Solicitud)</code>
-    → <code>TD.TablaDinámica20.(PERIODO[mensual]; FRENTE; Cuenta Id Solicitud acumulado)</code>
+    <strong>Notación:</strong>
+    <code>CERTIFICADOS.Tabla3.(PERIODO[10 meses]; Estado Contrato; TIPO; Cuenta Id Solicitud)</code>
+    → <code>TD.(P691:S701) — PERIODO / CERTIF_ACTIVOS / MES_ANTERIOR / DELTA / %_CAMBIO</code>
+    → <strong>Dashboard: "Comparativo certificados activos acumulado corte mismo día"</strong>
   </div>
   <div class="pane-grid">
     <div class="pane pane-left">
       <div class="pane-header">FUENTE ORIGEN</div>
       <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">SISTEMA FONDOS COLECTIVOS SOFTEK (SANTO)</div></div>
-      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (Tabla3) → TablaDinámica20 en hoja TD</div></div>
-      <div class="field-row"><div class="field-label">Campo transformación_1</div><div class="field-value code-style">TD.TablaDinámica20.<br>(PERIODO; Estado Contrato; TIPO; FRENTE; Cuenta de Id Solicitud)</div></div>
-      <div class="field-row"><div class="field-label">Definición de campos</div><div class="field-value">Stock total de certificados activos acumulados mes a mes, desglosado por canal (FRENTE). Muestra la evolución histórica del portafolio por línea de canal durante los últimos 10-12 períodos.</div></div>
-      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-green">Estado Contrato = Activo</span> <span class="tag tag-red">TIPO = REAL</span> <span class="tag tag-blue">PERIODO</span> <span class="tag tag-teal">FRENTE</span></div></div>
-      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de Id Solicitud agrupado por PERIODO (mensual) y FRENTE. Una línea por cada canal: DIG_DIRECTO, SCP_REFERIDOS, SCP_CLUSTER_DIRECTO (y posiblemente ALIANZA). Hasta 6 series según pivot.</div></div>
-      <div class="field-row"><div class="field-label">Es campo DA / DAC</div><div class="field-value">No</div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (Tabla3) → TD rango P691:S701 (tabla fórmulas)</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD.(P691:Z701).<br>P=PERIODO · Q=CERTIF_ACTIVOS · R=VALOR_MES_ANTERIOR<br>S=VALOR_DOS_MESES_ANT · U=DELTA_MoM · X=PCT_CAMBIO</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Comparativo mensual de certificados activos al corte del mismo día, mostrando el valor del mes actual junto al mes anterior y hace 2 meses. Columnas U y X calculan delta absoluto y % cambio MoM.</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-blue">10 períodos (202507–202604)</span> <span class="tag tag-red">TIPO = REAL</span> <span class="tag tag-green">FLAG CIERRE MES = SI</span></div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">
+        Col Q = activos período N · Col R = activos período N-1 (offset +1) · Col S = período N-2.<br>
+        Delta U = Q - R · % cambio X = (Q-R)/R.<br>
+        Ejemplos: 202511→202512: +27 (+100%) · 202602→202603: +3 (+4.5%) · 202603→202604: -21 (-30%).
+      </div></div>
     </div>
     <div class="pane pane-right">
       <div class="pane-header">FUENTE DESTINO</div>
       <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
-      <div class="field-row"><div class="field-label">Interfaz / Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico chart24</div></div>
-      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Stock Certificados Activos · Por Canal · Histórico mensual</div></div>
-      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Evolución histórica mensual del stock de certificados activos por canal de venta. Permite identificar tendencias de crecimiento o contracción por canal y comparar el peso relativo de cada uno en el tiempo.</div></div>
-      <div class="field-row"><div class="field-label">Tipo de dato destino</div><div class="field-value">Integer (conteo acumulado por mes y canal)</div></div>
-      <div class="field-row"><div class="field-label">Lista de valores</div><div class="field-value"><span class="tag tag-teal">DIG_DIRECTO</span> <span class="tag tag-blue">SCP_REFERIDOS</span> <span class="tag tag-green">SCP_CLUSTER</span> <span class="tag tag-orange">ALIANZA</span></div></div>
-      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Count por PERIODO y FRENTE (tabla dinámica TablaDinámica20)</div></div>
-      <div class="field-row"><div class="field-label">Frecuencia actualización</div><div class="field-value">A demanda (mensual)</div></div>
-      <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">FEB-26: DIG=X · CLUSTER=Y · REF=Z (últimos 10 períodos disponibles desde MAR-24)</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 128</div></div>
+      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Certificados Activos · Comparativo MoM · 10 períodos</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Visualización del cambio mes a mes en el stock de certificados activos al corte. Permite identificar de forma rápida si el portafolio crece o cae respecto al período anterior y cuantificar la magnitud del cambio.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (activos) · Integer (delta) · Decimal (% cambio)</div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Fórmulas de offset en TD P-Z 692:701</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (mensual)</div></div>
+      <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">202507=18 · 202508=81 (+350%) · 202601=54 · 202602=67 (+24%) · 202603=70 (+4.5%) · 202604=49 (-30%)</div></div>
+      <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── GRÁFICO 117 (chart24) ─── -->
+<div class="chart-section">
+  <div class="chart-section-header">
+    <span class="chart-id-badge">Gráfico 117</span>
+    <span class="chart-title-text">Acumulado Certificados Activos (Stock) por Canal y Mes</span>
+    <span class="chart-type-badge">Líneas múltiples</span>
+    <span class="chart-id-badge" style="background:rgba(0,200,150,.25);">TablaDinámica20 · TD!N163:S175</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart24</span>
+  </div>
+  <div class="chart-notacion">
+    <strong>Notación:</strong>
+    <code>CERTIFICADOS.Tabla3.(PERIODO; Estado Contrato; TIPO; EQUIPO; Cuenta Id Solicitud)</code>
+    → <code>TD.TablaDinámica20.(PERIODO[mensual]; EQUIPO[canal]; Cuenta Id Solicitud acumulado)</code>
+  </div>
+  <div class="pane-grid">
+    <div class="pane pane-left">
+      <div class="pane-header">FUENTE ORIGEN</div>
+      <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">SISTEMA FONDOS COLECTIVOS SOFTEK (SANTO)</div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">Reporte Certificados (Tabla3) → TablaDinámica20 en hoja TD (N163:S175)</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD.TablaDinámica20.<br>(PERIODO; Estado Contrato; TIPO; EQUIPO; Cuenta de Id Solicitud)</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Stock total de certificados activos acumulados mes a mes, desglosado por EQUIPO (canal). Muestra la evolución histórica del portafolio por línea de canal durante los últimos 10 períodos (202507–202604).</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-green">Estado Contrato = Activo</span> <span class="tag tag-red">TIPO = REAL</span> <span class="tag tag-blue">PERIODO</span> <span class="tag tag-teal">EQUIPO</span></div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de Id Solicitud agrupado por PERIODO (mensual) y EQUIPO. Una línea por canal: CANAL DIGITAL, CLUSTER, EJECUTIVO SCP, SCB, CANAL MODULO, OF PRINCIPAL.</div></div>
+    </div>
+    <div class="pane pane-right">
+      <div class="pane-header">FUENTE DESTINO</div>
+      <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 117</div></div>
+      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Stock Certificados Activos · Por EQUIPO/Canal · Histórico mensual</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Evolución histórica mensual del stock de certificados activos por canal (EQUIPO). Permite identificar tendencias de crecimiento o contracción por canal y comparar el peso relativo de cada uno en el tiempo.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo acumulado por mes y canal)</div></div>
+      <div class="field-row"><div class="field-label">Lista de valores</div><div class="field-value"><span class="tag tag-teal">CANAL DIGITAL</span> <span class="tag tag-blue">CLUSTER</span> <span class="tag tag-green">EJECUTIVO SCP</span> <span class="tag tag-orange">SCB</span> <span class="tag tag-gray">CANAL MODULO</span> <span class="tag tag-purple">OF PRINCIPAL</span></div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Count por PERIODO y EQUIPO (TablaDinámica20, TD N163:S175)</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (mensual)</div></div>
+      <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">202604: DIG=231 · CLUSTER=233 · EJ_SCP=129 · SCB=7 · MOD=5 · OF_PRINC=1 · Total=606</div></div>
       <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
     </div>
   </div>
@@ -502,24 +561,436 @@ code { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 1p
 <!-- ══════════════════════════════════════════════════════ -->
 <!-- MÓDULO: REFERIDOS -->
 <!-- ══════════════════════════════════════════════════════ -->
-<div class="mod-divider mod-ref" style="margin-top:16px;">🔗 Módulo: Referidos — Pendiente análisis separado</div>
-<div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:6px; padding:12px 16px; margin:10px 0; font-size:8.5pt; color:#666;">
-  Los gráficos chart6–10, chart13–16, chart19–20 corresponden al módulo Referidos. Consumen las tablas dinámicas
-  <strong>TablaDinámica1, 2, 5, 6, 8, 15, 16, 17, 18, 19</strong> de la hoja <strong>TD_REFERIDOS2</strong>,
-  cuya fuente es <strong>BD_REFERIDOS2</strong> (unificación Agenda Digital + Agenda Cluster de Microsoft Lists SharePoint).
-  Este módulo será documentado en un documento de trazabilidad separado (Pendiente P-04).
-  <br><br>
-  <strong>Gráficos identificados:</strong>
-  chart8 "Status del total de Referidos Contactados" · chart9 "Referidos por Día / Status" ·
-  chart13 "Referidos en atención por Cluster (Acumulado)" · chart14 "Status Referidos Contactados (Acumulado)" ·
-  chart15 "Referidos en atención Digital (Acumulado)" · chart16 "Status Referidos Contactados (Acumulado)" ·
-  chart19 "Total Referidos por Jefatura" · chart20 "TOP 10 Ejecutivo SCP que más refieren"
+<div class="mod-divider mod-ref" style="margin-top:16px;">🔗 Módulo: Referidos — BD_REFERIDOS2 (Agenda Cluster + Agenda Digital)</div>
+
+<div class="example-box" style="background:#fffde7; border-left-color:#f9a825;">
+  <div class="label" style="color:#6d4c00;">Fuente del módulo Referidos</div>
+  <strong>BD_REFERIDOS2</strong> = unificación de <code>Agenda Comercial Cluster</code> (Microsoft Lists SharePoint —
+  CLUSTER_AGENDA_ONLINE_V2) + <code>Agenda Comercial Digital</code> (DIGITAL_NUEVA_AGENDA_ONLINE), distinguidas por campo <code>AGENDA</code>.<br>
+  Campos clave: <code>FECHA DE REGISTRO · FRENTE · STATUS 0 · STATUS 1 · EN REVISIÓN INTERNA · Ejecutivo SCP q refiere · Jefe Ventas · Coach SFC · Ejecutivo SFC Gestión · AGENDA · PERIODO_CREACION</code><br>
+  <strong>TD_REFERIDOS2</strong> = hoja de tablas dinámicas sobre BD_REFERIDOS2 (sin tablas dinámicas propias nombradas; usa rangos directos).<br>
+  Total BD_REFERIDOS2 al 19/03/2026: <strong>8,209 registros</strong>.
+</div>
+
+<!-- ─── GRÁFICO 30 (chart6) ─── -->
+<div class="chart-section">
+  <div class="chart-section-header ref-header">
+    <span class="chart-id-badge ref">Gráfico 30</span>
+    <span class="chart-title-text">Total Referidos — Resumen por Tipo de Agenda (Pivot)</span>
+    <span class="chart-type-badge">Dona (Doughnut)</span>
+    <span class="chart-id-badge" style="background:rgba(255,200,50,.2);">TD_REFERIDOS2 — Pivot directo</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart6</span>
+  </div>
+  <div class="chart-notacion">
+    <strong>Notación:</strong>
+    <code>BD_REFERIDOS2.(AGENDA; Cuenta FECHA DE REGISTRO)</code>
+    → <code>TD_REFERIDOS2.(Pivot — sin rango de fórmulas explícito)</code>
+    → <strong>Dashboard: resumen total referidos por tipo de Agenda (CLUSTER / DIGITAL)</strong>
+  </div>
+  <div class="pane-grid">
+    <div class="pane pane-left">
+      <div class="pane-header">FUENTE ORIGEN</div>
+      <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">Agenda Comercial Cluster + Agenda Comercial Digital (Microsoft Lists — SharePoint)</div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">BD_REFERIDOS2 → TD_REFERIDOS2 (pivot chart sin referencia de fórmulas en XML)</div></div>
+      <div class="field-row"><div class="field-label">Campo clave</div><div class="field-value code-style">BD_REFERIDOS2.AGENDA ("CLUSTER" | "DIGITAL")<br>BD_REFERIDOS2.EN REVISIÓN INTERNA = "NO" (filtro)</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Distribución del total de referidos entre los dos tipos de agenda: Agenda Cluster (canal SCP externo) y Agenda Digital (canal digital SCP). Presenta el split de volumen de prospectos por origen de captación.</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-yellow">EN REVISIÓN INTERNA = NO</span> <span class="tag tag-amber">AGENDA = CLUSTER / DIGITAL</span></div></div>
+      <div class="field-row"><div class="field-label">Nota técnica</div><div class="field-value rule-style">Este gráfico es un <em>pivot chart</em> vinculado directamente a una tabla dinámica en TD_REFERIDOS2. No tiene referencias de fórmulas en el XML del chart. Los datos se actualizan al refrescar la tabla dinámica fuente.</div></div>
+    </div>
+    <div class="pane pane-right">
+      <div class="pane-header">FUENTE DESTINO</div>
+      <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 30</div></div>
+      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Distribución de Referidos por AGENDA</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Dona de dos segmentos que muestra el mix de prospectos según el canal de captación. Permite evaluar el peso relativo del canal Cluster (agentes externos) vs el canal Digital en el total de referidos gestionados.</div></div>
+      <div class="field-row"><div class="field-label">Lista de valores</div><div class="field-value"><span class="tag tag-blue">CLUSTER</span> <span class="tag tag-teal">DIGITAL</span></div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Pivot chart — refresco automático desde tabla dinámica TD_REFERIDOS2</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (cada carga de BD_REFERIDOS2)</div></div>
+      <div class="field-row"><div class="field-label">Referencia total</div><div class="field-value">Total BD_REFERIDOS2: 8,209 · Cluster acumulado: ~7,070 · Digital acumulado: ~443</div></div>
+      <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── GRÁFICO 3 (chart7) ─── -->
+<div class="chart-section">
+  <div class="chart-section-header ref-header">
+    <span class="chart-id-badge ref">Gráfico 3</span>
+    <span class="chart-title-text">Status General de Referidos (SC / NC / SG) — Total Acumulado</span>
+    <span class="chart-type-badge">Dona (Doughnut)</span>
+    <span class="chart-id-badge" style="background:rgba(255,200,50,.2);">TD_REFERIDOS2!A4:B7</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart7</span>
+  </div>
+  <div class="chart-notacion">
+    <strong>Notación:</strong>
+    <code>BD_REFERIDOS2.(STATUS 0; Cuenta FECHA DE REGISTRO)</code>
+    → <code>TD_REFERIDOS2.(A4:B7) — pivot STATUS 0 vs Cuenta</code>
+    → <strong>Dashboard: distribución total SC / NC / SG sobre 8,209 referidos</strong>
+  </div>
+  <div class="pane-grid">
+    <div class="pane pane-left">
+      <div class="pane-header">FUENTE ORIGEN</div>
+      <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">Agenda Comercial Cluster + Digital (BD_REFERIDOS2)</div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">BD_REFERIDOS2 → TD_REFERIDOS2 rango A3:B7 (pivot STATUS 0)</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD_REFERIDOS2.(A3:B7).<br>(STATUS_0; Cuenta de FECHA DE REGISTRO)<br>Filtro: EN REVISIÓN INTERNA = NO</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Conteo de referidos agrupados por su STATUS 0 (clasificación de contacto principal): SI_CONTACTO, NO_CONTACTO y SIN_GESTIÓN. Refleja el estado de avance del proceso de contacto sobre el universo total de prospectos.</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-yellow">EN REVISIÓN INTERNA = NO</span></div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de FECHA DE REGISTRO agrupado por STATUS 0. Tres valores posibles: SI_CONTACTO (SC), NO_CONTACTO (NC), SIN_GESTIÓN (SG). Total = 8,209.</div></div>
+    </div>
+    <div class="pane pane-right">
+      <div class="pane-header">FUENTE DESTINO</div>
+      <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 3</div></div>
+      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">STATUS 0 — Distribución general de referidos</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Dona que muestra el mix de contactabilidad del total de prospectos referidos. Indicador de cobertura de gestión: cuántos fueron contactados (SC), cuántos no se pudo contactar (NC) y cuántos aún no tienen gestión (SG).</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo)</div></div>
+      <div class="field-row"><div class="field-label">Lista de valores</div><div class="field-value"><span class="tag tag-green">SI_CONTACTO (SC) = 5,216 · 63.5%</span> <span class="tag tag-orange">NO_CONTACTO (NC) = 2,141 · 26.1%</span> <span class="tag tag-gray">SIN_GESTIÓN (SG) = 852 · 10.4%</span></div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Pivot table en TD_REFERIDOS2 A3:B7</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (mensual) · Datos al 19/03/2026</div></div>
+      <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">Total=8,209 · SC=5,216 (63.5%) · NC=2,141 (26.1%) · SG=852 (10.4%)</div></div>
+      <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── GRÁFICO 26 (chart8) ─── -->
+<div class="chart-section">
+  <div class="chart-section-header ref-header">
+    <span class="chart-id-badge ref">Gráfico 26</span>
+    <span class="chart-title-text">Status del Total de Referidos Contactados (Sub-status SC)</span>
+    <span class="chart-type-badge">Dona (Doughnut)</span>
+    <span class="chart-id-badge" style="background:rgba(255,200,50,.2);">TD_REFERIDOS2!F5:G10</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart8</span>
+  </div>
+  <div class="chart-notacion">
+    <strong>Notación:</strong>
+    <code>BD_REFERIDOS2.(STATUS 1[sub-SC]; Cuenta FECHA DE REGISTRO)</code>
+    → <code>TD_REFERIDOS2.(F5:G10) — pivot STATUS 1 filtrado STATUS 0 = SC</code>
+    → <strong>Dashboard: "Status del total de Referidos Contactados"</strong>
+  </div>
+  <div class="pane-grid">
+    <div class="pane pane-left">
+      <div class="pane-header">FUENTE ORIGEN</div>
+      <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">Agenda Comercial Cluster + Digital (BD_REFERIDOS2)</div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">BD_REFERIDOS2 → TD_REFERIDOS2 rango F4:G10 (pivot STATUS 1 de SC)</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD_REFERIDOS2.(F4:G10).<br>(STATUS_1[sub-status SC]; Cuenta de FECHA DE REGISTRO)<br>Filtro: STATUS 0 = SI_CONTACTO (SC) · EN REVISIÓN INTERNA = NO</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Desagregación del STATUS 1 para los referidos que tienen STATUS 0 = SI_CONTACTO. Muestra qué ocurrió con cada contacto exitoso: se convirtió en asociado, sigue en gestión, no desea, volvió a llamar, o no califica.</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-green">STATUS 0 = SI_CONTACTO (SC)</span> <span class="tag tag-yellow">EN REVISIÓN INTERNA = NO</span></div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de FECHA DE REGISTRO agrupado por STATUS 1, filtrado a STATUS 0 = "SC". Total esperado = 5,216 (total SC del Gráfico 3).</div></div>
+    </div>
+    <div class="pane pane-right">
+      <div class="pane-header">FUENTE DESTINO</div>
+      <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 26</div></div>
+      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">STATUS 1 — Desagregación de Referidos Contactados (SC)</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Dona que detalla el resultado de la gestión sobre los referidos contactados. Permite medir la efectividad de conversión: cuántos pasaron a ser asociados (SC_ASOCIADO) vs los que siguen en proceso (SC_EN GESTIÓN) vs los que desistieron.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo)</div></div>
+      <div class="field-row"><div class="field-label">Lista de valores</div><div class="field-value">
+        <span class="tag tag-green">SC_ASOCIADO = 110</span>
+        <span class="tag tag-blue">SC_EN GESTIÓN = 2,436</span>
+        <span class="tag tag-orange">SC_VOLVER A LLAMAR = 1,036</span>
+        <span class="tag tag-red">SC_NO DESEA = 1,629</span>
+        <span class="tag tag-gray">SC_NO CALIFICA = 5</span>
+      </div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Pivot table TD_REFERIDOS2 F4:G10</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda · Datos al 19/03/2026</div></div>
+      <div class="field-row"><div class="field-label">Ejemplo</div><div class="field-value">Total SC=5,216 · SC_EN GESTIÓN=2,436 (46.7%) · SC_NO DESEA=1,629 (31.2%) · SC_ASOCIADO=110 (2.1%)</div></div>
+      <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── GRÁFICO 28 (chart9) ─── -->
+<div class="chart-section">
+  <div class="chart-section-header ref-header">
+    <span class="chart-id-badge ref">Gráfico 28</span>
+    <span class="chart-title-text">Cantidad de Referidos Derivados por Día / Status</span>
+    <span class="chart-type-badge">Barras apiladas</span>
+    <span class="chart-id-badge" style="background:rgba(255,200,50,.2);">TD_REFERIDOS2!A33:D50</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart9</span>
+  </div>
+  <div class="chart-notacion">
+    <strong>Notación:</strong>
+    <code>BD_REFERIDOS2.(FECHA DE REGISTRO[día mes activo]; STATUS 0; Cuenta FECHA DE REGISTRO)</code>
+    → <code>TD_REFERIDOS2.(A32:E50) — pivot día × STATUS 0 (SC / NC / SG) · mes activo</code>
+    → <strong>Dashboard: "Cantidad de Referidos derivados por Día / Status"</strong>
+  </div>
+  <div class="pane-grid">
+    <div class="pane pane-left">
+      <div class="pane-header">FUENTE ORIGEN</div>
+      <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">Agenda Comercial Cluster + Digital (BD_REFERIDOS2)</div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">BD_REFERIDOS2 → TD_REFERIDOS2 rango A32:E50 (pivot día × STATUS 0)</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD_REFERIDOS2.(A32:E50).<br>(FECHA_REGISTRO[día]; SI_CONTACTO; NO_CONTACTO;<br>SIN_GESTIÓN; Total general)<br>Filtro: EN REVISIÓN INTERNA = NO · mes activo</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Número de referidos registrados cada día del mes activo, desglosados por STATUS 0. Permite analizar el ritmo diario de derivación de prospectos y la distribución de estados a lo largo del mes.</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-yellow">EN REVISIÓN INTERNA = NO</span> <span class="tag tag-blue">FECHA DE REGISTRO = mes activo</span></div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de FECHA DE REGISTRO agrupado por día (fecha serial) y STATUS 0. Series: SC, NC, SG. Filas = días hábiles del mes activo. Total mes ABR-26 = 1,661 referidos.</div></div>
+    </div>
+    <div class="pane pane-right">
+      <div class="pane-header">FUENTE DESTINO</div>
+      <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 28</div></div>
+      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Referidos por día y STATUS 0 (mes activo)</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Barras apiladas por día mostrando el volumen de referidos nuevos y su distribución SC / NC / SG. Permite identificar días pico de derivación y evaluar la calidad del pipeline de prospectos día a día.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo por día y status)</div></div>
+      <div class="field-row"><div class="field-label">Lista de valores</div><div class="field-value"><span class="tag tag-green">SI_CONTACTO (SC)</span> <span class="tag tag-orange">NO_CONTACTO (NC)</span> <span class="tag tag-gray">SIN_GESTIÓN (SG)</span></div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Pivot table TD_REFERIDOS2 A32:E50</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (diaria/mensual)</div></div>
+      <div class="field-row"><div class="field-label">Ejemplo ABR-26</div><div class="field-value">01/04: SC=17, NC=8, SG=1, Total=26 · 07/04: SC=48, NC=25, SG=11, Total=84 · 14/04: SC=56, NC=26, SG=48, Total=130 · Total mes=1,661</div></div>
+      <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── GRÁFICO 29 (chart10) ─── -->
+<div class="chart-section">
+  <div class="chart-section-header ref-header">
+    <span class="chart-id-badge ref">Gráfico 29</span>
+    <span class="chart-title-text">Evolución Diaria Acumulada de Referidos — Mes Activo</span>
+    <span class="chart-type-badge">Línea</span>
+    <span class="chart-id-badge" style="background:rgba(255,200,50,.2);">TD_REFERIDOS2!T76:U96</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart10</span>
+  </div>
+  <div class="chart-notacion">
+    <strong>Notación:</strong>
+    <code>BD_REFERIDOS2.(FECHA DE REGISTRO[día mes activo]; Cuenta FECHA DE REGISTRO)</code>
+    → <code>TD_REFERIDOS2.(T75:U96) — pivot diario mes activo · total sin desglose STATUS</code>
+  </div>
+  <div class="pane-grid">
+    <div class="pane pane-left">
+      <div class="pane-header">FUENTE ORIGEN</div>
+      <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">Agenda Comercial Cluster + Digital (BD_REFERIDOS2)</div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">BD_REFERIDOS2 → TD_REFERIDOS2 rango T75:U96 (pivot diario mes activo)</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD_REFERIDOS2.(T75:U96).<br>(FECHA_REGISTRO[día]; Cuenta de FECHA DE REGISTRO)<br>Filtro: EN REVISIÓN INTERNA = NO · agrupación: Año → Trimestre → Mes → Día</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Conteo total de referidos nuevos por día del mes activo, sin desglose por STATUS. Muestra la curva de volumen de derivación a lo largo del mes para evaluar picos y valles en la actividad comercial.</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-yellow">EN REVISIÓN INTERNA = NO</span> <span class="tag tag-blue">Abr 2026 (serie activa)</span></div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de FECHA DE REGISTRO por día. El pivot incluye subtotales de Año (2026=1,661) y Trimestre (Q2=1,661). Filas individuales son días hábiles del mes activo (ABR-26: 01/04 al 25/04).</div></div>
+    </div>
+    <div class="pane pane-right">
+      <div class="pane-header">FUENTE DESTINO</div>
+      <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 29</div></div>
+      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Referidos totales por día (mes activo)</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Línea de evolución diaria del total de referidos nuevos en el mes activo. Complementa el Gráfico 28 (que muestra el desglose por STATUS). Permite identificar tendencias de ritmo de captación a lo largo del mes.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo por día)</div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Pivot table TD_REFERIDOS2 T75:U96</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (diaria)</div></div>
+      <div class="field-row"><div class="field-label">Ejemplo ABR-26</div><div class="field-value">01/04=26 · 02/04=25 · 04/04=30 · 07/04=84 · 08/04=122 · 09/04=150 · 11/04=116 · 14/04=130 · Total mes=1,661</div></div>
+      <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── GRÁFICO 45 + GRÁFICO 56 (chart13 + chart14) ─── -->
+<div class="chart-section">
+  <div class="chart-section-header ref-header">
+    <span class="chart-id-badge ref">Gráfico 45</span>
+    <span class="chart-id-badge ref">Gráfico 56</span>
+    <span class="chart-title-text">Referidos Cluster — STATUS General y Sub-status SC (Acumulado)</span>
+    <span class="chart-type-badge">Dona (Doughnut) × 2</span>
+    <span class="chart-id-badge" style="background:rgba(255,200,50,.2);">TD_REFERIDOS2!A398:B401 · F398:G403</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart13 + chart14</span>
+  </div>
+  <div class="chart-notacion">
+    <strong>Notación Gráfico 45:</strong>
+    <code>BD_REFERIDOS2.(STATUS 0; Cuenta FECHA DE REGISTRO) [AGENDA=CLUSTER · Acumulado]</code>
+    → <code>TD_REFERIDOS2.(A397:B401)</code><br>
+    <strong>Notación Gráfico 56:</strong>
+    <code>BD_REFERIDOS2.(STATUS 1[SC sub-status]; Cuenta FECHA DE REGISTRO) [AGENDA=CLUSTER · Acumulado]</code>
+    → <code>TD_REFERIDOS2.(F397:G403)</code>
+  </div>
+  <div class="pane-grid">
+    <div class="pane pane-left">
+      <div class="pane-header">FUENTE ORIGEN</div>
+      <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">Agenda Comercial Cluster (BD_REFERIDOS2 donde AGENDA = "CLUSTER")</div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">BD_REFERIDOS2 → TD_REFERIDOS2 rango A397:B401 (Gráfico 45) y F397:G403 (Gráfico 56)</div></div>
+      <div class="field-row"><div class="field-label">Transformación 45</div><div class="field-value code-style">TD_REFERIDOS2.(A397:B401).(STATUS 0; Cuenta FECHA DE REGISTRO)<br>Filtro: Ejecutivo SFC Gestión=(Todas) · Coach SFC=(varios) · EN REVISIÓN INTERNA=NO</div></div>
+      <div class="field-row"><div class="field-label">Transformación 56</div><div class="field-value code-style">TD_REFERIDOS2.(F397:G403).(STATUS 1 sub-SC; Cuenta FECHA DE REGISTRO)<br>Filtro: STATUS 0 = SI_CONTACTO (SC) · mismos filtros superiores</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Par de donas que muestra el estado acumulado histórico del canal Cluster: Gráfico 45 = STATUS general (SC/NC/SG sobre total Cluster), Gráfico 56 = sub-status de los contactados (detalle del SC del Cluster).</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-yellow">EN REVISIÓN INTERNA = NO</span> <span class="tag tag-blue">AGENDA = CLUSTER (implícito por filtros Coach/Ejecutivo)</span></div></div>
+    </div>
+    <div class="pane pane-right">
+      <div class="pane-header">FUENTE DESTINO</div>
+      <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 45 (STATUS) + Gráfico 56 (Sub-status SC) [Cluster Acumulado]</div></div>
+      <div class="field-row"><div class="field-label">Datos Gráfico 45</div><div class="field-value">
+        <span class="tag tag-green">SI_CONTACTO = 4,650 (65.8%)</span>
+        <span class="tag tag-orange">NO_CONTACTO = 1,772 (25.1%)</span>
+        <span class="tag tag-gray">SIN_GESTIÓN = 648 (9.2%)</span><br>
+        <strong>Total Cluster = 7,070</strong>
+      </div></div>
+      <div class="field-row"><div class="field-label">Datos Gráfico 56</div><div class="field-value">
+        <span class="tag tag-blue">SC_EN GESTIÓN = 2,326</span>
+        <span class="tag tag-red">SC_NO DESEA = 1,478</span>
+        <span class="tag tag-orange">SC_VOLVER A LLAMAR = 948</span>
+        <span class="tag tag-green">SC_ASOCIADO = 108</span>
+        <span class="tag tag-gray">SC_NO CALIFICA = 1</span><br>
+        <strong>Total SC Cluster = 4,861</strong>
+      </div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo)</div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Pivot table TD_REFERIDOS2 A397:B401 y F397:G403</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda · Acumulado histórico</div></div>
+      <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── GRÁFICO 62 + GRÁFICO 74 (chart15 + chart16) ─── -->
+<div class="chart-section">
+  <div class="chart-section-header ref-header">
+    <span class="chart-id-badge ref">Gráfico 62</span>
+    <span class="chart-id-badge ref">Gráfico 74</span>
+    <span class="chart-title-text">Referidos Digital — STATUS General y Sub-status SC (Acumulado)</span>
+    <span class="chart-type-badge">Dona (Doughnut) × 2</span>
+    <span class="chart-id-badge" style="background:rgba(255,200,50,.2);">TD_REFERIDOS2!A483:B485 · F483:G488</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart15 + chart16</span>
+  </div>
+  <div class="chart-notacion">
+    <strong>Notación Gráfico 62:</strong>
+    <code>BD_REFERIDOS2.(STATUS 0; Cuenta FECHA DE REGISTRO) [AGENDA=DIGITAL · Acumulado]</code>
+    → <code>TD_REFERIDOS2.(A482:B485)</code><br>
+    <strong>Notación Gráfico 74:</strong>
+    <code>BD_REFERIDOS2.(STATUS 1[SC sub-status]; Cuenta FECHA DE REGISTRO) [AGENDA=DIGITAL · Acumulado]</code>
+    → <code>TD_REFERIDOS2.(F482:G488)</code>
+  </div>
+  <div class="pane-grid">
+    <div class="pane pane-left">
+      <div class="pane-header">FUENTE ORIGEN</div>
+      <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">Agenda Comercial Digital (BD_REFERIDOS2 donde AGENDA = "DIGITAL")</div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">BD_REFERIDOS2 → TD_REFERIDOS2 rango A482:B485 (Gráfico 62) y F482:G488 (Gráfico 74)</div></div>
+      <div class="field-row"><div class="field-label">Transformación 62</div><div class="field-value code-style">TD_REFERIDOS2.(A482:B485).(STATUS 0; Cuenta FECHA DE REGISTRO)<br>Filtro: Ejecutivo SFC Gestión=(Todas) · Coach SFC=(varios) · EN REVISIÓN INTERNA=NO</div></div>
+      <div class="field-row"><div class="field-label">Transformación 74</div><div class="field-value code-style">TD_REFERIDOS2.(F482:G488).(STATUS 1 sub-SC; Cuenta FECHA DE REGISTRO)<br>Filtro: STATUS 0 = SI_CONTACTO (SC) · mismos filtros superiores</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Par de donas equivalente al par Gráfico 45+56 pero restringido al canal Digital: Gráfico 62 = STATUS general Digital, Gráfico 74 = sub-status SC del canal Digital. Permite comparar el comportamiento de conversión entre Cluster y Digital.</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-yellow">EN REVISIÓN INTERNA = NO</span> <span class="tag tag-teal">AGENDA = DIGITAL (implícito por filtros)</span></div></div>
+    </div>
+    <div class="pane pane-right">
+      <div class="pane-header">FUENTE DESTINO</div>
+      <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 62 (STATUS) + Gráfico 74 (Sub-status SC) [Digital Acumulado]</div></div>
+      <div class="field-row"><div class="field-label">Datos Gráfico 62</div><div class="field-value">
+        <span class="tag tag-green">SI_CONTACTO = 355 (80.1%)</span>
+        <span class="tag tag-orange">NO_CONTACTO = 88 (19.9%)</span>
+        <span class="tag tag-gray">SIN_GESTIÓN ≈ 0</span><br>
+        <strong>Total Digital = 443</strong>
+      </div></div>
+      <div class="field-row"><div class="field-label">Datos Gráfico 74</div><div class="field-value">
+        <span class="tag tag-blue">SC_EN GESTIÓN = 110</span>
+        <span class="tag tag-red">SC_NO DESEA = 151</span>
+        <span class="tag tag-orange">SC_VOLVER A LLAMAR = 88</span>
+        <span class="tag tag-green">SC_ASOCIADO = 2</span>
+        <span class="tag tag-gray">SC_NO CALIFICA = 4</span><br>
+        <strong>Total SC Digital = 355</strong>
+      </div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo)</div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Pivot table TD_REFERIDOS2 A482:B485 y F482:G488</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda · Acumulado histórico</div></div>
+      <div class="field-row"><div class="field-label">Nota comparativa</div><div class="field-value rule-style">Digital tiene mayor tasa SC (80.1%) vs Cluster (65.8%), pero volumen muy inferior (443 vs 7,070). SC_NO DESEA es proporcionalmente más alto en Digital (42.5% del SC) vs Cluster (30.4%).</div></div>
+      <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── GRÁFICO 60 (chart19) ─── -->
+<div class="chart-section">
+  <div class="chart-section-header ref-header">
+    <span class="chart-id-badge ref">Gráfico 60</span>
+    <span class="chart-title-text">Total de Referidos por Jefatura de Ventas SCP — Mes Activo</span>
+    <span class="chart-type-badge">Barras horizontales</span>
+    <span class="chart-id-badge" style="background:rgba(255,200,50,.2);">TD_REFERIDOS2!A75:B86</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart19</span>
+  </div>
+  <div class="chart-notacion">
+    <strong>Notación:</strong>
+    <code>BD_REFERIDOS2.(Jefe Ventas[nombre]; Cuenta FECHA DE REGISTRO) [mes activo]</code>
+    → <code>TD_REFERIDOS2.(A74:B86) — pivot Jefatura vs Cuenta · mes activo</code>
+    → <strong>Dashboard: "TOTAL DE REFERIDOS POR JEFATURA — ABR 26"</strong>
+  </div>
+  <div class="pane-grid">
+    <div class="pane pane-left">
+      <div class="pane-header">FUENTE ORIGEN</div>
+      <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">Agenda Comercial Cluster + Digital (BD_REFERIDOS2)</div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">BD_REFERIDOS2 → TD_REFERIDOS2 rango A74:B86 (pivot Jefe Ventas × mes)</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD_REFERIDOS2.(A74:B86).<br>(Jefe_Ventas[nombre]; Cuenta de FECHA DE REGISTRO)<br>Filtro: EN REVISIÓN INTERNA = NO · PERIODO = mes activo</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Ranking de jefaturas de ventas SCP ordenado por el total de referidos generados por su equipo en el mes activo. Cada "jefatura" es el Jefe de Ventas responsable del equipo que derivó los prospectos.</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-yellow">EN REVISIÓN INTERNA = NO</span> <span class="tag tag-blue">PERIODO = mes activo (ABR-26)</span></div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de FECHA DE REGISTRO agrupado por Jefe_Ventas. Incluye todas las jefaturas activas del mes. Total = suma de todos los referidos del mes (ABR-26 = 1,661).</div></div>
+    </div>
+    <div class="pane pane-right">
+      <div class="pane-header">FUENTE DESTINO</div>
+      <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 60</div></div>
+      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">Referidos por Jefatura (mes activo)</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Ranking de jefaturas por volumen de referidos derivados en el mes. Permite evaluar el aporte de cada jefatura al pipeline de prospectos y comparar el desempeño entre equipos comerciales.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo) · Text (nombre jefatura)</div></div>
+      <div class="field-row"><div class="field-label">Ranking ABR-26</div><div class="field-value rule-style">
+        Bruno Alfonso Alatrista Cano: 317 · Alfredo Valdivia Bermejo: 220 ·
+        Carlos Andres Novoa Seminario: 191 · Paola Georgina Bravo Levano: 182 ·
+        Werner Dickson Rios Melendez: 142 · Bratzzy Dayanna Zevallos Barbaran: 139 ·
+        Jose Manuel Pasco Leon: 134 · Maribel Junco Leyva: 131 ·
+        Gino Paolo Garcia Salas: 119 · Daniela Alejandra Nuñez Chopite: 54 ·
+        Monica Bertha Aranya Mamani: 32 · <strong>Total: 1,661</strong>
+      </div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Pivot table TD_REFERIDOS2 A74:B86</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (mensual)</div></div>
+      <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── GRÁFICO 108 (chart20) ─── -->
+<div class="chart-section">
+  <div class="chart-section-header ref-header">
+    <span class="chart-id-badge ref">Gráfico 108</span>
+    <span class="chart-title-text">TOP 10 Ejecutivos SCP que más Refieren — Mes Activo</span>
+    <span class="chart-type-badge">Barras horizontales</span>
+    <span class="chart-id-badge" style="background:rgba(255,200,50,.2);">TD_REFERIDOS2!G75:H85</span>
+    <span class="chart-id-badge" style="opacity:.5;">chart20</span>
+  </div>
+  <div class="chart-notacion">
+    <strong>Notación:</strong>
+    <code>BD_REFERIDOS2.(Ejecutivo SCP q refiere[nombre]; Cuenta FECHA DE REGISTRO) [mes activo · TOP 10]</code>
+    → <code>TD_REFERIDOS2.(G74:H85) — pivot Ejecutivo SCP × Cuenta · TOP 10</code>
+    → <strong>Dashboard: "TOP 10 DE EJECUTIVO SCP QUE MAS REFIEREN — ABR 26"</strong>
+  </div>
+  <div class="pane-grid">
+    <div class="pane pane-left">
+      <div class="pane-header">FUENTE ORIGEN</div>
+      <div class="field-row"><div class="field-label">Sistema</div><div class="field-value">Agenda Comercial Cluster + Digital (BD_REFERIDOS2)</div></div>
+      <div class="field-row"><div class="field-label">Interfaz / Tabla</div><div class="field-value">BD_REFERIDOS2 → TD_REFERIDOS2 rango G74:H85 (pivot Ejecutivo SCP × Cuenta, TOP 10)</div></div>
+      <div class="field-row"><div class="field-label">Transformación</div><div class="field-value code-style">TD_REFERIDOS2.(G74:H85).<br>(Ejecutivo_SCP_q_refiere[nombre]; Cuenta de FECHA DE REGISTRO)<br>Filtro: EN REVISIÓN INTERNA = NO · PERIODO = mes activo · TOP 10</div></div>
+      <div class="field-row"><div class="field-label">Definición</div><div class="field-value">Ranking individual de los 10 ejecutivos SCP que más prospectos derivaron en el mes activo. A diferencia del Gráfico 60 (que muestra jefaturas), este gráfico muestra el ejecutivo individual contribuyente.</div></div>
+      <div class="field-row"><div class="field-label">Llave de filtro</div><div class="field-value"><span class="tag tag-yellow">EN REVISIÓN INTERNA = NO</span> <span class="tag tag-blue">PERIODO = mes activo</span> <span class="tag tag-purple">TOP 10 por conteo</span></div></div>
+      <div class="field-row"><div class="field-label">Regla de transformación</div><div class="field-value rule-style">COUNT de FECHA DE REGISTRO agrupado por "Ejecutivo SCP q refiere", limitado a los 10 primeros por valor descendente. Campo fuente = BD_REFERIDOS2.Ejecutivo_SCP_q_refiere (col X de BD_REFERIDOS2).</div></div>
+    </div>
+    <div class="pane pane-right">
+      <div class="pane-header">FUENTE DESTINO</div>
+      <div class="field-row"><div class="field-label">Sistema destino</div><div class="field-value">SFC_Dashboard</div></div>
+      <div class="field-row"><div class="field-label">Tabla destino</div><div class="field-value">Hoja DASHBOARD — Gráfico 108</div></div>
+      <div class="field-row"><div class="field-label">Campo destino</div><div class="field-value">TOP 10 Ejecutivos SCP por referidos (mes activo)</div></div>
+      <div class="field-row"><div class="field-label">Definición funcional</div><div class="field-value">Ranking de los 10 ejecutivos SCP con mayor contribución individual de referidos en el mes. Permite identificar a los mejores generadores de pipeline para reconocimiento, coaching y replicación de buenas prácticas.</div></div>
+      <div class="field-row"><div class="field-label">Tipo de dato</div><div class="field-value">Integer (conteo) · Text (nombre ejecutivo)</div></div>
+      <div class="field-row"><div class="field-label">TOP 10 ABR-26</div><div class="field-value rule-style">
+        Sebastian Alejandro Payeza Marin: 40 ·
+        Sergio Jimenez Guizado: 35 ·
+        Jonatan Acevedo Alvarado: 34 ·
+        Cecilia del Pilar Mendez Salas: 33 ·
+        Sintya Karina Montalvo Paulla: 31 ·
+        Marcia Victoria Alvites Fernandez: 31 ·
+        Cristian Leonel Rojas Pareja: 31 ·
+        Anthony Chumacero Cagallaza: 26 ·
+        Pedro Manuel Marreros Gall: 26 ·
+        Nayda Yovera Cuchupoma: 25 · <strong>TOP 10 = 312</strong>
+      </div></div>
+      <div class="field-row"><div class="field-label">Forma de captura</div><div class="field-value">Pivot table TD_REFERIDOS2 G74:H85</div></div>
+      <div class="field-row"><div class="field-label">Frecuencia</div><div class="field-value">A demanda (mensual)</div></div>
+      <div class="field-row"><div class="field-label">¿Dato obligatorio?</div><div class="field-value">Sí</div></div>
+    </div>
+  </div>
 </div>
 
 </div><!-- /page -->
 
-<div style="text-align:center; padding: 10px; font-size:8pt; color:#888; background:#fff; border-top:1px solid #ddd;">
-  Trazabilidad DASHBOARD v2.0 · 20260228_SFC_Dashboard.xlsx · Fondos Colectivos SCP · Abril 2026 · CONFIDENCIAL
+<div style="text-align:center; padding:10px; font-size:8pt; color:#888; background:#fff; border-top:1px solid #ddd;">
+  Trazabilidad DASHBOARD v3.0 · 20260228_SFC_Dashboard.xlsx · 24 Gráficos documentados · Fondos Colectivos SCP · Abril 2026 · CONFIDENCIAL
 </div>
 
 </body>
