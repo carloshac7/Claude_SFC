@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infografía Trazabilidad DASHBOARD — SFC</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #222; font-size: 9pt; }
+
+/* ── HEADER ── */
+.main-header {
+  background: #1a2744; color: #fff; text-align: center;
+  padding: 18px 24px; border-bottom: 4px solid #e63946;
+}
+.main-header h1 { font-size: 14pt; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.main-header p { font-size: 8.5pt; opacity: .75; margin-top: 4px; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  background: #253059; color: #fff; text-align: center;
+  font-size: 10pt; font-weight: 700; padding: 8px;
+  letter-spacing: .5px;
+}
+
+/* ── FLOW DIAGRAM WRAPPER ── */
+.flow-wrap {
+  padding: 20px 16px 10px;
+  overflow-x: auto;
+}
+.flow-grid {
+  display: grid;
+  grid-template-columns: 160px 20px 200px 20px 190px 20px 210px 20px 240px 20px 180px;
+  gap: 0;
+  min-width: 1450px;
+  align-items: start;
+}
+
+/* ── COLUMN ── */
+.col-header {
+  color: #fff; text-align: center; font-size: 8pt; font-weight: 700;
+  padding: 6px 8px; border-radius: 4px 4px 0 0; letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.col-body {
+  border: 2px solid; border-top: none; border-radius: 0 0 4px 4px;
+  padding: 8px; min-height: 480px;
+}
+/* Column color themes */
+.col-fuentes .col-header  { background: #2e7d32; }
+.col-fuentes .col-body    { border-color: #2e7d32; background: #f1f8e9; }
+.col-procesos .col-header { background: #e65100; }
+.col-procesos .col-body   { border-color: #e65100; background: #fff3e0; }
+.col-tablas .col-header   { background: #1565c0; }
+.col-tablas .col-body     { border-color: #1565c0; background: #e3f2fd; }
+.col-td .col-header       { background: #6a1b9a; }
+.col-td .col-body         { border-color: #6a1b9a; background: #f3e5f5; }
+.col-graficos .col-header { background: #00695c; }
+.col-graficos .col-body   { border-color: #00695c; background: #e0f2f1; }
+.col-filtros .col-header  { background: #b71c1c; }
+.col-filtros .col-body    { border-color: #b71c1c; background: #ffebee; }
+
+/* ── ARROW ── */
+.arrow-col {
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 46px;
+}
+.arrow {
+  font-size: 20pt; color: #555; line-height: 1;
+}
+
+/* ── CARDS INSIDE COLUMNS ── */
+.card {
+  background: #fff; border-radius: 4px; padding: 6px 8px; margin: 5px 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,.12); font-size: 8pt;
+}
+.card-title { font-weight: 700; font-size: 8pt; margin-bottom: 3px; }
+.card-sub { color: #555; font-size: 7.5pt; line-height: 1.4; }
+.card-fields { font-size: 7.5pt; color: #333; margin-top: 4px; }
+.card-fields span { display: block; padding: 1px 0; }
+
+/* card accent borders */
+.col-fuentes .card  { border-left: 3px solid #2e7d32; }
+.col-procesos .card { border-left: 3px solid #e65100; }
+.col-tablas .card   { border-left: 3px solid #1565c0; }
+.col-td .card       { border-left: 3px solid #6a1b9a; }
+.col-graficos .card { border-left: 3px solid #00695c; }
+.col-filtros .card  { border-left: 3px solid #b71c1c; }
+
+.tag { display: inline-block; border-radius: 3px; padding: 1px 5px; font-size: 7pt; font-weight: 700; margin: 1px 1px 0 0; }
+.tag-green  { background: #c8e6c9; color: #1b5e20; }
+.tag-orange { background: #ffe0b2; color: #bf360c; }
+.tag-blue   { background: #bbdefb; color: #0d47a1; }
+.tag-purple { background: #e1bee7; color: #4a148c; }
+.tag-red    { background: #ffcdd2; color: #b71c1c; }
+.tag-teal   { background: #b2dfdb; color: #004d40; }
+.tag-gray   { background: #eeeeee; color: #424242; }
+
+.col-label-mini {
+  font-size: 7pt; font-weight: 700; text-transform: uppercase;
+  color: #888; margin: 8px 0 3px; letter-spacing: .5px;
+}
+.sep { border-top: 1px dashed #ccc; margin: 6px 0; }
+.mod-label {
+  font-size: 7pt; font-weight: 700; text-transform: uppercase;
+  padding: 3px 6px; border-radius: 3px; margin: 6px 0 3px;
+  color: #fff;
+}
+.mod-cert { background: #00695c; }
+.mod-ventas { background: #1565c0; }
+.mod-ref { background: #888; }
+
+/* ── BOTTOM TABLE ── */
+.table-section { padding: 0 16px 20px; }
+.table-header-row {
+  background: #1a2744; color: #fff;
+  display: grid; grid-template-columns: 160px 2fr 3fr 2fr 3fr;
+  gap: 0;
+}
+.table-header-row div, .table-data-row div {
+  padding: 7px 10px; font-size: 8pt; border-right: 1px solid rgba(255,255,255,.15);
+}
+.table-data-row {
+  display: grid; grid-template-columns: 160px 2fr 3fr 2fr 3fr;
+  gap: 0; border-bottom: 1px solid #ddd;
+  font-size: 8pt;
+}
+.table-data-row:nth-child(even) { background: #f5f5f5; }
+.table-data-row:hover { background: #e3f2fd; }
+.table-data-row div { border-right: 1px solid #e0e0e0; vertical-align: top; padding: 6px 10px; }
+.table-wrap { border: 1px solid #ccc; border-radius: 4px; overflow: hidden; margin-top: 10px; }
+.col-name { font-weight: 700; }
+
+/* ── LEGEND ── */
+.legend {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  padding: 10px 16px; background: #fff; border-top: 1px solid #ddd; font-size: 8pt;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 12px; height: 12px; border-radius: 2px; }
+
+@media print {
+  body { font-size: 8pt; }
+  .flow-grid { min-width: unset; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="main-header">
+  <h1>Diagrama de Trazabilidad y Flujo de Datos — Gráficos y Tablas del Dashboard</h1>
+  <p>Archivo fuente: 20260228_SFC_Dashboard.xlsx · Hoja: DASHBOARD · Proyecto: Fondos Colectivos SCP · Abril 2026</p>
+</div>
+
+<!-- FLOW DIAGRAM -->
+<div class="section-label">DIAGRAMA DE TRAZABILIDAD Y FLUJO DE DATOS — GRÁFICOS Y TABLAS DEL DASHBOARD</div>
+<div class="flow-wrap">
+<div class="flow-grid">
+
+  <!-- COL 1: FUENTES -->
+  <div class="col-fuentes">
+    <div class="col-header">Fuentes de Datos</div>
+    <div class="col-body">
+
+      <div class="card">
+        <div class="card-title">🗄️ SISTEMA SANTO</div>
+        <div class="card-sub">Softek on-premise · Fondos Colectivos</div>
+        <div class="sep"></div>
+        <div class="card-fields">
+          <span><b>SOLICITUDES</b> — pipeline comercial</span>
+          <span><b>CERTIFICADOS</b> — contratos vigentes</span>
+          <span><b>BD Lista Ejecutivos</b> — jerarquía</span>
+          <span><b>BD Alianzas</b> — concesionarios</span>
+          <span><b>GUIA_STATUS</b> — estados</span>
+          <span><b>BD_Tipo</b> — clasificación</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Microsoft Lists</div>
+        <div class="card-sub">SharePoint · Agendas Comerciales</div>
+        <div class="sep"></div>
+        <div class="card-fields">
+          <span><b>Agenda Digital</b></span>
+          <span><b>Agenda Cluster</b></span>
+          <span>→ Unificadas en BD_REFERIDOS2</span>
+        </div>
+      </div>
+
+      <div class="card" style="border-left-color:#aaa; background:#fafafa;">
+        <div class="card-title" style="color:#888;">Acceso actual</div>
+        <div class="card-sub" style="color:#aaa;">
+          Exportación manual CSV desde SANTO (mensual). Sin conexión directa ni automatización.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ARROW 1 -->
+  <div class="arrow-col"><div class="arrow">→</div></div>
+
+  <!-- COL 2: PROCESOS -->
+  <div class="col-procesos">
+    <div class="col-header">Procesos / Transformaciones</div>
+    <div class="col-body">
+
+      <div class="card">
+        <div class="card-title">Limpieza y validación</div>
+        <div class="card-sub">Nulos, duplicados, formatos de fecha y texto</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Cálculo de campos derivados</div>
+        <div class="card-fields">
+          <span>— PERIODO (YYYYMM de FECHA ORIG)</span>
+          <span>— AÑO_FEC_ORIG (año de colocación)</span>
+          <span>— DIA ORIG (día del mes)</span>
+          <span>— DIAS_UTILES_RESTANTES</span>
+          <span>— FLAG CIERRE DE MES</span>
+          <span>— MES2 / MES_FEC_ORIG</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Clasificación de canales (RN-003)</div>
+        <div class="card-fields">
+          <span><span class="tag tag-teal">DIG_DIRECTO</span> Canal digital</span>
+          <span><span class="tag tag-blue">SCP_REFERIDOS</span> Referidos SCP</span>
+          <span><span class="tag tag-green">SCP_CLUSTER_DIRECTO</span> Cluster</span>
+          <span><span class="tag tag-orange">ALIANZA</span> Concesionarios</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Clasificación de estados (RN-001 / RN-006)</div>
+        <div class="card-fields">
+          <span>TIPO: <span class="tag tag-green">REAL</span> / <span class="tag tag-red">PRUEBA</span></span>
+          <span>CERTIFICADO VALIDO?: SI / NO</span>
+          <span>Estado Contrato: Activo / Retirado / Resuelto</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Resolución de ejecutivos (RN-003)</div>
+        <div class="card-sub">USUARIO_EJECUTIVO → EJECUTIVO SCP (nombre real) vía BUSCARV sobre BD Lista Ejecutivos. Jerarquía: Ejecutivo → Jefatura → Supervisor.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Unificación BD_REFERIDOS2</div>
+        <div class="card-sub">Agenda Digital + Agenda Cluster → tabla unificada con campo AGENDA. Normalización STATUS (RN-009) y FRENTE_NORM (RN-008).</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Acumulados y comparativos</div>
+        <div class="card-sub">Corte al mismo día del mes anterior para comparativos. Acumulado diario por día útil restante al cierre.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ARROW 2 -->
+  <div class="arrow-col"><div class="arrow">→</div></div>
+
+  <!-- COL 3: TABLAS BASE -->
+  <div class="col-tablas">
+    <div class="col-header">Modelo / Tablas Base</div>
+    <div class="col-body">
+
+      <div class="card">
+        <div class="card-title">CERTIFICADOS / SOLICITUDES_SANTO</div>
+        <div class="card-sub">Tabla principal de contratos (Tabla3 en Excel)</div>
+        <div class="sep"></div>
+        <div class="card-fields">
+          <span>• Id Solicitud (Nro. Operación)</span>
+          <span>• FECHA ORIG / Fecha Contrato</span>
+          <span>• FRENTE / CANAL (derivado)</span>
+          <span>• Estado Contrato</span>
+          <span>• Estado Actual / Situación</span>
+          <span>• TIPO (REAL/PRUEBA)</span>
+          <span>• PERIODO (YYYYMM)</span>
+          <span>• DIA ORIG / DIAS_UTILES_REST.</span>
+          <span>• EJECUTIVO SCP (resuelto)</span>
+          <span>• USUARIO_JEFATURA</span>
+          <span>• Monto Certificado</span>
+          <span>• CERTIFICADO VALIDO?</span>
+          <span>• Modalidad Resolución</span>
+          <span>• FLAG CIERRE DE MES</span>
+        </div>
+      </div>
+
+      <div class="card" style="border-left-color:#888;">
+        <div class="card-title">BD_REFERIDOS2</div>
+        <div class="card-sub">Unificación Agenda Digital + Cluster</div>
+        <div class="sep"></div>
+        <div class="card-fields">
+          <span>• Id Referido</span>
+          <span>• AGENDA (DIG / CLUSTER)</span>
+          <span>• STATUS_NORM (RN-009)</span>
+          <span>• FRENTE_NORM (RN-008)</span>
+          <span>• Ejecutivo Asignado</span>
+          <span>• FECHA_CONTACTO</span>
+          <span>• USUARIO_JEFATURA</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ARROW 3 -->
+  <div class="arrow-col"><div class="arrow">→</div></div>
+
+  <!-- COL 4: TABLAS DINÁMICAS -->
+  <div class="col-td">
+    <div class="col-header">Tablas Dinámicas</div>
+    <div class="col-body">
+
+      <div class="col-label-mini">Módulo Certificados Activos</div>
+
+      <div class="card">
+        <div class="card-title">TD1 · TD_Certif_Activos_DIA_EQUIPO_TIPO</div>
+        <div class="card-sub">Certificados activos por día y tipo de canal</div>
+        <div class="card-fields">
+          <span>Filtros: PERIODO · Estado Contrato=Activo · TIPO=REAL</span>
+          <span>Eje fila: FECHA ORIG (DIA ORIG)</span>
+          <span>Eje col: FRENTE (DIG_DIRECTO, SCP_REFERIDOS, SCP_CLUSTER)</span>
+          <span>Métrica: Cuenta de Id Solicitud</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">TD2 · TD_Certif_Activos_DIA_ACUM_EQUIPO_TIPO</div>
+        <div class="card-sub">Acumulado de activos por día útil restante</div>
+        <div class="card-fields">
+          <span>Filtros: PERIODO · Estado Contrato=Activo · TIPO=REAL</span>
+          <span>Eje fila: DIAS_UTILES_RESTANTES</span>
+          <span>Métrica: Cuenta acumulada Id Solicitud</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">TD3 · TD_Total_Certif_Activos_MES_EQUIPO_TIPO</div>
+        <div class="card-sub">Totales del mes por canal y tipo</div>
+        <div class="card-fields">
+          <span>Filtros: PERIODO · Estado Contrato=Activo · TIPO=REAL</span>
+          <span>Eje fila: FRENTE/CANAL (detalle por subcanal)</span>
+          <span>Métrica: Cuenta de Id Solicitud</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">TD4 · TD_Total_Certif_Activos_MES_EQUIPO</div>
+        <div class="card-sub">Resumen mensual agrupado por canal (2 niveles)</div>
+        <div class="card-fields">
+          <span>CANAL DIG: DIG_DIRECTO</span>
+          <span>CLUSTER: SCP_REFERIDOS + SCP_CLUSTER</span>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+      <div class="col-label-mini">Módulo Ventas</div>
+
+      <div class="card">
+        <div class="card-title">TD5 · TablaDinámica20</div>
+        <div class="card-sub">Acumulado Certificados Activos (Stock) por canal y mes</div>
+        <div class="card-fields">
+          <span>Eje: PERIODO mensual · Líneas por FRENTE</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">TD6 · TablaDinámica21</div>
+        <div class="card-sub">Ventas por Jefatura SCP / Supervisor Digital</div>
+        <div class="card-fields">
+          <span>Eje: USUARIO_JEFATURA (nombre resuelto)</span>
+          <span>Métrica: Cuenta Id Solicitud · Período actual</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">TD7 · TablaDinámica24</div>
+        <div class="card-sub">Ventas — detalle adicional por ejecutivo</div>
+      </div>
+
+      <div class="sep"></div>
+      <div class="col-label-mini" style="color:#888;">Módulo Referidos (excluido)</div>
+
+      <div class="card" style="border-left-color:#aaa; background:#fafafa;">
+        <div class="card-title" style="color:#888;">TD8 · TD_REFERIDOS2</div>
+        <div class="card-sub" style="color:#aaa;">
+          TablaDinámica 1, 2, 5, 6, 8, 15, 16, 17, 18, 19<br>
+          Módulo Referidos — análisis separado
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ARROW 4 -->
+  <div class="arrow-col"><div class="arrow">→</div></div>
+
+  <!-- COL 5: GRÁFICOS -->
+  <div class="col-graficos">
+    <div class="col-header">Gráficos / Tablas del Dashboard</div>
+    <div class="col-body">
+
+      <div class="mod-label mod-cert">📊 Certificados Activos</div>
+
+      <div class="card">
+        <div class="card-title">1) Certificados Activos por Día / Equipo / Tipo</div>
+        <div class="card-sub">Gráfico barras apiladas por DIA ORIG · Leyenda por FRENTE</div>
+        <div class="card-fields">
+          <span><span class="tag tag-teal">chart2</span> → TD1</span>
+          <span>Ej ABR26: DIG=17 · REF=11 · CLUSTER=21 · Total=49</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">2) Acumulado por Día Útil Restante</div>
+        <div class="card-sub">Gráfico de líneas · Eje X: días útiles restantes al cierre</div>
+        <div class="card-fields">
+          <span><span class="tag tag-teal">chart3</span> → TD2</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">3) Certificados Activos por Equipo / Tipo — Mes</div>
+        <div class="card-sub">Barras horizontales por subcanal · Total del mes seleccionado</div>
+        <div class="card-fields">
+          <span><span class="tag tag-teal">chart4</span> → TD3</span>
+          <span>SCP_CLUSTER=21 · SCP_REF=11 · DIG=17</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">4) Resumen Mensual por Canal</div>
+        <div class="card-sub">Barras agrupadas: CANAL DIG vs CLUSTER</div>
+        <div class="card-fields">
+          <span><span class="tag tag-teal">chart5</span> → TD4</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">5) Certificados Activos por Mes de Colocación</div>
+        <div class="card-sub">Barras por mes de alta del certificado (histórico)</div>
+        <div class="card-fields">
+          <span><span class="tag tag-teal">chart11</span> · Rango TD!F-I 106:115</span>
+        </div>
+      </div>
+
+      <div class="mod-label mod-ventas">📈 Ventas</div>
+
+      <div class="card">
+        <div class="card-title">6) Ventas Total por Mes y Status de Certificado</div>
+        <div class="card-sub">Barras apiladas por PERIODO · Línea de tendencia superpuesta</div>
+        <div class="card-fields">
+          <span><span class="tag tag-blue">chart17</span> + <span class="tag tag-blue">chart18</span> · Rango TD!C-M 272:281</span>
+          <span>Series: activos, retirados, resueltos + KPI acumulado</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">7) Ventas por Jefatura / Supervisor Digital</div>
+        <div class="card-sub">Ranking de ventas por jefatura en el mes seleccionado</div>
+        <div class="card-fields">
+          <span><span class="tag tag-blue">chart21</span> + <span class="tag tag-blue">chart22</span> → TD6 + TD7</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">8) Comparativa certificados activos corte mismo día</div>
+        <div class="card-sub">Líneas últimos 4 meses · Corte al mismo día del mes anterior</div>
+        <div class="card-fields">
+          <span><span class="tag tag-blue">chart1</span> · Rango TD!H-L 691</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">9) Comparativo acumulado corte mismo día</div>
+        <div class="card-sub">Barras comparativas multi-período · Variación vs mes anterior</div>
+        <div class="card-fields">
+          <span><span class="tag tag-blue">chart23</span> · Rango TD!P-W 692:701</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">10) Acumulado Certificados Activos (Stock) por Canal y Mes</div>
+        <div class="card-sub">Líneas por FRENTE a lo largo de los meses</div>
+        <div class="card-fields">
+          <span><span class="tag tag-blue">chart24</span> → TD5 · Rango TD!N-T 165:175</span>
+        </div>
+      </div>
+
+      <div class="mod-label mod-ref">🔗 Referidos (excluido)</div>
+      <div class="card" style="border-left-color:#aaa; background:#fafafa;">
+        <div class="card-sub" style="color:#888;">
+          chart6–10, chart13–16, chart19–20 · Módulo BD_REFERIDOS2 · Análisis separado
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ARROW 5 -->
+  <div class="arrow-col"><div class="arrow">→</div></div>
+
+  <!-- COL 6: FILTROS -->
+  <div class="col-filtros">
+    <div class="col-header">Filtros / Parámetros</div>
+    <div class="col-body">
+
+      <div class="col-label-mini">Filtros Principales</div>
+      <div class="card">
+        <div class="card-fields">
+          <span>• <b>PERIODO</b> (YYYYMM)</span>
+          <span>• <b>Estado Contrato</b></span>
+          <span>&nbsp;&nbsp;→ Activo (certificados activos)</span>
+          <span>• <b>TIPO</b></span>
+          <span>&nbsp;&nbsp;→ REAL (excluye pruebas)</span>
+          <span>• <b>FRENTE / CANAL</b></span>
+          <span>&nbsp;&nbsp;→ DIG_DIRECTO</span>
+          <span>&nbsp;&nbsp;→ SCP_REFERIDOS</span>
+          <span>&nbsp;&nbsp;→ SCP_CLUSTER_DIRECTO</span>
+          <span>• <b>FECHA ORIG / DIA ORIG</b></span>
+          <span>• <b>AÑO_FEC_ORIG</b></span>
+          <span>• <b>CERTIFICADO VALIDO?</b></span>
+          <span>&nbsp;&nbsp;→ SI (RN-006)</span>
+        </div>
+      </div>
+
+      <div class="col-label-mini">Parámetros / Lógicas</div>
+      <div class="card">
+        <div class="card-fields">
+          <span>• Corte al mismo día del mes anterior para comparativos</span>
+          <span>• FLAG CIERRE DE MES = "SI" para tabla días útiles</span>
+          <span>• DIAS_UTILES_RESTANTES como agrupador</span>
+          <span>• Redistribución leads SIN GESTIÓN al siguiente día hábil (referidos &gt;6pm)</span>
+        </div>
+      </div>
+
+      <div class="col-label-mini">Reglas de Negocio</div>
+      <div class="card">
+        <div class="card-fields">
+          <span><span class="tag tag-red">RN-001</span> TIPO REAL/PRUEBA</span>
+          <span><span class="tag tag-red">RN-003</span> Resolución ejecutivo</span>
+          <span><span class="tag tag-red">RN-006</span> Certificado válido</span>
+          <span><span class="tag tag-red">RN-008</span> FRENTE_NORM digital</span>
+          <span><span class="tag tag-red">RN-009</span> STATUS referidos</span>
+          <span><span class="tag tag-red">RN-010</span> Cupos libres (pendiente)</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /flow-grid -->
+</div><!-- /flow-wrap -->
+
+<!-- LEGEND -->
+<div class="legend">
+  <strong>Leyenda de flujo:</strong>
+  <div class="legend-item"><div class="legend-dot" style="background:#2e7d32;"></div> Fuente origen</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#e65100;"></div> Transformaciones / Procesos</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1565c0;"></div> Tablas base</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#6a1b9a;"></div> Tablas dinámicas</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#00695c;"></div> Gráficos Dashboard</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#b71c1c;"></div> Filtros y parámetros</div>
+</div>
+
+<!-- BOTTOM TABLE -->
+<div class="section-label">DIAGRAMA DE TABLAS — INVENTARIO DE TABLAS Y RELACIONES</div>
+<div class="table-section">
+<div class="table-wrap">
+  <div class="table-header-row">
+    <div><b>Tabla / Hoja</b></div>
+    <div><b>Descripción</b></div>
+    <div><b>Campos principales</b></div>
+    <div><b>Relaciona con</b></div>
+    <div><b>Uso en Tablas Dinámicas / Gráficos</b></div>
+  </div>
+
+  <div class="table-data-row">
+    <div class="col-name">CERTIFICADOS</div>
+    <div>Tabla principal de contratos activos, retirados y resueltos. Fuente primaria de los gráficos de Certificados Activos y Ventas.</div>
+    <div>Id Solicitud, FECHA ORIG, PERIODO, DIA ORIG, FRENTE/CANAL, Estado Contrato, TIPO, EJECUTIVO SCP, USUARIO_JEFATURA, Monto Certificado, CERTIFICADO VALIDO?, Situación del Contrato, Modalidad Resolución, FLAG CIERRE DE MES, DIAS_UTILES_RESTANTES</div>
+    <div>BD Lista Ejecutivos (resolución ejecutivo)<br>BD Alianzas (clasificación ALIANZA)<br>TD (tablas dinámicas)</div>
+    <div>TD1, TD2, TD3, TD4, TD5, TD6, TD7 — alimenta todos los gráficos del módulo Certificados Activos y Ventas (chart1–5, chart11, chart17–18, chart21–24)</div>
+  </div>
+
+  <div class="table-data-row">
+    <div class="col-name">BD_REFERIDOS2</div>
+    <div>Unificación de Agenda Digital y Agenda Cluster. Tabla de gestión de prospectos referidos.</div>
+    <div>Id Referido, AGENDA (DIG/CLUSTER), STATUS, STATUS_NORM (RN-009), FRENTE_NORM (RN-008), Ejecutivo Asignado, FECHA_CONTACTO, USUARIO_JEFATURA, Canal Gestión</div>
+    <div>CERTIFICADOS (cruce de referidos convertidos)<br>BD Lista Ejecutivos</div>
+    <div>TD8 (TD_REFERIDOS2) — alimenta gráficos módulo Referidos: chart6–10, chart13–16, chart19–20</div>
+  </div>
+
+  <div class="table-data-row">
+    <div class="col-name">BD Lista Ejecutivos</div>
+    <div>Tabla de referencia estática. Mapea código de usuario SANTO al nombre real del ejecutivo y su canal / jefatura.</div>
+    <div>USUARIO_EJECUTIVO (código), Nombre Ejecutivo, FRENTE/CANAL, USUARIO_JEFATURA, Nombre Jefatura, USUARIO_SUPERVISOR, Nombre Supervisor, Tipo Equipo</div>
+    <div>CERTIFICADOS (EJECUTIVO SCP)<br>BD_REFERIDOS2 (Ejecutivo Asignado)</div>
+    <div>Tabla de referencia usada en resolución RN-003. Impacta todos los gráficos con dimensión EJECUTIVO o CANAL.</div>
+  </div>
+
+  <div class="table-data-row">
+    <div class="col-name">BD Alianzas</div>
+    <div>Tabla de referencia de concesionarios aliados. Determina cuándo un certificado pertenece al canal ALIANZA.</div>
+    <div>Código Concesionario, Nombre Concesionario, Tipo (Autoland, Astara, Derco, Interamericana, Revo Motors), Canal</div>
+    <div>CERTIFICADOS (campo Dealer / Tipo Canal)</div>
+    <div>Resolución de CANAL = "ALIANZA" en RN-003. Impacta gráficos chart4, chart5 (segmentación por canal).</div>
+  </div>
+
+  <div class="table-data-row">
+    <div class="col-name">TD (hoja)</div>
+    <div>Hoja consolidadora. Contiene tablas dinámicas nombradas y tabla de resumen mensual por fórmulas (filas 267–281).</div>
+    <div>TD_Certif_Activos_DIA_EQUIPO_TIPO, TD_Certif_Activos_DIA_ACUM_EQUIPO_TIPO, TD_Total_Certif_Activos_MES_EQUIPO_TIPO, TD_Total_Certif_Activos_MES_EQUIPO, TablaDinámica20, TablaDinámica21, TablaDinámica24, Tabla resumen fórmulas C272:M281</div>
+    <div>CERTIFICADOS (todas las TDs de ventas y activos)<br>DASHBOARD (consume rangos de TD)</div>
+    <div>Fuente intermedia de todos los gráficos del módulo Certificados Activos y Ventas</div>
+  </div>
+
+  <div class="table-data-row">
+    <div class="col-name">TD_REFERIDOS2 (hoja)</div>
+    <div>Hoja consolidadora del módulo Referidos. Unifica BD_REFERIDOS2 con Agenda Digital y Cluster en una sola capa de análisis.</div>
+    <div>TablaDinámica1, 2, 5, 6, 8, 15, 16, 17, 18, 19 — pivots por STATUS, FRENTE, JEFATURA, FECHA_CONTACTO</div>
+    <div>BD_REFERIDOS2 (todas las TDs de referidos)<br>DASHBOARD (gráficos módulo Referidos)</div>
+    <div>TD8 — alimenta chart6–10, chart13–16, chart19–20 (módulo Referidos, excluido de análisis principal)</div>
+  </div>
+
+  <div class="table-data-row">
+    <div class="col-name">DASHBOARD (hoja)</div>
+    <div>Hoja de visualización final. Contiene 24 gráficos (10 módulo Activos/Ventas + 12 módulo Referidos + 2 sin identificar). Una sola capa drawing1.xml.</div>
+    <div>Gráficos chart1–chart24. Ningún dato propio: consume rangos de TD y TD_REFERIDOS2 vía tablas dinámicas vinculadas.</div>
+    <div>TD (módulo Certificados + Ventas)<br>TD_REFERIDOS2 (módulo Referidos)</div>
+    <div>Capa de presentación final. No calcula datos propios.</div>
+  </div>
+
+</div>
+</div>
+
+<!-- footer -->
+<div style="text-align:center; padding: 10px; font-size:8pt; color:#888; background:#fff; border-top:1px solid #ddd;">
+  Infografía Trazabilidad DASHBOARD v1.0 · 20260228_SFC_Dashboard.xlsx · Fondos Colectivos SCP · Abril 2026 · CONFIDENCIAL
+</div>
+
+</body>
+</html>
