@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(pandoc --version)",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(dir \"e:\\\\Documentos\\\\MartinProyectos\\\\escuela-jcd\" /b /a)",
+      "Bash(python -c ' *)",
+      "Bash(python _update_nb.py)",
+      "Bash(del \"e:\\\\Documentos\\\\git\\\\adbYbl\\\\validacionGOLD\\\\_new_cell5.py\" \"e:\\\\Documentos\\\\git\\\\adbYbl\\\\validacionGOLD\\\\_update_nb.py\")",
+      "Bash(Remove-Item \"e:\\\\Documentos\\\\git\\\\adbYbl\\\\validacionGOLD\\\\_new_cell5.py\", \"e:\\\\Documentos\\\\git\\\\adbYbl\\\\validacionGOLD\\\\_update_nb.py\" -Force)"
     ]
   }
 }
